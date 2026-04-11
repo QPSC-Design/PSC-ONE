@@ -40,8 +40,8 @@ The system successfully boots and executes software on a fully integrated hardwa
 [![Watch the demo](docs/images/PSC_LCD_Demo.jpg)](https://vimeo.com/1176290602)
 
 This video demonstrates the PSC system running PSC_OS on FPGA hardware.  
-It shows prime number computation executed on the custom PSC_RV32ISP CPU, with results transmitted over UART.  
-The demo highlights end-to-end operation of the hardware and software stack.
+It shows prime number computation executed on the custom RISC-V CPU, with results transmitted over UART.  
+The demo highlights a fully functional hardware-software stack, from boot to execution.
 
 [![Watch the demo](docs/images/PSC_OS_primes_demo.jpg)](https://vimeo.com/1160745127)
 
