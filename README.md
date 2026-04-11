@@ -15,4 +15,8 @@ It aims to build a fully custom edge-computing platform from the ground up, incl
 
 PSC-ONE is not just a CPU core, but a complete experimental SoC platform designed for research, edge-AI development, and architectural exploration.
 
+## PSC_RV32ISP
+
+![PSC_RV32ISP Block Diagram](docs/images/PSC_RV32ISP_Block.jpg)
+
 🚧 Work in Progress
