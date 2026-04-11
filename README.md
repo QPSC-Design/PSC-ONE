@@ -37,6 +37,11 @@ The system successfully boots and executes software on a fully integrated hardwa
 
 [![Watch the demo](docs/images/PSC_LCD_Demo.jpg)](https://vimeo.com/1176290602)
 
+This video shows a live demonstration of the PSC system running on FPGA hardware with PSC_OS
+.  
+[![Watch the demo](docs/images/PSC_OS_primes_demo.jpg)](https://vimeo.com/manage/videos/1160745127)
+
+
 ---
 
 ## 🚧 Work in Progress
