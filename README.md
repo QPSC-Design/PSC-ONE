@@ -21,7 +21,7 @@ PSC-ONE is not just a CPU core, but a complete experimental SoC platform for res
 
 ---
 
-## PSC_RV32ISP
+## PSC_RV32ISP (CPU Architecture)
 
 This diagram presents the top-level architecture of the PSC system.  
 It highlights how the CPU core is integrated with memory and peripheral components, including UART, SDRAM, and the SD card interface.  
