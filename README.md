@@ -17,11 +17,9 @@ PSC-ONE is not just a CPU core, but a complete experimental SoC platform designe
 
 ## PSC_RV32ISP
 
-This diagram shows the internal architecture of PSC_SDReader.
-
-It illustrates how the SPI engine, FIFO buffer, and control FSM interact during SD card operations.
-
-The design abstracts low-level SD protocol handling and provides a simple MMIO interface to the CPU.
+This diagram shows the internal architecture of PSC_SDReader. <br>
+It illustrates how the SPI engine, FIFO buffer, and control FSM interact during SD card operations. <br>
+The design abstracts low-level SD protocol handling and provides a simple MMIO interface to the CPU. <br>
 
 ![PSC_RV32ISP Block Diagram](docs/images/PSC_RV32ISP_CPU_Block.jpg)
 
