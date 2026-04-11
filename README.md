@@ -25,6 +25,6 @@ All components are connected via a memory-mapped interface, enabling simple and 
 
 ## Demo
 
-[![Watch the demo](docs/images/demo_thumbnail.jpg)](https://vimeo.com/manage/videos/1176290602)
+[![Watch the demo](docs/images//PSC_LCD_Demo.jpg)](https://vimeo.com/manage/videos/1176290602)
 
 🚧 Work in Progress
