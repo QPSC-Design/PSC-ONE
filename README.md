@@ -25,6 +25,10 @@ All components are connected via a memory-mapped interface, enabling simple and 
 
 ## Demo
 
+This video shows a live demonstration of the PSC system running on FPGA hardware. <br>
+It highlights real-time interaction between the CPU, SD card interface, and UART output. <br>
+The system successfully boots and executes software through a memory-mapped architecture. <br>
+
 [![Watch the demo](docs/images//PSC_LCD_Demo.jpg)](https://vimeo.com/manage/videos/1176290602)
 
 🚧 Work in Progress
