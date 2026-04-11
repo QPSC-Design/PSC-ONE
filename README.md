@@ -1,6 +1,7 @@
 # PSC-ONE
 
-PSC-ONE is an open-source full-stack RISC-V SoC platform for FPGA-based edge computing and system-level experimentation. <br>
+PSC-ONE is an open-source full-stack RISC-V SoC platform for FPGA-based edge computing and system-level experimentation. 
+
 It integrates a custom CPU, memory system, peripherals, and OS into a single cohesive architecture, enabling end-to-end hardware/software co-design.
 
 ## What is PSC-ONE?
