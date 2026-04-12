@@ -135,3 +135,24 @@ It is an attempt to:
 ---
 
 ## Directory Structure
+
+software/
+├── bootloader/
+├── kernel/
+├── user/
+├── lib/
+└── tools/
+
+
+---
+
+## Related
+
+- Hardware: `hardware/`
+- Top-level project: PSC-ONE
+
+---
+
+## License
+
+This project is released under an open-source license.
