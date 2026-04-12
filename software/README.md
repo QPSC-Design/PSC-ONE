@@ -136,12 +136,14 @@ It is an attempt to:
 
 ## Directory Structure
 
+```
 software/
 ├── bootloader/
 ├── kernel/
 ├── user/
 ├── lib/
 └── tools/
+```
 
 ---
 
