@@ -85,6 +85,8 @@ The demo highlights a fully functional hardware-software stack, from boot to pro
 
 ### PSC_OS Boot from SD Card.
 
+This demo uses a Kioxia 32GB SD card.
+
 <img src="docs/images/PSC_FPGA_SD_Card.jpg" width="400">
 
 This video demonstrates the PSC system booting PSC_OS from an SD card on FPGA hardware.  
