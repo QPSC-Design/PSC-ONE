@@ -63,6 +63,8 @@ All components are connected through a memory-mapped architecture, enabling unif
 
 ## Demo
 
+### PSC_OS LSD
+
 This video shows a live demonstration of the PSC system running on FPGA hardware.  
 It highlights real-time interaction between the CPU, SD card interface, and UART output.  
 The system successfully boots and executes software on a fully integrated hardware platform.
@@ -71,6 +73,8 @@ The system successfully boots and executes software on a fully integrated hardwa
 
 ---
 
+### PSC_OS Boot
+
 This video demonstrates the PSC system running `PSC_OS` on FPGA hardware.  
 It shows prime number computation executed on the custom `PSC_RV32ISP` CPU, with results transmitted over UART.  
 The demo highlights a fully functional hardware-software stack, from boot to program execution.
@@ -78,6 +82,10 @@ The demo highlights a fully functional hardware-software stack, from boot to pro
 [![Watch the demo](docs/images/PSC_OS_primes_demo.jpg)](https://vimeo.com/1160745127)
 
 ---
+
+### PSC_OS Boot from SD Card.
+
+![SD Card](docs/images/PSC_FPGA_SD_Card.jpg)
 
 This video demonstrates the PSC system booting PSC_OS from an SD card on FPGA hardware.  
 It shows the SD interface operating in serial mode, with CRC checks performed during data transfer.  
