@@ -137,7 +137,7 @@ It is an attempt to:
 ## Directory Structure
 
 ```
-software/
+os/
 ├── bootloader/
 ├── kernel/
 ├── user/
