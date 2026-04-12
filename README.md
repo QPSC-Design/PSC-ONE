@@ -79,9 +79,9 @@ The demo highlights a fully functional hardware-software stack, from boot to pro
 
 ---
 
-This video demonstrates the PSC system booting PSC_OS from an SD card on FPGA hardware. 　
-It shows the SD interface operating in serial mode, with CRC checks performed during data transfer. 　
-In case of errors, the system automatically retries the read operation, ensuring reliable boot execution from external storage.　
+This video demonstrates the PSC system booting PSC_OS from an SD card on FPGA hardware.
+It shows the SD interface operating in serial mode, with CRC checks performed during data transfer.
+In case of errors, the system automatically retries the read operation, ensuring reliable boot execution from external storage.
 
 [![Watch the demo](docs/images/PSC_SD_Boot.jpg)](https://vimeo.com/manage/videos/1182355690)
 
