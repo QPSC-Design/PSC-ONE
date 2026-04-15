@@ -28,7 +28,7 @@ The following is an actual log captured from PSC_OS when reading a sector from t
 
 This demonstrates that PSC_SDReader successfully performs a full SD card read sequence, including CRC reception and FIFO-based data transfer.
 
-```
+```shell
 PSC_OS> sd_read 100
 CRC OK (retry=0)
 
