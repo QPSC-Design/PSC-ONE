@@ -22,8 +22,6 @@ From the CPU perspective, it behaves like a memory-mapped SD card reader.
 
 ---
 
----
-
 ## Example: SD Read Log
 
 The following is an actual log captured from PSC_OS when reading a sector from the SD card.
