@@ -17,6 +17,8 @@ The design emphasizes:
 
 It is intended for research, prototyping, and architectural exploration of edge AI systems.
 
+<img src="./docs/images/PSC_SynapEngine.jpg" width="400">
+
 ---
 
 ## Features
