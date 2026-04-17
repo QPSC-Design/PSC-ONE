@@ -3,6 +3,8 @@
 PSC-ONE AI is an experimental AI acceleration subsystem designed for the PSC-ONE platform.
 It focuses on efficient matrix computation using a systolic array architecture, enabling exploration of modern dataflow-based hardware acceleration techniques.
 
+<img src="./docs/images/PSC_SynapEngine.jpg" width="800">
+
 ---
 
 ## Overview
@@ -16,8 +18,6 @@ The design emphasizes:
 - Full hardware/software co-design capability
 
 It is intended for research, prototyping, and architectural exploration of edge AI systems.
-
-<img src="./docs/images/PSC_SynapEngine.jpg" width="800">
 
 ---
 
