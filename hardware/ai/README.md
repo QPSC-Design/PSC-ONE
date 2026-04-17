@@ -1,7 +1,15 @@
 # PSC-ONE AI
 
-PSC-ONE AI is an experimental AI acceleration subsystem designed for the PSC-ONE platform.
-It focuses on efficient matrix computation using a systolic array architecture, enabling exploration of modern dataflow-based hardware acceleration techniques.
+PSC-ONE AI is a hardware accelerator for matrix multiplication (GEMM),  
+based on a systolic array architecture.
+
+It is a core component of the **PSC-ONE full-stack SoC**, integrating a custom RISC-V CPU, memory subsystem, and AI accelerator into a single experimental platform for edge computing and architectural exploration.
+
+---
+
+## Architecture
+
+This diagram shows the integration of the SynapEngine (systolic array) within the PSC-ONE system.
 
 <img src="./docs/images/PSC_SynapEngine.jpg" width="800">
 
@@ -9,55 +17,72 @@ It focuses on efficient matrix computation using a systolic array architecture, 
 
 ## Overview
 
-PSC-ONE AI integrates a custom systolic array engine (SynapEngine) into the PSC-ONE SoC.
+PSC-ONE AI integrates a custom systolic array engine (**SynapEngine**) into the PSC-ONE platform.
+
+The goal of this project is to explore **efficient dataflow architectures under constrained memory bandwidth**, which is a key challenge in edge AI systems.
 
 The design emphasizes:
 
 - Dataflow-driven computation
-- Tight integration with the memory subsystem
-- Full hardware/software co-design capability
-
-It is intended for research, prototyping, and architectural exploration of edge AI systems.
+- Tight coupling with the memory system
+- Full hardware/software co-design
 
 ---
 
-## Features
+## Key Features
 
-- Custom systolic array-based matrix computation engine
-- Support for multiple dataflow strategies:
-  - Weight-Stationary
-  - Output-Stationary
-- Memory-mapped interface for CPU control
+- 2×2 int8 systolic array (SynapEngine)
+- Support for:
+  - Weight-Stationary (WS)
+  - Output-Stationary (OS)
+- Cycle-based execution model
+- Memory-mapped control interface
 - Integration with PSC-ONE SDRAM and cache system
-- FPGA-ready design with cocotb-based verification
+- FPGA-ready design
+- cocotb-based verification
 
 ---
 
 ## Dataflow Architecture
 
-PSC-ONE AI supports two major dataflow models:
+PSC-ONE AI supports two fundamental dataflow models used in modern AI accelerators.
 
 ### Weight-Stationary (WS)
 
-- Weights remain inside processing elements (PEs)
+- Weights remain inside each Processing Element (PE)
 - Input activations stream through the array
-- Efficient for weight reuse
+- Maximizes weight reuse
 
 ### Output-Stationary (OS)
 
 - Partial sums are accumulated locally in each PE
-- Inputs (A, B) are streamed diagonally
-- Reduces memory write-back bandwidth
+- Inputs (A and B) are streamed diagonally
+- Minimizes memory write-back bandwidth
+
+---
+
+## Computation Model
+
+The accelerator performs matrix multiplication:
+
+C = A × B
+
+Execution model:
+
+- A flows horizontally across the array
+- B flows vertically across the array
+- Partial sums are accumulated inside PEs (OS mode)
 
 ---
 
 ## Memory System Integration
 
-PSC-ONE AI is tightly coupled with the PSC-ONE memory system:
+PSC-ONE AI is tightly integrated with the PSC-ONE memory architecture:
 
+- Shared memory space with the CPU
 - Memory-mapped I/O interface
-- L1 cache integration
-- Cache coherency-aware design
+- L1 cache compatible design
+- Software-managed cache coherency
 
 ---
 
@@ -72,6 +97,10 @@ Typical workflow:
 3. Start computation
 4. Wait for completion
 5. Read back results
+
+---
+
+## Directory Structure
 
 ---
 
