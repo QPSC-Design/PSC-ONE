@@ -75,11 +75,13 @@ Typical workflow:
 
 ## Directory Structure
 
+```
 PSC-ONE/
  └── hardware/
      └── ai/
          ├── src/
          └── docs/
+```
 
 ---
 
