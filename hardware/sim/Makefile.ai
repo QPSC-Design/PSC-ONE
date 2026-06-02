@@ -1,0 +1,155 @@
+# Makefile
+#--------------------------------------------------
+#  MODE で一括切り替え（verilator / icarus）
+#--------------------------------------------------
+#MODE = verilator
+MODE = icarus
+
+#--------------------------------------------------
+#  シミュレーションモードに応じた設定
+#--------------------------------------------------
+ifeq ($(MODE),verilator)
+SIM          = verilator
+SDRAM_MODEL  = ../SDRAM_model/w9825g6kh_verilator.v
+
+EXTRA_ARGS = \
+	--trace --trace-fst --Wno-ASCRANGE --Wno-INITIALDLY --Wno-COMBDLY \
+	--Wno-WIDTHEXPAND --Wno-WIDTHTRUNC --Wno-REALCVT
+
+endif
+
+ifeq ($(MODE),icarus)
+SIM          = icarus
+SDRAM_MODEL  = ../SDRAM_model/w9825g6kh.v  # ← Icarus 用 Micron モデルに修正
+
+EXTRA_ARGS =   # Icarus は基本オプション不要（必要なら -g2012 など）
+
+endif
+
+ifeq ($(SDRAM_MODEL),)
+$(error MODE=$(MODE) は不正です。MODE=verilator または MODE=icarus を指定してください)
+endif
+
+#--------------------------------------------------
+# Variables
+#--------------------------------------------------
+
+# Variables
+SRC_DIR = ../rtl/ai/src
+PE_FILE = $(SRC_DIR)/PE_INT.v \
+		  $(SRC_DIR)/PE_mult.v \
+		  $(SRC_DIR)/sim_PE_top.v
+PEx2_FILE = $(SRC_DIR)/PE_INT.v \
+		  	$(SRC_DIR)/PE_mult.v \
+		  	$(SRC_DIR)/sim_PE_topx2.v
+
+VERILOG_FILE_SA 	= $(SRC_DIR)/SystolicArray2x2.v $(PE_FILE) $(INC_FILE)
+VERILOG_FILE_SAx2 	= $(SRC_DIR)/SystolicArray2x2_x2.v $(PE_FILE) $(INC_FILE)
+VERILOG_FILE_MODULE = $(SRC_DIR)/SystolicArray2x2_Ctrl.v $(SRC_DIR)/SystolicArray2x2.v $(PE_FILE) 
+
+VERILOG_FILE = $(SRC_DIR)/sim_top.v $(SRC_DIR)/PSC_SynapEngine_axi.v $(SRC_DIR)/SystolicArray2x2_Ctrl.v $(SRC_DIR)/SystolicArray2x2.v \
+			   $(PE_FILE) $(DM_CNT_FILE) $(SDRAM_MODEL)
+DM_CNT_DIR = ../dm_cache_controller
+DM_CNT_FILE = $(DM_CNT_DIR)/src/cache_dma_controller_io.v $(DM_CNT_DIR)/src/dm_cache_data.v $(DM_CNT_DIR)/src/dm_cache_tag.v \
+			  $(DM_CNT_DIR)/src/sdram_4port_controller_axi_slave_bX.v $(DM_CNT_DIR)/src/sdram_controller.v \
+			  $(DM_CNT_DIR)/src/sdram_16bit_to_128bit_axi_bridge.v
+#SDRAM_MODEL = ../SDRAM_model/w9825g6kh.v
+
+COCOTB_FILE_PE 		= int8_PE_test1
+COCOTB_FILE_OS_SA 	= int8_OS_SA_test1
+COCOTB_FILE_DF_SA 	= int8_DF_SA_test1
+COCOTB_FILE_OS_SA_M = int8_OS_SA_Ctrl_test1
+COCOTB_FILE_DF_SA_M = int8_DF_SA_Ctrl_test1
+
+COCOTB_CFG       := $(shell which cocotb-config)
+COCOTB_MAKEFILE  := $(shell cocotb-config --makefiles)/Makefile.sim
+SIM_BUILD        ?= sim_build
+
+#--------------------------------------------------
+# Targets
+#--------------------------------------------------
+.PHONY: all 
+
+# まとめて実行
+all: simulate_PE simulate_PEx2 simulate_DF_SA simulate_OS_SA simulate_OS_SA_x2 simulate_DF_SA_Ctrl simulate_OS_SA_Ctrl
+		
+# Output Stationary.
+simulate_OS_SA_Ctrl: 
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_OS_SA_M) \
+	    TOPLEVEL=SystolicArray2x2_Ctrl \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(VERILOG_FILE_MODULE)"
+
+# Data Flow Mode.
+simulate_DF_SA_Ctrl:
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_DF_SA_M) \
+	    TOPLEVEL=SystolicArray2x2_Ctrl \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(VERILOG_FILE_MODULE)"
+
+# Output Stationary.
+simulate_OS_SA: 
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_OS_SA) \
+	    TOPLEVEL=SystolicArray2x2 \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(VERILOG_FILE_SA)"
+
+# Output Stationary. 2x2, mul2x1
+simulate_OS_SA_x2: 
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_OS_SA) \
+	    TOPLEVEL=SystolicArray2x2_x2 \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(VERILOG_FILE_SAx2)"
+
+# Data Flow Mode.
+simulate_DF_SA: 
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_DF_SA) \
+	    TOPLEVEL=SystolicArray2x2 \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(VERILOG_FILE_SA)"
+
+simulate_PE: 
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_PE) \
+	    TOPLEVEL=sim_PE_top \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(PE_FILE)"
+
+simulate_PEx2: 
+	make clean
+	make -f $(COCOTB_MAKEFILE) \
+	    SIM=$(SIM) \
+	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_PE) \
+	    TOPLEVEL=sim_PE_topx2 \
+	    TOPLEVEL_LANG=verilog \
+	    EXTRA_ARGS="$(EXTRA_ARGS)" \
+	    VERILOG_SOURCES="$(PEx2_FILE)"
+
