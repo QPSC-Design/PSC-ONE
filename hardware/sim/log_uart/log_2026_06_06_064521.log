@@ -1,0 +1,11 @@
+[dbg] cycle=0, uart_tx=0x0000, pc=0x00000008, data_addr=0x00000000
+boot start
+
+=== PSC random memory RW test start ===
+[mem_check] range 00400000 - 00800000
+[mem_check] access count=00000064
+[mem_check] OK
+
+=== PSC bootloader start ===
+CTRL=0000000A
+SD INIT start
