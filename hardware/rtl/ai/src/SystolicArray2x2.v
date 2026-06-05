@@ -169,14 +169,33 @@ module SystolicArray2x2 #(
     wire [N_Mult-1:0]  data_in_valid    [0:N_PE-1][0:N_PE-1];
     wire [N_Mult-1:0]  data_out_ready   [0:N_PE_MUL-1][0:N_PE_MUL-1];
 
-    assign  data_in_valid = data_out_valid;
-    assign  data_in_ready = data_out_ready;
+    //assign  data_in_valid = data_out_valid;
+    //assign  data_in_ready = data_out_ready;
 
+    genvar i, j;
+    generate
+    for(i=0; i<N_PE; i=i+1) begin : GEN_PE_ROW
+        for(j=0; j<N_PE; j=j+1) begin : GEN_PE_COL
+            assign data_in_valid[i][j]  = data_out_valid[i][j];
+        end
+    end
+    endgenerate
+
+    generate
+    for(i=0; i<N_PE_MUL; i=i+1) begin : GEN_PE_ROW_M
+        for(j=0; j<N_PE_MUL; j=j+1) begin : GEN_PE_COL_M
+            assign data_in_ready[i][j]  = data_out_ready[i][j];
+        end
+    end
+    endgenerate
+
+    // ------------------------------------------------
+    // 乗算器を外部に置く
+    // ------------------------------------------------
     generate
         for (r = 0; r < N_PE_MUL; r = r + 1) begin : MUL_ROW_BLOCK
             for (c = 0; c < N_PE_MUL; c = c + 1) begin : MUL_COL_BLOCK
 
-                // 乗算器を外部に置く
                 PE_mult #(
                     .DW                 (8),
                     .PW                 (32),

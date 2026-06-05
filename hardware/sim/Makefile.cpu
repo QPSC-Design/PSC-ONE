@@ -2,8 +2,8 @@
 #  MODE で一括切り替え（verilator / icarus）
 # ============================================================
 # デフォルトはicarus
-#MODE = verilator
-MODE = icarus
+MODE = verilator
+#MODE = icarus
 #MODE = icarus_os
 
 # ============================================================
@@ -123,6 +123,7 @@ SA_DIR   = ../rtl/ai/src
 SA_FILE  = \
 	$(SA_DIR)/SystolicArray2x2_Ctrl.v \
 	$(SA_DIR)/SystolicArray2x2.v \
+	$(SA_DIR)/SystolicArray2x2_x2.v \
 	$(SA_DIR)/PE_INT.v \
 	$(SA_DIR)/PE_mult.v
 
@@ -174,6 +175,7 @@ PSCONE_TEST = \
 # run test
 .PHONY: simulate_PSC_ONE
 simulate_PSC_ONE:
+	@mkdir -p ./wave
 	@set -e; \
 	for t in $(PSCONE_TEST); do \
 		name=$$(echo $$t | cut -d: -f1); \
@@ -192,7 +194,7 @@ simulate_PSC_ONE:
 		head -n 2048 "$$mem_file" > $$tmp; \
 		cp $$tmp ./mem/test_program.mem; \
 		rm -f $$tmp; \
-		MODULE=cocotb_tb.cpu.$$cocotb_file \
+		COCOTB_TEST_MODULES=cocotb_tb.cpu.$$cocotb_file \
 		EXPECTED_RESULT=$$expected \
 		TOPLEVEL=$(PSCONE_TOP) TOPLEVEL_LANG=verilog \
 		SIM=$(SIM) \
@@ -261,6 +263,7 @@ PSCONE_TESTS = \
 # run test
 .PHONY: simulate_PSC_ONE_TESTS
 simulate_PSC_ONE_TESTS:
+	@mkdir -p ./wave
 	@set -e; \
 	mkdir -p log; \
 	run_log=log/test_result_$$(date +%Y%m%d_%H%M%S).log; \
@@ -284,7 +287,7 @@ simulate_PSC_ONE_TESTS:
 		head -n 2048 "$$mem_file" > $$tmp; \
 		cp $$tmp ./mem/test_program.mem; \
 		rm -f $$tmp; \
-		MODULE=cocotb_tb.cpu.$$cocotb_file \
+		COCOTB_TEST_MODULES=cocotb_tb.cpu.$$cocotb_file \
 		TEST_NAME=$$name \
 		PSC_LOGFILE=$$run_log \
 		PROGRAM_FILE=$$mem_file \

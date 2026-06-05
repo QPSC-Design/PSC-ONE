@@ -161,7 +161,6 @@ module PSC_SDReader #(
             fifo_rd_ptr <= {FIFO_AW{1'b0}};
             fifo_count  <= {(FIFO_AW+1){1'b0}};
 
-            crc_rdata   <= 8'h0;
             crc_data1   <= 8'h0;
             crc_data2   <= 8'h0;
         end else begin
@@ -364,6 +363,7 @@ module PSC_SDReader #(
 
             fifo_push           <= 1'b0;
             fifo_push_data      <= 8'h00;
+            crc_rdata           <= 8'h0;
             crc_write1          <= 1'b0;
             crc_write2          <= 1'b0;
 

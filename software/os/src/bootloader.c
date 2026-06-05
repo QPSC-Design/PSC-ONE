@@ -456,6 +456,94 @@ static void jump_to_addr(uint32_t addr)
 }
 
 /* -------------------------------------------------------
+ * SDRAM メモリアクセステスト
+ * ------------------------------------------------------- */
+
+#define MEM_STEP 4u   // 32bit access
+
+/* 32bit LFSR (Galois) */
+static inline uint32_t lfsr_next(uint32_t x) {
+    uint32_t lsb = x & 1u;
+    x >>= 1;
+    if (lsb) {
+        x ^= 0xA3000000u;
+    }
+    return x;
+}
+
+static inline uint32_t test_pattern(uint32_t addr) {
+    return addr ^ 0xA5A5A5A5u;
+}
+
+void random_mem_check(
+    uint32_t start_addr,
+    uint32_t end_addr,
+    uint32_t access_count)
+{
+    bool TestPass = true;
+    uint32_t lfsr;
+    uint32_t addr;
+
+    uint32_t range_bytes = end_addr - start_addr;
+    uint32_t mask = range_bytes - MEM_STEP;
+
+    s_printf("[mem_check] range %x - %x\n",
+             start_addr, end_addr);
+
+    s_printf("[mem_check] access count=%x\n",
+             access_count);
+
+    /* ================= write ================= */
+
+    lfsr = 0x12345678u;
+
+    for (uint32_t i = 0; i < access_count; i++)
+    {
+        addr = start_addr + (lfsr & mask);
+
+        *(volatile uint32_t *)addr =
+            test_pattern(addr);
+
+        lfsr = lfsr_next(lfsr);
+    }
+
+    /* ================= read ================= */
+
+    lfsr = 0x12345678u;
+
+    for (uint32_t i = 0; i < access_count; i++)
+    {
+        addr = start_addr + (lfsr & mask);
+
+        uint32_t v =
+            *(volatile uint32_t *)addr;
+
+        uint32_t exp =
+            test_pattern(addr);
+
+        if (v != exp)
+        {
+            TestPass = false;
+
+            s_printf(
+                "MEM ERROR addr=%x read=%x exp=%x\n",
+                addr, v, exp);
+
+            mmio_w32(
+                UART_MMIO_BASE + UART_TX,
+                0xEE01);
+        }
+
+        lfsr = lfsr_next(lfsr);
+    }
+
+    if (TestPass)
+        s_printf("[mem_check] OK\n");
+    else
+        s_printf("[mem_check] NG\n");
+}
+
+/* -------------------------------------------------------
  * bootloader main
  * BIOS からここへ来る想定
  * ------------------------------------------------------- */
@@ -465,20 +553,18 @@ void bootloader_main(void)
 
     bl_print("boot start\n");
 
-    bl_print("DEBUG_P0\n");
+    // random R/W
+    bl_print("\n=== PSC random memory RW test start ===\n");
+    random_mem_check(0x00400000, 0x00800000, (uint32_t)500);
 
     bl_print("\n=== PSC bootloader start ===\n");
     bl_print_kv_hex("CTRL=", PSC_SD_IF_CTRL);
-
-    bl_print("DEBUG_P1\n");
 
     if (sd_init_if_needed() != 0) {
         bl_print("bootloader: SD init failed\n");
         for (;;) {
         }
     }
-
-    bl_print("DEBUG_P2\n");
 
     if (sd_load_image(KERNEL_LBA_START, KERNEL_LBA_COUNT, KERNEL_LOAD_ADDR) != 0) {
         bl_print("bootloader: kernel load failed\n");

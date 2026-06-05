@@ -123,6 +123,7 @@ SA_DIR   = ../rtl/ai/src
 SA_FILE  = \
 	$(SA_DIR)/SystolicArray2x2_Ctrl.v \
 	$(SA_DIR)/SystolicArray2x2.v \
+	$(SA_DIR)/SystolicArray2x2_x2.v \
 	$(SA_DIR)/PE_INT.v \
 	$(SA_DIR)/PE_mult.v
 
@@ -195,6 +196,8 @@ simulate_PSCOS:
 	@tmp=$$(mktemp); \
 	head -n 2500 ./mem/user.mem > $$tmp; \
 	mv $$tmp ./mem/user.mem
+	
+	@mkdir -p ./wave
 
 	@echo VDEF=$(VDEF)
 	@echo EXTRA_ARGS=$(EXTRA_ARGS)
@@ -207,4 +210,59 @@ simulate_PSCOS:
 	SIM=$(SIM) \
 	VERILOG_SOURCES="$(INPUT_FILE_PSCONE)" \
 	EXTRA_ARGS="$(EXTRA_ARGS) $(VDEF)" \
+	make --silent -f $(COCOTB_MAKEFILE)
+
+# ============================================================
+# PSC-OS テスト from SD-Card
+
+MODE = verilator
+
+# define FPGA_BOOT_LOADER_MODE
+SD_VDEF = -DFST_UART_MODE -DOS_SIM -DDUMP_FST_FILE -DFPGA_BOOT_LOADER_MODE
+
+simulate_SD_PSCOS: 
+	$(MAKE) clean
+
+	# BOOT LOADER
+	$(MAKE) -C ../../hardware/bootloader bootloader
+
+	cp ../../hardware/bootloader/mem/bootrom.mem 	./mem/
+	cp ../../hardware/bootloader/mem/kernel.mem 	./mem/
+	cp ../../hardware/bootloader/mem/user.mem 		./mem/
+	cp ../../hardware/bootloader/mem/bootloader.mem ./mem/
+
+	test -f ./mem/bootrom.mem
+	test -f ./mem/kernel.mem
+	test -f ./mem/user.mem
+	test -f ./mem/bootloader.mem
+
+	@tmp=$$(mktemp); \
+	head -n 128 ./mem/bootrom.mem > $$tmp; \
+	mv $$tmp ./mem/bootrom.mem
+
+	@tmp=$$(mktemp); \
+	head -n 7500 ./mem/kernel.mem > $$tmp; \
+	mv $$tmp ./mem/kernel.mem
+
+	@tmp=$$(mktemp); \
+	head -n 2500 ./mem/user.mem > $$tmp; \
+	mv $$tmp ./mem/user.mem
+
+	@tmp=$$(mktemp); \
+	head -n 4500 ./mem/bootloader.mem > $$tmp; \
+	mv $$tmp ./mem/bootloader.mem
+	
+	@mkdir -p ./wave
+
+	@echo VDEF=$(SD_VDEF)
+	@echo EXTRA_ARGS=$(EXTRA_ARGS)
+
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
+	MODULE=cocotb_tb.psc_os.PSCONE_os_test \
+	PSC_UART_LOGFILE=./log_uart/log_$$(date +%Y_%m_%d_%H%M%S).log \
+	EXPECTED_RESULT=0xff00ff1b \
+	TOPLEVEL=$(PSCONE_TOP) TOPLEVEL_LANG=verilog \
+	SIM=$(SIM) \
+	VERILOG_SOURCES="$(INPUT_FILE_PSCONE)" \
+	EXTRA_ARGS="$(EXTRA_ARGS) $(SD_VDEF)" \
 	make --silent -f $(COCOTB_MAKEFILE)

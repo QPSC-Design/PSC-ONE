@@ -174,7 +174,7 @@ async def RV32IS_chip_test1(dut):
     cocotb.start_soon(generate_clock(dut, CLK_PERIOD_NS))
 
     # ---- reset & hold CPU ----
-    dut.PIO_external_in.value  = 3          # PIO_IN=3 for PIO_test1.cpp
+    #dut.PIO_external_in.value  = 3          # PIO_IN=3 for PIO_test1.cpp
     dut.uart_rx.value          = 0
     dut.rst.value              = 0
 
@@ -185,13 +185,13 @@ async def RV32IS_chip_test1(dut):
     dut.rst.value              = 0
 
     # ---- SDRAM init level wait (timeout 付き) ----
-    ok_init = await wait_level(dut.sdram_init_fin, 1, dut.clock, timeout_cycles=SDRAM_INIT_TIMEOUT)
+    ok_init = await wait_level(dut.u_chip.sdram_init_fin, 1, dut.clock, timeout_cycles=SDRAM_INIT_TIMEOUT)
     if not ok_init:
         raise cocotb.result.TestFailure("[FAIL] Timeout waiting for sdram_init_fin == 1")
     await ncycles(dut.clock, 100)
 
     # ---- Boot_rom_done wait (timeout 付き) ----
-    ok_init = await wait_level(dut.Boot_rom_done, 1, dut.clock, timeout_cycles=BOOT_ROM_TIMEOUT)
+    ok_init = await wait_level(dut.u_chip.Boot_rom_done, 1, dut.clock, timeout_cycles=BOOT_ROM_TIMEOUT)
     await ncycles(dut.clock, 100)
 
     # ---- SDRAM Data Dump

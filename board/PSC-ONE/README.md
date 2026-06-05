@@ -1,6 +1,4 @@
-# PSC-ONE 
-
-## Design
+# PSC-ONE Design
 
 The current PSC-ONE prototype hardware.  
   

@@ -74,7 +74,7 @@ wire [31:0]       ps_acc_3 = ps_acc[1][1];
 //--------------------------------------------
 // SA instance
 //--------------------------------------------
-SystolicArray2x2 #(
+SystolicArray2x2_x2 #(
     .PE_CYCLE               (PE_CYCLE)
 ) u_sa (
     .clock                  (clock),

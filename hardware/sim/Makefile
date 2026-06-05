@@ -3,6 +3,7 @@ clean:
 	$(RM) -rf sim_build 
 	$(RM) -rf ./cocotb_tb/ai/__pycache__
 	$(RM) -rf ./cocotb_tb/cache/__pycache__
+	$(RM) -rf ./cocotb_tb/mmio/__pycache__
 	$(RM) -rf ./cocotb_tb/cpu/__pycache__
 	$(RM) -rf ./cocotb_tb/psc_os/__pycache__
 	$(RM) -rf ./wave/*.vcd
@@ -13,3 +14,6 @@ clean:
 log_clean:
 	$(RM) ./log/test*.log
 	$(RM) ./log_uart/log*.log
+
+mem_clean:
+	$(RM) ./mem/*.mem

@@ -7,10 +7,6 @@
 // icarusの場合はdefine OS_SIM
 //`define OS_SIM
 
-`define USE_LED_PIN
-`define USE_SD_CARD
-`define USE_MIC_MODEL
-
 // SDRAM_Model Debug log=ON
 //`define SDRAM_Debug_log
 
@@ -26,16 +22,12 @@ module PSC_ONE_Chip_sim #(
     input  wire         uart_rx,
     output wire         uart_tx,
 
-    // ---- 外部 IO ----
-    input  wire  [3:0]  PIO_external_in,     
-    output wire  [3:0]  PIO_external_out,
-
-    // ==== cocotb IF ====
-    output wire         sdram_init_fin,  
-    output wire         Boot_rom_done,
+    // ---------------- PSC-ONE SW ----------------
+    input wire          PSCONE_SW1,
+    input wire          PSCONE_SW2,
 
     // ==== LED ====
-    output wire [7:0]   led_out
+    output wire [5:0]   led_out
 );
 
     // internal pull-up(down)
@@ -50,12 +42,16 @@ module PSC_ONE_Chip_sim #(
     // DUT 本体
     // ------------------------------
     PSC_ONE_Chip u_chip (
-        .clock               (clock),
-        .rst                 (rst),
+        .sys_clk             (clock),
+        .sys_reset           (rst),
 
         // ---- UART ----
-        .uart_rx             (uart_rx),
-        .uart_tx             (uart_tx),
+        .UART_RXD            (uart_rx),
+        .UART_TXD            (uart_tx),
+
+        // ---------------- PSC-ONE SW ----------------
+        .PSCONE_SW1          (PSCONE_SW1),
+        .PSCONE_SW2          (PSCONE_SW2),
 
         // ------------------ I2S ------------------
         .I2S_SCK             (I2S_SCK),
@@ -63,58 +59,50 @@ module PSC_ONE_Chip_sim #(
         .I2S_LR              (I2S_LR),
         .I2S_SD              (I2S_SD),
 
-        // ---- 外部 IO ----
-        .PIO_FPGA_external_in   (PIO_external_in),     
-        .PIO_FPGA_external_out  (PIO_external_out),
-
         // ---- SD-CARD I/F ----
-`ifdef USE_SD_CARD
         .SD_D3               (SDI_CS),
         .SD_CLK              (SDI_SCK),
         .SD_CMD              (SDI_MOSI),
         .SD_D0               (SDI_MISO),
 
-        .SD_CD               (),
-        .SD_WP               (),
-        .SD_D1               (),
-        .SD_D2               (),
-`endif
-
         // ---- SDRAM pins ----
         .O_sdram_clk         (sdram_clk),
+        .O_sdram_cke         (sdram_cke),
         .O_sdram_cs_n        (sdram_cs),
-        .O_sdram_ras_n       (sdram_ras),
         .O_sdram_cas_n       (sdram_cas),
+        .O_sdram_ras_n       (sdram_ras),
         .O_sdram_wen_n       (sdram_we),
+
+        .IO_sdram_dq         (sdram_dq),
         .O_sdram_addr        (sdram_adr),
         .O_sdram_ba          (sdram_ba),
         .O_sdram_dqm         (sdram_dqm),
-        .IO_sdram_dq         (sdram_dq),
 
         // ---- LCD IF ----
-        .tft_sck             (tft_sck), 
-        .tft_sdi             (tft_sdi), 
-        .tft_dc              (tft_dc), 
-        .tft_cs              (tft_cs),
+        .PSCONE_LCD_CS       (tft_cs),
+        .PSCONE_LCD_RST      (tft_rst),
+        .PSCONE_LCD_BL       (tft_bl),
+        .PSCONE_LCD_DC       (tft_dc), 
+        .PSCONE_LCD_SCK      (tft_sck), 
+        .PSCONE_LCD_SDI      (tft_sdi), 
+        .PSCONE_LCD_SDO      (tft_sdo), 
 
         // ---- LED ----
-`ifdef USE_LED_PIN
-        .led                 (led_out),
-`endif
-
-        // ---- cocotb IF ----
-        .sdram_init_fin      (sdram_init_fin),
-        .Boot_rom_done       (Boot_rom_done)
+        .PSCONE_LED_OUT      (led_out)
     );
 
     // LCD信号
+    wire            tft_bl;
     wire            tft_sck;
     wire            tft_sdi;
     wire            tft_dc;
     wire            tft_cs;
+    wire            tft_rst;
+    wire            tft_sdo;
 
     // SDRAM信号
     wire            sdram_clk;
+    wire            sdram_cke;
     wire            sdram_cs;
     wire            sdram_ras;
     wire            sdram_cas;
@@ -157,7 +145,6 @@ module PSC_ONE_Chip_sim #(
     // ------------------------------
     // SDカード モデル
     // ------------------------------
-`ifdef USE_SD_CARD
     sdcard_spi_model #(
         .INIT_R1_IDLE (8'h01),          // CMD0/CMD8応答(Idle)
         .R1_READY     (8'h00),          // ready時
@@ -169,12 +156,10 @@ module PSC_ONE_Chip_sim #(
         .mosi       (SDI_MOSI),
         .miso       (SDI_MISO)
     );
-`endif
 
     // ------------------------------
     // I2S MEMSマイクモデル
     // ------------------------------
-`ifdef USE_MIC_MODEL
     PSC_I2S_MIC_MODEL #(
         .DATA_WIDTH     (32)
     ) u_mic_model (
@@ -184,6 +169,5 @@ module PSC_ONE_Chip_sim #(
         .LR_i       (I2S_LR),
         .SD_o       (I2S_SD)
     );
-`endif
 
 endmodule

@@ -128,7 +128,7 @@ module SystolicArray2x2_x2 #(
         for (r = 0; r < N_PE; r = r + 1) begin : ROW_BLOCK
             for (c = 0; c < N_PE; c = c + 1) begin : COL_BLOCK
 
-                PE_Int8_Single #(
+                PE_INT #(
                     .DW         (DW),
                     .PW         (PW),
                     .SW         (SW),

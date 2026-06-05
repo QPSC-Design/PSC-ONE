@@ -79,7 +79,7 @@ simulate_OS_SA_Ctrl:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_OS_SA_M) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_OS_SA_M) \
 	    TOPLEVEL=SystolicArray2x2_Ctrl \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -91,7 +91,7 @@ simulate_DF_SA_Ctrl:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_DF_SA_M) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_DF_SA_M) \
 	    TOPLEVEL=SystolicArray2x2_Ctrl \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -103,7 +103,7 @@ simulate_OS_SA:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_OS_SA) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_OS_SA) \
 	    TOPLEVEL=SystolicArray2x2 \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -115,7 +115,7 @@ simulate_OS_SA_x2:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_OS_SA) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_OS_SA) \
 	    TOPLEVEL=SystolicArray2x2_x2 \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -127,7 +127,7 @@ simulate_DF_SA:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_DF_SA) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_DF_SA) \
 	    TOPLEVEL=SystolicArray2x2 \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -137,7 +137,7 @@ simulate_PE:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_PE) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_PE) \
 	    TOPLEVEL=sim_PE_top \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -147,7 +147,7 @@ simulate_PEx2:
 	make clean
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
-	    MODULE=cocotb_tb.ai.$(COCOTB_FILE_PE) \
+	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_PE) \
 	    TOPLEVEL=sim_PE_topx2 \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \

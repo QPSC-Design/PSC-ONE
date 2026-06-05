@@ -38,11 +38,6 @@
 // ============================================================================
 `timescale 1ns / 1ps
 
-`define USE_LED_PIN
-`define SynapEngine_mode
-`define USE_SD_CARD
-//`define SA_OFF
-
 module PSC_ONE_Chip #(
     parameter integer CLK_FREQ     = 80,
     parameter integer ADDR_WIDTH   = 32,
@@ -70,12 +65,16 @@ module PSC_ONE_Chip #(
     parameter [ADDR_WIDTH-1:0]  PSC_I2S_ADDR_ST     = 32'h1000_7004
 )(
     // ==== RV32IS CPU IF ====
-    input  wire         clock,
-    input  wire         rst,
+    input  wire         sys_clk,
+    input  wire         sys_reset,
 
     // ---- UART(RS-232C) ----
-    input  wire         uart_rx,
-    output wire         uart_tx,
+    input  wire         UART_RXD,
+    output wire         UART_TXD,
+
+    // ---------------- PSC-ONE SW ----------------
+    input wire          PSCONE_SW1,
+    input wire          PSCONE_SW2,
 
     // ------------------ I2S ------------------
     output  wire        I2S_SCK,
@@ -83,54 +82,41 @@ module PSC_ONE_Chip #(
     output  wire        I2S_LR,
     input  wire         I2S_SD,
 
-    // ---- 外部 IO ----
-`ifdef COCOTB_SIM
-    input  wire  [3:0]  PIO_FPGA_external_in,     
-    output wire  [3:0]  PIO_FPGA_external_out,
-`endif
-
     // ---- SD-CARD I/F ----
-`ifdef USE_SD_CARD
-
     output wire         SD_D3,
     output wire         SD_CLK,
     output wire         SD_CMD,
     input  wire         SD_D0,  // sd_miso
-    // not use
-    input  wire         SD_CD,
-    input  wire         SD_WP,
-    input  wire         SD_D1,
-    input  wire         SD_D2,
-`endif
 
-    // ==== SDRAM IF ====
-    output wire         O_sdram_clk,  
-    output wire         O_sdram_cs_n,   
-    output wire         O_sdram_ras_n,  
-    output wire         O_sdram_cas_n,  
-    output wire         O_sdram_wen_n,   
+    // ---------------- PSC-ONE SDRAM I/F ----------------
+    output wire         O_sdram_clk,
+    output wire         O_sdram_cke,
+    output wire         O_sdram_cs_n,           // chip select
+    output wire         O_sdram_cas_n,          // columns address select
+    output wire         O_sdram_ras_n,          // row address select
+    output wire         O_sdram_wen_n,          // write enable
 
-    output wire [10:0]  O_sdram_addr,  
-    output wire [1:0]   O_sdram_ba,   
-    output wire [3:0]   O_sdram_dqm,  
-    inout  wire [31:0]  IO_sdram_dq,   
+    inout  wire [31:0]  IO_sdram_dq,            // 32 bit bidirectional data bus
+    output wire [10:0]  O_sdram_addr,           // 11 bit multiplexed address bus
+    output wire [1:0]   O_sdram_ba,             // two banks
+    output wire [3:0]   O_sdram_dqm,            // 32/4
 
-    // ==== LCD IF ====
-    output wire         tft_sck, 
-    output wire         tft_sdi, 
-	output wire         tft_dc, 
-    output wire         tft_cs,
+    // ---------------- PSC-ONE LCD ----------------
+    output wire         PSCONE_LCD_CS,
+    output wire         PSCONE_LCD_RST,
+    output wire         PSCONE_LCD_BL,
+    output wire         PSCONE_LCD_DC,
+    output wire         PSCONE_LCD_SCK,
+    output wire         PSCONE_LCD_SDI,
+    input  wire         PSCONE_LCD_SDO,
 
-    // ==== LED ====
-    output wire [7:0]   led,
-
-    // ==== cocotb IF ====
-`ifdef COCOTB_SIM
-    output wire         sdram_init_fin,  
-    output wire         Boot_rom_done
-`endif
-
+    // ------------------ LEDs ------------------
+    output wire [5:0]   PSCONE_LED_OUT
 );
+
+    //assign UART_TXD = UART_RXD;
+    assign PSCONE_LCD_BL = 1'b1;
+
     // --------------------------------
     // define 確認
     // --------------------------------
@@ -155,22 +141,24 @@ module PSC_ONE_Chip #(
     // --------------------------------
 
 `ifdef COCOTB_SIM
-    wire clock_100MHz = clock;
+    wire clock_100MHz = sys_clk;
     wire clk = clock_100MHz;
     assign O_sdram_clk = clock_100MHz;
 `else
-    Gowin_PLL u_Gowin_PLL(
-        .clkout0 (clock_100MHz),    //output clkout0 = 100MHz
-        .clkout1 (O_sdram_clk),     //deg=235 clk. 場合によっては位相調整   //output clkout0 = 100MHz
-        .clkin   (clock)            //input clkin    =  50MHz
+    // tang20k PLL
+    Gowin_rPLL m_PLL(
+        .clkout     (clock_100MHz),         //output clkout
+        .clkoutp    (O_sdram_clk),      //output clkoutp
+        .clkin      (sys_clk)               //input clkin
     );
     wire clk = clock_100MHz;
 `endif
 
-    wire reset_n = ~rst;    // FPGAのrset端子
+    wire reset_n = ~sys_reset;    // FPGAのrset端子
     wire cpu_stop;
 
     // cpu_stop: 30CLK 遅延
+    wire    Boot_rom_done;
     delay_n #(.N(30), .WIDTH(1)) u_dly1 (
         .clk        (clk), 
         .reset_n    (reset_n),
@@ -178,20 +166,9 @@ module PSC_ONE_Chip #(
         .dout       (cpu_stop)
     );   
 
-    // PIO-pin 4bit Bus
-`ifndef COCOTB_SIM
-    wire [3:0] PIO_FPGA_external_in;
-    wire [3:0] PIO_FPGA_external_out; 
-`endif
-    wire [7:0] PIO_external_in = {4'd0, PIO_FPGA_external_in};
-    wire [7:0] PIO_external_out;
-    assign     PIO_FPGA_external_out = {4'd0, PIO_external_out[3:0]};
-
     // LED（MMIO）
     wire [7:0] LED_external_out;
-  `ifdef USE_LED_PIN
-    assign  led = LED_external_out;  
-  `endif
+	assign  PSCONE_LED_OUT = {LED_external_out[3:0], PSCONE_SW1, PSCONE_SW2};  
 
     // --------------------------------
     // MMIO bus
@@ -535,34 +512,6 @@ module PSC_ONE_Chip #(
         .d_axi_rready       (d_rready)
     );
 
-
-    // ==============================================
-    // MMapped IO インスタンス化
-    // ==============================================
-
-    // MMIO インスタンス
-    PSC_RV32IS_MMapped_IO #(
-        .PIO_DATA_WIDTH (8),
-        .PIO_ADDRESS    (PIO_ADDRESS)
-    ) u_mmap_io (
-        .clock          (clock_100MHz),
-        .reset_n        (reset_n),
-
-        .PIO_out        (PIO_external_out), // 実際の外部へ出力   : 8bit bus
-        .PIO_in         (PIO_external_in),  // 実際の外部から入力 : 8bit bus
-
-        .cpu_wvalid     (mmio_valid & mmio_rw),
-        .cpu_waddr      (mmio_addr),
-        .cpu_wdata      (mmio_wdata),
-        .cpu_wready     (mmio_wready_pio),
-
-        .cpu_rvalid     (mmio_valid & ~mmio_rw),
-        .cpu_raddr      (mmio_addr),
-        .cpu_rdata      (mmio_rdata_pio),
-        .cpu_rready     (mmio_rready_pio)
-    );
-
-
     //==========================================================
     // UART:
     //==========================================================
@@ -583,8 +532,8 @@ module PSC_ONE_Chip #(
         .clock          (clock_100MHz),
         .reset_n        (reset_n),
 
-        .uart_rx        (uart_rx),
-        .uart_tx        (uart_tx),
+        .uart_rx        (UART_RXD),
+        .uart_tx        (UART_TXD),
 
         .cpu_wvalid     (mmio_valid & mmio_rw),
         .cpu_waddr      (mmio_addr),
@@ -643,6 +592,8 @@ module PSC_ONE_Chip #(
     wire [1:0]          s2_bresp_dummy, s2_rresp_dummy;
 
     //wire [1:0]          dummy_O_sdram_addr;
+    wire   sdram_init_fin;
+    assign O_sdram_cke   = 1'b1;
 
     sdram_4port_controller_axi_slave_bX_32bit #(
         .CLK_FREQ_MHz       (CLK_FREQ),
@@ -911,11 +862,12 @@ module PSC_ONE_Chip #(
     ) u_lcd (
         .clock          (clock_100MHz),
         .reset_n        (reset_n),
-        .tft_sck        (tft_sck),
-        .tft_sdi        (tft_sdi),
-        .tft_dc         (tft_dc),
-        .tft_reset      (),
-        .tft_cs         (tft_cs),
+        .tft_sdo        (PSCONE_LCD_SDO),
+        .tft_sck        (PSCONE_LCD_SCK),
+        .tft_sdi        (PSCONE_LCD_SDI),
+        .tft_dc         (PSCONE_LCD_DC),
+        .tft_reset      (PSCONE_LCD_RST),
+        .tft_cs         (PSCONE_LCD_CS),
 
         .cpu_wvalid     (mmio_valid & mmio_rw),
         .cpu_waddr      (mmio_addr),
@@ -979,6 +931,34 @@ module PSC_ONE_Chip #(
         .I2S_WS         (I2S_WS),
         .I2S_LR         (I2S_LR),
         .I2S_SD         (I2S_SD)
+    );
+
+
+    // ==============================================
+    // MMapped IO インスタンス化
+    // ==============================================
+    wire [7:0]  PIO_external_out;
+
+    // MMIO インスタンス
+    PSC_RV32IS_MMapped_IO #(
+        .PIO_DATA_WIDTH (8),
+        .PIO_ADDRESS    (PIO_ADDRESS)
+    ) u_mmap_io (
+        .clock          (clock_100MHz),
+        .reset_n        (reset_n),
+
+        .PIO_out        (PIO_external_out), // 実際の外部へ出力   : 8bit bus
+        .PIO_in         (8'h03),            // pio_test1.cpp 対応
+
+        .cpu_wvalid     (mmio_valid & mmio_rw),
+        .cpu_waddr      (mmio_addr),
+        .cpu_wdata      (mmio_wdata),
+        .cpu_wready     (mmio_wready_pio),
+
+        .cpu_rvalid     (mmio_valid & ~mmio_rw),
+        .cpu_raddr      (mmio_addr),
+        .cpu_rdata      (mmio_rdata_pio),
+        .cpu_rready     (mmio_rready_pio)
     );
 
 endmodule

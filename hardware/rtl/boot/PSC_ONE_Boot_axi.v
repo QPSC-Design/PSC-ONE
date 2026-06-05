@@ -1,18 +1,19 @@
 // NISHIHARU
 `timescale 1ns/1ps
+
+// ROM_SKCKP_MODEのときはRom_Data=32'h00の時の書き込みをスキップ. 
 //`define ROM_SKIP_MODE
 
-// FPGAの時にONする.
+// kernel.mem, user.memをBSRAMに置く場合にONする.
 //`define FPGA_PSC_OS_MODE
 
-`ifdef FPGA_PSC_OS_MODE
-  // 本来の使用法とは異なるがOS_SIMモードを利用する.
-  `define OS_SIM
-`endif
-
-// FPGAの時にONする.
+// SD Cardからブートする場合にONする.
 // Boot Loader モード
 //`define FPGA_BOOT_LOADER_MODE
+
+`ifdef FPGA_PSC_OS_MODE
+  `define OS_SIM
+`endif
 
 module PSC_ONE_Boot_axi #(
     parameter integer ADDR_WIDTH     = 32,
@@ -106,7 +107,11 @@ module PSC_ONE_Boot_axi #(
     localparam integer MAX_ROM_WORD     = 32'h0040_0000;  
     localparam integer ROMIDX_W         = CLOG2(MAX_ROM_WORD+1);
 `elsif FPGA_BOOT_LOADER_MODE
-    localparam integer ERAZE_ROM_WORD   = 32'h0000_1000;  
+    `ifdef COCOTB_SIM
+    localparam integer ERAZE_ROM_WORD   = 32'h0000_1000;    // simlationの場合sim時間短縮
+    `else
+    localparam integer ERAZE_ROM_WORD   = 32'h0040_0000;    // bootloader.cppのメモリテストの結果消去
+    `endif
     localparam integer MAX_ROM_WORD     = 32'h0040_0000;  
     localparam integer ROMIDX_W         = CLOG2(MAX_ROM_WORD+1);
 `else
