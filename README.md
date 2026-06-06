@@ -339,6 +339,19 @@ A demonstration of a two-wheeled self-balancing robot controlled by the PSC-ONE 
 
 <img src="docs/images/Demo_Robot.jpg" width="500">
 
+## QPS Engine
+
+### PSC-ONE Phase Flow Engine
+
+The PSC-ONE Phase Flow Engine is an experimental hardware accelerator architecture developed as part of the PSC project.
+It is designed for future AI, signal-processing, and data-flow computing research on the PSC-ONE platform.
+
+Location:
+
+```text
+hardware/phase_flow_engine/
+```
+
 ---
 
 # Getting Started
