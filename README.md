@@ -349,7 +349,7 @@ It is designed for future AI, signal-processing, and data-flow computing researc
 Location:
 
 ```text
-hardware/phase_flow_engine/
+hardware/pfe/
 ```
 
 ---
