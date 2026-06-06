@@ -58,7 +58,9 @@ Current default layout:
 Example:
 
 ```bash
-TBD
+cd ~/PSC-ONE/hardware/bootloader
+make bootloader
+make write_img_to_sd_card
 ```
 
 Replace `/dev/sdX` with the actual SD card device.
