@@ -32,6 +32,58 @@ It also serves as a demonstration platform for various embedded applications, in
 - GPIO expansion
 - AI accelerator integration support
 
+## Getting Started
+
+### Program the FPGA
+
+Build the FPGA bitstream and program the PSC-ONE board using the Gowin Programmer.
+
+After successful programming, connect:
+
+* UART console
+* SD card containing PSC-OS images
+* LCD module (optional)
+
+### Prepare the SD Card
+
+Write the PSC-OS images to the SD card.
+
+Current default layout:
+
+| Image      | Start Sector |
+| ---------- | ------------ |
+| kernel.img | 100          |
+| user.img   | 200          |
+
+Example:
+
+```bash
+TBD
+```
+
+Replace `/dev/sdX` with the actual SD card device.
+
+### Boot PSC-OS
+
+1. Insert the SD card into PSC-ONE.
+2. Power on the board.
+3. Open the UART console.
+
+The bootloader loads:
+
+1. `kernel.img` from the SD card into SDRAM
+2. `user.img` from the SD card into SDRAM
+3. Transfers control to PSC-OS
+
+Expected boot log:
+
+```text
+TBD
+```
+
+The system is now ready for interactive use through the UART console.
+
+
 ## License
 
 Hardware design files, schematics, PCB layouts, and related documentation are licensed under CERN-OHL-S v2.
