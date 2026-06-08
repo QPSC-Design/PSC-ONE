@@ -309,11 +309,27 @@ PSC_OS>
 
 ⚠️ This project is under active development.
 
-The current implementation focuses on:
+The current focus is on:
 
 - Stable boot process
-- Basic kernel functionality
-- Hardware integration
+- Core kernel functionality
+- Hardware integration and validation
+
+### PSC-OS Status
+
+#### Implemented
+- [x] Bootloader
+- [x] Kernel
+- [x] User Mode Execution
+- [x] System Call Interface
+- [x] Command Shell
+- [x] Memory Management
+- [x] SD Card Program Loader
+
+#### Planned
+- [ ] File System
+- [ ] Demand Paging
+- [ ] Networking Stack
 
 ---
 
