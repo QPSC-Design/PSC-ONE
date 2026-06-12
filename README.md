@@ -14,6 +14,8 @@ The current PSC-ONE prototype hardware.
   
 <img src="docs/images/PSC-ONE_board.jpg" width="600">
 
+The displayed color bars are generated directly by the PSC-ONE hardware and confirm correct operation of the LCD subsystem.　
+
 <img src="docs/images/PSCONE_IPS_20260612.jpg" width="400">
 
 ## What is PSC-ONE?
