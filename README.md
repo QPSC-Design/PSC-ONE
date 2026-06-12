@@ -14,7 +14,7 @@ The current PSC-ONE prototype hardware.
   
 <img src="docs/images/PSC-ONE_board.jpg" width="600">
 
-<img src="docs/images/PSCONE_IPS_20260612.jpg" width="600">
+<img src="docs/images/PSCONE_IPS_20260612.jpg" width="400">
 
 ## What is PSC-ONE?
 
