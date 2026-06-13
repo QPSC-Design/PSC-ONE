@@ -339,6 +339,9 @@ Implementing speech recognition and robotic control using the AI accelerator.
 
 ## Speech Recognition Demo
 
+This demo showcases real-time speech recognition running on the PSC-ONE platform.  
+An external microphone captures voice input, which is processed by the onboard AI Accelerator (NPU). The recognized text is then displayed directly on the LCD screen in real time.  
+
 <img src="docs/images/PSC_ONE_voice_anime_en.png" width="700">
 
 ## Demonstration Robot
