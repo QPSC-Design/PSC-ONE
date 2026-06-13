@@ -337,6 +337,10 @@ Implementing speech recognition and robotic control using the AI accelerator.
 
 <img src="docs/images/PSC-ONE_RedBoard.png" width="700">
 
+## Speech Recognition Demo
+
+<img src="docs/images/PSC_ONE_voice_anime_en.png" width="700">
+
 ## Demonstration Robot
 
 A demonstration of a two-wheeled self-balancing robot controlled by the PSC-ONE board is also planned
