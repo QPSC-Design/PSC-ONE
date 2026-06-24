@@ -33,14 +33,14 @@
 /* -------------------------------------------------------
  * 必要に応じて変更
  * 例:
- *   kernel.img を LBA 100 から 36 sector
- *   user.img   を LBA 200 から 12 sector
+ *   kernel.img を LBA 100 から 128 sector
+ *   user.img   を LBA 300 から  18 sector
  * ------------------------------------------------------- */
 #define KERNEL_LBA_START   100u
-#define KERNEL_LBA_COUNT   36u
+#define KERNEL_LBA_COUNT   128u
 
-#define USER_LBA_START     200u
-#define USER_LBA_COUNT     12u
+#define USER_LBA_START     300u
+#define USER_LBA_COUNT     18u
 
 /* -------------------------------------------------------
  * デバッグ表示設定
@@ -549,13 +549,11 @@ void random_mem_check(
  * ------------------------------------------------------- */
 void bootloader_main(void)
 {
-    PIO32 = 0xB001;
-
     bl_print("boot start\n");
 
     // random R/W
     bl_print("\n=== PSC random memory RW test start ===\n");
-    random_mem_check(0x00400000, 0x00800000, (uint32_t)500);
+    random_mem_check(0x00600000, 0x00800000, (uint32_t)500);
 
     bl_print("\n=== PSC bootloader start ===\n");
     bl_print_kv_hex("CTRL=", PSC_SD_IF_CTRL);

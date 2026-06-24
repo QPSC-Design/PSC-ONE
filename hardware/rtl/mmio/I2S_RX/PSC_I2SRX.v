@@ -37,7 +37,7 @@ module PSC_I2SRX #(
     reg [FIFO_AW:0]   fifo_count; // 0..FIFO_DEPTH
 
     wire fifo_empty = (fifo_count == 0);
-    wire fifo_full  = (fifo_count == FIFO_DEPTH + 1);
+    wire fifo_full  = (fifo_count == FIFO_DEPTH);
 
     // ============================================================
     // CPU BUS (MMIO)
@@ -60,8 +60,11 @@ module PSC_I2SRX #(
         if (!reset_n) begin
             cpu_rready       <= 1'b0;
             cpu_rdata        <= 32'h0;
+            fifo_pop         <= 1'b0;
+            fifo_flush       <= 1'b0;
         end else begin
             cpu_rready       <= 1'b0;
+            fifo_pop         <= 1'b0;
 
             // ------------ CPU Bus ----------------
             // READ: DATA FIFO
@@ -195,10 +198,17 @@ module PSC_I2SRX #(
     end
     endfunction
 
+    integer  i;
+
     // FIFO Write/Read
     always @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
+            fifo_rd_ptr <= {FIFO_AW{1'b0}};
             fifo_wr_ptr <= {FIFO_AW{1'b0}};
+            fifo_count  <= {FIFO_AW{1'b0}};
+            for (i=0; i<FIFO_DEPTH; i++) begin
+                fifo_R_mem[i] <= 24'h0;
+            end
         end else begin
             fifo_push <= 1'b0;
             // push
@@ -228,6 +238,7 @@ module PSC_I2SRX #(
                 fifo_rd_ptr <= {FIFO_AW{1'b0}};
                 fifo_count  <= {(FIFO_AW+1){1'b0}};
             end
+
         end
     end
 

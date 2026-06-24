@@ -1,177 +1,167 @@
 // NISHIHARU
-// lcd_test1.cpp  (PSC_LCD対応版)
+// lcd_test1.cpp  (PSC_LCD RGB666 / 32x32 image版)
 
 #include <cstdint>
 
-#define BSRAM_SUB
-
-/* ---------- アサーション用PIO出力 ---------- */
 #define PIO32 (*reinterpret_cast<volatile uint32_t*>(0x10001000u))
 static constexpr uint32_t TEST_END_CODE = 0xEE01;
 
-// ===================== MMIO base addresses =====================
-// Verilog側パラメータ (word addr):
-//   LCD_PIXS_ADDR = 0x1000_2000
-//   LCD_PIXS_DATA = 0x1000_2004
-// PSC SoCルール: CPU側は *4 してバイトアドレスにする
-
 #ifndef LCD_PIXS_ADDR_FPGA
-#define LCD_PIXS_ADDR_FPGA (0x10003000u)
+#define LCD_PIXS_ADDR_FPGA  (0x10003000u)
 #endif
 
 #ifndef LCD_PIXS_DATA_FPGA
-#define LCD_PIXS_DATA_FPGA (0x10003004u)
+#define LCD_PIXS_DATA_FPGA  (0x10003004u)
 #endif
 
-// バイトアドレス化 (SoC側仕様: ワードアドレス×4が実アドレス)
-constexpr uintptr_t LCD_PIXS_ADDR_BYTE = LCD_PIXS_ADDR_FPGA;
-constexpr uintptr_t LCD_PIXS_DATA_BYTE = LCD_PIXS_DATA_FPGA;
+#ifndef LCD_PIXS_ST_FPGA
+#define LCD_PIXS_ST_FPGA    (0x10003008u)
+#endif
 
-// MMIO 32bitアクセス用マクロ
+
+constexpr uintptr_t LCD_PIXS_ADDR_BYTE  = LCD_PIXS_ADDR_FPGA;
+constexpr uintptr_t LCD_PIXS_DATA_BYTE  = LCD_PIXS_DATA_FPGA;
+constexpr uintptr_t LCD_PIXS_ST_BYTE    = LCD_PIXS_ST_FPGA;
+
 #define MMIO32(addr_byte) (*reinterpret_cast<volatile uint32_t*>(addr_byte))
 
-// ===================== パネルサイズ =====================
-static constexpr uint32_t LCD_W = 240;
-static constexpr uint32_t LCD_H = 320;
+static constexpr uint32_t LCD_W = 320;
+static constexpr uint32_t LCD_H = 480;
 
-// ===================== 観察/デバッグ用シンボル =====================
 extern "C" volatile uint32_t result;
 extern "C" volatile uint32_t result_wr;
 extern "C" volatile uint32_t result_rd;
 extern "C" volatile uint32_t result_ok;
 
-// ------------------------------------------------------------
-// low-level write to PSC_LCD MMIO
-//   addr_index : ピクセルインデックス (18bit想定: 0..0x3FFFF)
-//   rgb_bits   : 下位3ビットだけ有効
-//                bit0 -> red   (pixel_on[0])
-//                bit1 -> blue  (pixel_on[1])
-//                bit2 -> green (pixel_on[2])
-// 手順：
-//   1. addr_index を LCD_PIXS_ADDR に書く
-//   2. rgb_bits   を LCD_PIXS_DATA に書く
-// ------------------------------------------------------------
-static inline void lcd_write_raw(uint32_t addr_index, uint32_t rgb_bits)
+// RGB666: [17:12]=R, [11:6]=G, [5:0]=B
+static constexpr uint32_t RGB666(uint32_t r, uint32_t g, uint32_t b)
 {
-    // デバッグ用に観察レジスタへコピー
-    result_rd = addr_index;
-    result_wr = rgb_bits & 0x7u;
-
-    // 1) ピクセルアドレスレジスタ
-    MMIO32(LCD_PIXS_ADDR_BYTE) = addr_index;
-
-    // 2) カラーデータレジスタ
-    MMIO32(LCD_PIXS_DATA_BYTE) = (rgb_bits & 0x7u);
+    return ((r & 0x3F) << 12) |
+           ((g & 0x3F) <<  6) |
+           ((b & 0x3F) <<  0);
 }
 
-// ============================================================
-// ピクセル1点に色を書く (座標指定版)
-//
-// px, py: 0 <= px < LCD_W (=240), 0 <= py < LCD_H (=320)
-// r,g,b : 各1bit (0 or 1)
-//     r -> pixel_on[0]
-//     b -> pixel_on[1]
-//     g -> pixel_on[2]
-//
-// ハード側の今後の想定は pixel_on をそのまま 5:6:5 に展開してRGB出力。
-// 現在のビルドでは x[3],x[4],x[5]ベースのテストカラーを使ってるけど、
-// 将来の本命はこっち。
-// ============================================================
-static inline void lcd_write_pixel_rgb(uint32_t px, uint32_t py,
-                                       uint32_t r, uint32_t g, uint32_t b)
+static constexpr uint32_t C_BLACK = RGB666(0,  0,  0);
+static constexpr uint32_t C_RED   = RGB666(63, 0,  0);
+static constexpr uint32_t C_GREEN = RGB666(0,  63, 0);
+static constexpr uint32_t C_BLUE  = RGB666(0,  0,  63);
+static constexpr uint32_t C_WHITE = RGB666(63, 63, 63);
+static constexpr uint32_t C_YEL   = RGB666(63, 63, 0);
+
+// 32x32 テスト画像
+static const uint32_t image32x32[32][32] =
 {
-    // 画面外は無視
-    if (px >= 512 || py >= 512) {
-        return;
-    }
+    { C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED },
+    { C_RED,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_GREEN,C_YEL,C_RED },
 
-    // フレームバッファ線形index: 0..76799
-    // 将来の拡張を考えて18bit幅で扱う (PSC_LCD側のpix_waddrは[17:0])
-#ifdef BSRAM_SUB
-    const uint32_t pixel_index = (((py >> 1) & 0x00FFu) << 7) | ((px >> 1) & 0x007Fu);
-#else
-    const uint32_t pixel_index = ((py & 0x01FFu) << 8) | (px & 0x00FFu);
-#endif
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
 
-    // 3bitカラー (下位3bitだけ有効)
-    // red   -> bit0
-    // blue  -> bit1
-    // green -> bit2
-    const uint32_t rgb_bits =
-        ((r & 1u) << 0) |   // bit0 : red
-        ((b & 1u) << 1) |   // bit1 : blue
-        ((g & 1u) << 2);    // bit2 : green
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
 
-    lcd_write_raw(pixel_index, rgb_bits);
-}
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_WHITE,C_WHITE,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
 
-// 小さいdelay（簡易ウェイト）
-static inline void tiny_delay(unsigned n){
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_WHITE,C_WHITE,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_BLACK,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_WHITE,C_BLUE,C_GREEN,C_YEL,C_RED },
+
+    { C_RED,C_YEL,C_GREEN,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_BLUE,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_GREEN,C_YEL,C_RED },
+    { C_RED,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_YEL,C_RED },
+    { C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED,C_RED }
+};
+
+static inline void tiny_delay(unsigned n)
+{
     while (n--) {
         asm volatile("nop");
     }
 }
 
-// ============================================================
-// デモ: run()
-//   - デバッグ用変数にマーク書いて "生きてる" を示す
-//   - 横ライン描画や矩形塗りつぶしを繰り返す
-// ============================================================
-extern "C" void run() {
-
-    // アサーション
-    result = 0x07u;
-    // PIO out
-    PIO32 = result;
-
-    // 5回ループのみ
-    while (1) {
-
-        for (uint32_t y = 100; y < 200; y++) {
-            for (uint32_t x = 70; x < 170; x++) {
-                lcd_write_pixel_rgb(x, y, 1u, 1u, 1u); 
-            }
-        }
-
-        // wait
-        tiny_delay(3000000);
-
-        for (uint32_t y = 100; y < 200; y++) {
-            for (uint32_t x = 70; x < 170; x++) {
-                lcd_write_pixel_rgb(x, y, 1u, 0u, 0u); 
-            }
-        }
-
-        // wait
-        tiny_delay(3000000);
-
-        for (uint32_t y = 100; y < 200; y++) {
-            for (uint32_t x = 70; x < 170; x++) {
-                lcd_write_pixel_rgb(x, y, 0u, 1u, 0u); 
-            }
-        }
-
-        // wait
-        tiny_delay(3000000);
-
-        for (uint32_t y = 100; y < 200; y++) {
-            for (uint32_t x = 70; x < 170; x++) {
-                lcd_write_pixel_rgb(x, y, 0u, 0u, 1u); 
-            }
-        }
-
-        // wait
-        tiny_delay(3000000);
-
+void lcd_write_pix32x32(
+    uint32_t start_px,
+    uint32_t start_py,
+    const uint32_t img[32][32]
+)
+{
+    if (start_px >= LCD_W || start_py >= LCD_H) {
+        return;
     }
 
-    // ここには到達しないが、保険で無限idle
+    result_rd = (start_py << 9) | start_px;
+
+    MMIO32(LCD_PIXS_ADDR_BYTE) = result_rd;
+
+    for (uint32_t y = 0; y < 32; y++) {
+        for (uint32_t x = 0; x < 32; x++) {
+            //uint32_t pix = img[y][x] & 0x3FFFFu;
+            uint32_t pix = y<<5 | (x + 0x01);
+
+            result_wr = pix;
+            MMIO32(LCD_PIXS_DATA_BYTE) = pix;
+        }
+    }
+
+    // write_ready = H wait.
+    uint32_t timeout = 200000;  // 適宜調整
+    while ((MMIO32(LCD_PIXS_ST_BYTE) & 0x01u) == 0x01u) {
+        if (--timeout == 0) {
+            PIO32 = 0xEE03;
+            break;
+        }
+        __asm__ __volatile__("nop");
+    }
+
+    // debug log.
+    result = MMIO32(LCD_PIXS_ST_BYTE);
+    PIO32   = result;
+
+    result_ok = 1;
+}
+
+extern "C" void run()
+{
+    result = 0x07u;
+    PIO32 = result;
+
     while (1) {
-        // idle
+        lcd_write_pix32x32(14, 20, image32x32);
+
+        //lcd_write_pix32x32(24, 40, image32x32);
+
+        tiny_delay(1000);
+
+        PIO32 = TEST_END_CODE;
+        PIO32 = 0x0012;
+
+        tiny_delay(100);
+    }
+
+    while (1) {
     }
 }
 
-// ===================== 観察/デバッグ用シンボル（実体定義） =====================
 extern "C" {
     volatile uint32_t result    = 0;
     volatile uint32_t result_wr = 0;

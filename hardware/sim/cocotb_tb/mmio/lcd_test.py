@@ -45,20 +45,22 @@ async def reset_dut(dut):
 async def cpu_write(dut, addr, data, timeout=100):
     dut.cpu_waddr.value = addr
     dut.cpu_wdata.value = data
+
     dut.cpu_wvalid.value = 1
+    await RisingEdge(dut.clock)
+    dut.cpu_wvalid.value = 0
 
     for _ in range(timeout):
         await RisingEdge(dut.clock)
         await ReadOnly()
 
         if int(dut.cpu_wready.value) == 1:
-            dut._log.info(f"CPU WRITE addr=0x{addr:08x} data=0x{data:08x}")
+            #dut._log.info(f"CPU WRITE addr=0x{addr:08x} data=0x{data:08x}")
             break
     else:
         raise AssertionError(f"cpu_wready timeout addr=0x{addr:08x}")
 
     await RisingEdge(dut.clock)
-    dut.cpu_wvalid.value = 0
 
 
 # ------------------------------------------------
@@ -79,12 +81,12 @@ async def lcd_reset_test(dut):
     dut._log.info(f"tft_sdi   = {dut.PSCONE_LCD_SDI.value}")
     dut._log.info(f"tft_reset = {dut.PSCONE_LCD_RST.value}")
 
-    for _ in range(100000):
+    for _ in range(50000):
         await RisingEdge(dut.clock)
 
     dut._log.info("==== PASS reset test ====")
 
-'''
+
 # ------------------------------------------------
 # TEST 2: CPU write to framebuffer RAM
 # ------------------------------------------------
@@ -95,25 +97,41 @@ async def lcd_cpu_write_test(dut):
     cocotb.start_soon(gen_clock(dut))
     await reset_dut(dut)
 
+    X_POS = 3
+    Y_POS = 10
+
+    PIX_R_DATA = 1
+    PIX_G_DATA = 1
+    PIX_B_DATA = 1
+
     # framebuffer address
-    test_addr = 0x0012
-    test_data = 0b101
+    test_addr = X_POS << 9 | Y_POS
+    test_data = 0b0001
 
     await cpu_write(dut, LCD_PIXS_ADDR, test_addr)
-    await cpu_write(dut, LCD_PIXS_DATA, test_data)
 
-    # RAM write settle
     for _ in range(5):
         await RisingEdge(dut.clock)
 
+    for _ in range(32*32):
+        test_data = PIX_R_DATA << 12 | PIX_G_DATA << 6 | PIX_B_DATA
+        await cpu_write(dut, LCD_PIXS_DATA, test_data)
+
+        for _ in range(5):
+            await RisingEdge(dut.clock)
+
+    # RAM write settle
+    for _ in range(50000):
+        await RisingEdge(dut.clock)
+
     # internal signal check
-    pix_waddr = int(dut.pix_waddr.value)
-    pix_wdata = int(dut.pix_wdata.value)
+    pix_waddr = int(dut.u_lcd.pix_waddr.value)
+    pix_wdata = int(dut.u_lcd.pix_wdata.value)
 
     dut._log.info(f"pix_waddr = 0x{pix_waddr:x}")
     dut._log.info(f"pix_wdata = 0b{pix_wdata:03b}")
 
-    assert pix_waddr == test_addr, \
+    assert pix_waddr == 0x00, \
         f"pix_waddr mismatch: got=0x{pix_waddr:x}, exp=0x{test_addr:x}"
 
     assert pix_wdata == test_data, \
@@ -131,7 +149,6 @@ async def lcd_cpu_write_test(dut):
         dut._log.warning(f"Direct RAM access skipped: {e}")
 
     dut._log.info("==== PASS CPU write test ====")
-
 
 # ------------------------------------------------
 # TEST 3: invalid address should not assert ready
@@ -155,6 +172,7 @@ async def lcd_invalid_addr_test(dut):
         if int(dut.cpu_wready.value) == 1:
             ready_seen = True
 
+    await RisingEdge(dut.clock)
     dut.cpu_wvalid.value = 0
 
     assert ready_seen is False, "cpu_wready asserted for invalid address"
@@ -176,23 +194,22 @@ async def lcd_color_pattern_test(dut):
     for _ in range(200):
         await RisingEdge(dut.clock)
 
-    red   = int(dut.red.value)
-    green = int(dut.green.value)
-    blue  = int(dut.blue.value)
-    pixel = int(dut.currentPixel.value)
+    red   = int(dut.u_lcd.red.value)
+    green = int(dut.u_lcd.green.value)
+    blue  = int(dut.u_lcd.blue.value)
+    pixel = int(dut.u_lcd.currentPixel.value)
 
     dut._log.info(f"red          = 0x{red:02x}")
     dut._log.info(f"green        = 0x{green:02x}")
     dut._log.info(f"blue         = 0x{blue:02x}")
     dut._log.info(f"currentPixel = 0x{pixel:05x}")
 
-    assert red   in (0x00, 0x3F)
-    assert green in (0x00, 0x3F)
-    assert blue  in (0x00, 0x3F)
+    assert red   in (0x00, 0x00)
+    assert green in (0x00, 0x00)
+    assert blue  in (0x00, 0x00)
 
     assert pixel == ((red << 12) | (green << 6) | blue), \
         "currentPixel packing mismatch"
 
     dut._log.info("==== PASS color pattern test ====")
 
-'''

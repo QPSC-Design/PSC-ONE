@@ -2,6 +2,8 @@
 #include "syscall.h"
 #include "synap_api.h"
 #include "sdcard_api.h"
+#include "mic_api.h"
+#include "lcd_api.h"
 #include "kernel.h"
 #include <stdint.h>
 
@@ -399,19 +401,16 @@ struct process *create_process(const void *image, size_t image_size) {
     //printf("DBG: UART MMIO identity map start (paddr=%x)\n",
     //    (unsigned)UART_MMIO_BASE);
 
-    // UART MMIO は 0x10000000〜0x1000000F の16バイトを使用するが、
-    // ページ単位で map する必要がある（開始アドレスを4KBにアラインする）
-    uintptr_t uart_page = UART_MMIO_BASE & ~(PAGE_SIZE - 1);
+    #define MMIO_BASE 0x10000000u
+    #define MMIO_SIZE 0x00010000u
 
-    // 暫定的にUを付ける -> Uを外す
-    map_page(page_table,
-             uart_page,          // vaddr = paddr（identity map）
-             uart_page,
-             PAGE_R | PAGE_W);
-             //PAGE_U | PAGE_R | PAGE_W);
+    s_printf("---- MMIO region map start. ----\n");
 
-    //printf("DBG: UART MMIO identity map done: vaddr=%x -> paddr=%x\n",
-    //    (unsigned)uart_page, (unsigned)uart_page);
+    for (uintptr_t va = MMIO_BASE;
+        va < MMIO_BASE + MMIO_SIZE;
+        va += PAGE_SIZE) {
+        map_page(page_table, va, va, PAGE_R | PAGE_W);
+    }
 
     // SA Address Map
     s_printf("---- SA core address map start. ----\n");
@@ -441,16 +440,6 @@ struct process *create_process(const void *image, size_t image_size) {
     map_page(page_table,
              sa_data_wb_page,          // vaddr = paddr（identity map）
              sa_data_wb_page,
-             PAGE_R | PAGE_W);
-
-    // SD-Card IF Address Map
-    s_printf("---- SD-Card IF address map start. ----\n");
-
-    uintptr_t SDIF_page = SD_ADDR_ADDR & ~(PAGE_SIZE - 1);
-
-    map_page(page_table,
-             SDIF_page,          // vaddr = paddr（identity map）
-             SDIF_page,
              PAGE_R | PAGE_W);
 
 #endif
@@ -553,7 +542,7 @@ void yield(void) {
     switch_context(&prev->sp, &next->sp);
 
     // 🚫 ここには絶対に来ない
-    __builtin_unreachable();
+    //__builtin_unreachable();
 }
 
 __attribute__((noreturn)) void reboot(void)
@@ -616,8 +605,28 @@ void handle_syscall(struct trap_frame *f) {
         }
         
         // -------------------------------------------
+        case I2S_MIC_READ: {
+            f->a0 = s_call_mic_read_samples24(f->a0);
+            break;
+        }
+        
+        // -------------------------------------------
         case SYS_SD_READ: {
             s_call_sdcard_read_api(f->a0);
+            break;
+        }
+        
+        // -------------------------------------------
+        case SYS_SD_READ_BUF: {
+            static uint8_t kbuf[512];
+
+            int ret = sd_read_sector(f->a0, kbuf);
+
+            if (ret == 0) {
+                memcpy((void *)f->a1, kbuf, 512);
+            }
+
+            f->a0 = ret;
             break;
         }
         
@@ -848,17 +857,15 @@ void seqential_mem_check(uint32_t start_addr, uint32_t end_addr) {
 extern char __kernel_base[];
 
 void kernel_main(void) {
-    // compline number.
-    s_printf("Ver: test_1.4.2\n");
 
-#if 1
+#if 0
     // Memory Check
     s_printf("\n");
     // random R/W
-    //random_mem_check(0x00300000u, 0x00308000u);
-    //random_mem_check(0x00700000u, 0x00708000u);
+    random_mem_check(0x00300000u, 0x00308000u);
+    random_mem_check(0x00700000u, 0x00708000u);
     // seqential R/W
-    //seqential_mem_check(0x00300000u, 0x00310000u);
+    seqential_mem_check(0x00300000u, 0x00310000u);
 #endif
 
     // SA run.
@@ -866,6 +873,8 @@ void kernel_main(void) {
     s_call_sa_api(MAT_N);
     s_printf("\n");
 #endif
+
+#if 0
     // dump
     const char *argv[] = {
         "0x200000",
@@ -873,16 +882,36 @@ void kernel_main(void) {
     };
 
     cmd_dump(2, argv);
+#endif
 
-    // SD Card test.
-    //s_call_sdcard_read_api(0x0000);
-    //s_call_sdcard_read_api(0x0010);
-    //s_call_sdcard_read_api(0x0020);
-    //s_call_sdcard_read_api(0x0030);
-
-    s_printf("PSC_OS Boot Start.........\n");
-    s_printf("--- memset ---\n");
     memset(__bss, 0, (size_t) __bss_end - (size_t) __bss);
+    s_printf("PSC_OS Boot Start.........\n");
+    s_printf("--- memset done ---\n");
+
+    // compline number.
+    s_printf("Test Ver: test_1.4.4\n");
+
+    s_printf("Draw PSC Logo\n");
+    lcd_draw_boot_logo();
+
+#if 1
+    // I2S mic 
+    uint32_t sample24;
+
+    if (mic_read_sample24(&sample24) == 0) {
+        s_printf("mic=%x\n", sample24);
+        s_printf("\n");
+    } else {
+        s_printf("mic timeout\n");
+    }
+#endif
+#if 1
+    s_call_mic_read_samples24(10);
+#endif
+    
+    //s_printf("Draw PSC BOX\n");
+    //lcd_write_pix32x32_beta(30u, 50u);
+    //lcd_write_pix32x32_beta(120u, 50u);
 
     s_printf(
         "\n"
@@ -895,7 +924,9 @@ void kernel_main(void) {
         "| MMU   : SV32\n"
         "| UART  : SBI console or\n"
         "| UART  : MMIO console\n"
-        "| CMD   : hello, primes, dump, sa_start\n"
+        "| CMD1  : hello, primes, dump, sa_start\n"
+        "| CMD2  : sd_read, mic_read\n"
+        "| CMD3  : fat32_mount, fat32_ls, fat32_cat\n"
         "| quit  : Ctl+A C. q.\n"
         "+--------------------------------------------------+\n",
         __DATE__, __TIME__

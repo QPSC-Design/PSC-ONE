@@ -1,0 +1,235 @@
+#include "fat32.h"
+
+static uint8_t fat32_buf[512];
+
+fat32_info_t g_fat32;
+
+int fat32_cat(const char *name)
+{
+    uint8_t buf[512];
+
+    uint32_t cluster;
+    uint32_t size;
+
+    if (fat32_mount())
+        return -1;
+
+    if (fat32_find(name, &cluster, &size)) {
+        printf("file not found\n");
+        return -1;
+    }
+
+    uint32_t lba =
+        cluster_to_lba(cluster);
+
+    if (call_sd_read_buf_api(lba, buf))
+        return -1;
+
+    for (uint32_t i = 0; i < size; i++) {
+
+        if (i >= 512)
+            break;
+
+        putchar(buf[i]);
+    }
+
+    putchar('\n');
+
+    return 0;
+}
+
+int fat32_find(
+    const char *name,
+    uint32_t *cluster,
+    uint32_t *size)
+{
+    uint8_t *buf = fat32_buf;
+
+    if (fat32_mount())
+        return -1;
+
+    uint32_t root_lba =
+        cluster_to_lba(g_fat32.root_cluster);
+
+    if (call_sd_read_buf_api(root_lba, buf))
+        return -1;
+
+    for (int i = 0; i < 16; i++) {
+
+        uint8_t *e = &buf[i * 32];
+
+        // End of directory
+        if (e[0] == 0x00)
+            break;
+
+        // Deleted
+        if (e[0] == 0xE5)
+            continue;
+
+        // LFN
+        if (e[11] == 0x0F)
+            continue;
+
+        char shortname[13];
+        int k = 0;
+
+        // name
+        for (int j = 0; j < 8; j++) {
+            if (e[j] != ' ')
+                shortname[k++] = e[j];
+        }
+
+        // extension
+        if (e[8] != ' ') {
+
+            shortname[k++] = '.';
+
+            for (int j = 8; j < 11; j++) {
+                if (e[j] != ' ')
+                    shortname[k++] = e[j];
+            }
+        }
+
+        shortname[k] = '\0';
+
+        if (strcmp(shortname, name) == 0) {
+
+            uint32_t cl_hi =
+                ((uint32_t)e[20]) |
+                ((uint32_t)e[21] << 8);
+
+            uint32_t cl_lo =
+                ((uint32_t)e[26]) |
+                ((uint32_t)e[27] << 8);
+
+            *cluster =
+                (cl_hi << 16) | cl_lo;
+
+            *size =
+                ((uint32_t)e[28]) |
+                ((uint32_t)e[29] << 8) |
+                ((uint32_t)e[30] << 16) |
+                ((uint32_t)e[31] << 24);
+
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
+uint32_t cluster_to_lba(uint32_t cluster)
+{
+    return g_fat32.data_begin +
+           (cluster - 2) *
+           g_fat32.sectors_per_cluster;
+}
+
+int fat32_mount(void)
+{
+    uint8_t *buf = fat32_buf;
+
+    if (call_sd_read_buf_api(0, buf))
+        return -1;
+
+    g_fat32.part_lba =
+        ((uint32_t)buf[0x1C6]) |
+        ((uint32_t)buf[0x1C7] << 8) |
+        ((uint32_t)buf[0x1C8] << 16) |
+        ((uint32_t)buf[0x1C9] << 24);
+
+    if (call_sd_read_buf_api(g_fat32.part_lba, buf))
+        return -1;
+
+    uint32_t reserved =
+        ((uint32_t)buf[14]) |
+        ((uint32_t)buf[15] << 8);
+
+    uint32_t fat_count =
+        (uint32_t)buf[16];
+
+    uint32_t fat_size =
+        ((uint32_t)buf[36]) |
+        ((uint32_t)buf[37] << 8) |
+        ((uint32_t)buf[38] << 16) |
+        ((uint32_t)buf[39] << 24);
+
+    g_fat32.sectors_per_cluster =
+        (uint32_t)buf[13];
+
+    g_fat32.root_cluster =
+        ((uint32_t)buf[44]) |
+        ((uint32_t)buf[45] << 8) |
+        ((uint32_t)buf[46] << 16) |
+        ((uint32_t)buf[47] << 24);
+
+    g_fat32.fat_begin =
+        g_fat32.part_lba + reserved;
+
+    g_fat32.data_begin =
+        g_fat32.fat_begin + fat_count * fat_size;
+
+    return 0;
+}
+
+void fat32_ls(void)
+{
+    uint8_t *buf = fat32_buf;
+
+    if (fat32_mount())
+        return;
+
+    uint32_t root_lba =
+        cluster_to_lba(g_fat32.root_cluster);
+
+    if (call_sd_read_buf_api(root_lba, buf))
+        return;
+
+    for (int i = 0; i < 16; i++) {
+
+        uint8_t *e = &buf[i * 32];
+
+        if (e[0] == 0x00)
+            break;
+
+        if (e[0] == 0xE5)
+            continue;
+
+        if (e[11] == 0x0F)
+            continue;
+
+        for (int j = 0; j < 8; j++) {
+            if (e[j] != ' ')
+                putchar(e[j]);
+        }
+
+        if (e[8] != ' ') {
+            putchar('.');
+            for (int j = 8; j < 11; j++) {
+                if (e[j] != ' ')
+                    putchar(e[j]);
+            }
+        }
+
+        printf(" attr=%x", (uint32_t)e[11]);
+
+        uint32_t cl_hi =
+            ((uint32_t)e[20]) |
+            ((uint32_t)e[21] << 8);
+
+        uint32_t cl_lo =
+            ((uint32_t)e[26]) |
+            ((uint32_t)e[27] << 8);
+
+        uint32_t cl =
+            (cl_hi << 16) | cl_lo;
+
+        uint32_t size =
+            ((uint32_t)e[28]) |
+            ((uint32_t)e[29] << 8) |
+            ((uint32_t)e[30] << 16) |
+            ((uint32_t)e[31] << 24);
+
+        printf(" cl=%x size=%x\n", cl, size);
+    }
+}

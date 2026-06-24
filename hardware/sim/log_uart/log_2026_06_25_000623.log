@@ -1,0 +1,34 @@
+[dbg] cycle=0, uart_tx=0x0000, pc=0x00000008, data_addr=0x00000000
+PSC_OS Boot Start.........
+--- memset done ---
+Test Ver: test_1.4.4
+mic=000fda9a
+
+MIC[0]=000fa6c2
+MIC[1]=000fa6b2
+MIC[2]=000fa6a6
+MIC[3]=000fa68e
+MIC[4]=000fa67a
+MIC[5]=000fa666
+MIC[6]=000fa64e
+MIC[7]=000fa63a
+MIC[8]=000fa622
+MIC[9]=000fa60e
+MIC SAMPLE COUNT=10
+
++--------------------------------------------------+
+|                    PSC_OS                        |
+|            Minimal RISC-V Kernel Boot            |
++--------------------------------------------------+
+| Build : Jun 25 2026 00:06:22
+| CPU   : RV32 (Supervisor mode)
+| MMU   : SV32
+| UART  : SBI console or
+| UART  : MMIO console
+| CMD   : hello, primes, dump, sa_start
+| CMD   : sd_read, mic_read
+| CMD   : fat32_ls, fat32_cat
+| quit  : Ctl+A C. q.
++--------------------------------------------------+
+--- create_process_1 ---
+---- kernel map start. ----

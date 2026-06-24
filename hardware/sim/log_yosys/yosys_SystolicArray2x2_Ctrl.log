@@ -390,10 +390,6 @@ Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/Systol
      2/2: $0\a_left_in_bus[15:0]
 
 7.8. Executing PROC_DLATCH pass (convert process syncs to latches).
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_left_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_left_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_top_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
@@ -426,6 +422,10 @@ No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
 No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
@@ -1347,10 +1347,10 @@ Optimizing module SystolicArray2x2_Ctrl.
 
 === SystolicArray2x2_Ctrl ===
 
-   Number of wires:                291
-   Number of wire bits:           2735
-   Number of public wires:          80
-   Number of public wire bits:    1435
+   Number of wires:                287
+   Number of wire bits:           2607
+   Number of public wires:          76
+   Number of public wire bits:    1307
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
@@ -1383,10 +1383,10 @@ Optimizing module SystolicArray2x2_Ctrl.
        $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult      2
        $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT      4
 
-   Number of wires:                784
-   Number of wire bits:           7202
-   Number of public wires:         305
-   Number of public wire bits:    3950
+   Number of wires:                780
+   Number of wire bits:           7074
+   Number of public wires:         301
+   Number of public wire bits:    3822
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
@@ -1416,6 +1416,6 @@ Optimizing module SystolicArray2x2_Ctrl.
      $sub                            2
 
 Warnings: 2 unique messages, 2 total
-End of script. Logfile hash: 0f0e4cfd8e, CPU: user 0.34s system 0.01s, MEM: 16.62 MB peak
+End of script. Logfile hash: c202eb71a3, CPU: user 0.38s system 0.01s, MEM: 16.42 MB peak
 Yosys 0.33 (git sha1 2584903a060)
-Time spent: 25% 6x opt_expr (0 sec), 11% 4x opt_dff (0 sec), ...
+Time spent: 25% 6x opt_expr (0 sec), 12% 4x opt_dff (0 sec), ...

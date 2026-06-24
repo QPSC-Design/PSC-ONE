@@ -28,12 +28,41 @@ void *memcpy(void *dst, const void *src, size_t n) {
 }
 */
 
+#if 1
 void *memset(void *buf, char c, size_t n) {
     uint8_t *p = (uint8_t *) buf;
     while (n--)
         *p++ = c;
     return buf;
 }
+#else
+void *memset(void *buf, char c, size_t n)
+{
+    uint8_t *p = (uint8_t *)buf;
+    size_t total = n;
+    size_t count = 0;
+
+    s_printf("memset start n=%x\n", (uint32_t)n);
+
+    while (n--) {
+
+        *p++ = (uint8_t)c;
+        count++;
+
+        if ((count & 0xFFF) == 0) {
+            s_printf(
+                "memset %x/%x\n",
+                (uint32_t)count,
+                (uint32_t)total
+            );
+        }
+    }
+
+    s_printf("memset end\n");
+
+    return buf;
+}
+#endif
 
 /*
 // 将来的に使用したいVer.

@@ -27,20 +27,20 @@ module PSC_ONE_Boot_axi #(
     parameter [ADDR_WIDTH-1:0] USER_BASE_ADDR        = 32'h0040_0000,  
     // ROM WORD NUMBER
 `ifdef OS_SIM
-    parameter integer ROM_WORD         = 256   >> 1,
-    parameter integer BOOT_LOADER_WORD = 9000  >> 1,
-    parameter integer KERNEL_ROM_WORD  = 15000 >> 1,
-    parameter integer USER_ROM_WORD    = 5000  >> 1
+    parameter integer ROM_WORD         = 128,
+    parameter integer BOOT_LOADER_WORD = 4500,
+    parameter integer KERNEL_ROM_WORD  = 50000,
+    parameter integer USER_ROM_WORD    = 5000
 `elsif FPGA_BOOT_LOADER_MODE
-    parameter integer ROM_WORD         = 256   >> 1,
-    parameter integer BOOT_LOADER_WORD = 9000  >> 1,
-    parameter integer KERNEL_ROM_WORD  = 15000 >> 1,
-    parameter integer USER_ROM_WORD    = 5000  >> 1
+    parameter integer ROM_WORD         = 128,
+    parameter integer BOOT_LOADER_WORD = 4500,
+    parameter integer KERNEL_ROM_WORD  = 50000,
+    parameter integer USER_ROM_WORD    = 5000
 `else
-    parameter integer ROM_WORD         = 4096     >> 1,
-    parameter integer BOOT_LOADER_WORD = ROM_WORD >> 1,
-    parameter integer KERNEL_ROM_WORD  = ROM_WORD >> 1,
-    parameter integer USER_ROM_WORD    = ROM_WORD >> 1
+    parameter integer ROM_WORD         = 2048,
+    parameter integer BOOT_LOADER_WORD = ROM_WORD,
+    parameter integer KERNEL_ROM_WORD  = ROM_WORD,
+    parameter integer USER_ROM_WORD    = ROM_WORD
 `endif
 )(
     input  wire                     clock,
@@ -103,7 +103,7 @@ module PSC_ONE_Boot_axi #(
     endfunction
 
 `ifdef FPGA_PSC_OS_MODE
-    localparam integer ERAZE_ROM_WORD   = 32'h0040_0000;  
+    localparam integer ERAZE_ROM_WORD   = 32'h0000_1000;  
     localparam integer MAX_ROM_WORD     = 32'h0040_0000;  
     localparam integer ROMIDX_W         = CLOG2(MAX_ROM_WORD+1);
 `elsif FPGA_BOOT_LOADER_MODE
@@ -483,7 +483,7 @@ module boot_loader_rom #(
     input  wire [ADDR_WIDTH-1:0] addr,
     output reg  [31:0]           dout
 );
-    localparam integer ROM_WORD = 9000 >> 1;  // 固定値にしないとFPGA内でROMと認識されない.
+    localparam integer ROM_WORD = 4500;  // 固定値にしないとFPGA内でROMと認識されない.
     reg [31:0] Boot_Loader_rom [0:ROM_WORD-1];
     initial $readmemh("mem/bootloader.mem", Boot_Loader_rom);
 
@@ -504,7 +504,7 @@ module boot_rom #(
     input  wire [ADDR_WIDTH-1:0] addr,
     output reg  [31:0]           dout
 );
-    localparam integer ROM_WORD = 256 >> 1;  // 固定値にしないとFPGA内でROMと認識されない.
+    localparam integer ROM_WORD = 128;  // 固定値にしないとFPGA内でROMと認識されない.
     reg [31:0] Boot_rom [0:ROM_WORD-1];
     initial $readmemh("mem/bootrom.mem", Boot_rom);
 
@@ -518,13 +518,13 @@ endmodule
 
 // kernel.mem
 module kernel_rom #(
-    parameter integer ADDR_WIDTH = 13
+    parameter integer ADDR_WIDTH = 20
 )(
     input  wire                  clock,
     input  wire [ADDR_WIDTH-1:0] addr,
     output reg  [31:0]           dout
 );
-    localparam integer ROM_WORD = 15000 >> 1;
+    localparam integer ROM_WORD = 50000;
     reg [31:0] mem [0:ROM_WORD-1];
     initial $readmemh("mem/kernel.mem", mem);
 
@@ -538,13 +538,13 @@ endmodule
 
 // user.mem
 module user_rom #(
-    parameter integer ADDR_WIDTH = 13
+    parameter integer ADDR_WIDTH = 20
 )(
     input  wire                  clock,
     input  wire [ADDR_WIDTH-1:0] addr,
     output reg  [31:0]           dout
 );
-    localparam integer ROM_WORD = 5000 >> 1;
+    localparam integer ROM_WORD = 5000;
     reg [31:0] mem [0:ROM_WORD-1];
     initial $readmemh("mem/user.mem", mem);
 

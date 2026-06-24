@@ -78,6 +78,12 @@ static uint16_t sd_crc16(const unsigned char *buf)
 }
 
 // -------------------------------------------------------
+int sd_read_sector(uint32_t sector, uint8_t *buf)
+{
+    return sd_read_once(sector, buf);
+}
+
+// -------------------------------------------------------
 // SDカードREAD実行関数
 void s_call_sdcard_read_api(uint32_t sd_sector_address)
 {

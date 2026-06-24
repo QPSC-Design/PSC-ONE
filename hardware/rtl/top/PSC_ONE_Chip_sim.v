@@ -30,13 +30,33 @@ module PSC_ONE_Chip_sim #(
     output wire [5:0]   led_out
 );
 
+    // --------------------------------
+    // wave file
+    // --------------------------------
+    `ifdef COCOTB_SIM
+    initial begin
+        `ifdef DUMP_VCD
+        $display("COCOTB_SIM DUMP_VCD ENABLE");
+        $dumpfile("./wave/PSC_ONE_Chip_test.vcd");
+        $dumpvars(1, u_chip);
+        $dumpvars(0, u_chip.u_lcd);
+        $dumpvars(0, u_chip.u_i2s_if);
+        `else
+        $display("COCOTB_SIM verilator FST ENABLE");
+        $dumpfile("./wave/PSC_ONE_Chip_test.fst");
+        $dumpvars(1, u_chip);
+        $dumpvars(0, u_chip.u_lcd);
+        $dumpvars(0, u_chip.u_i2s_if);
+        `endif
+    end
+    `else
+    initial begin
+        $display("COCOTB_SIM DISABLE");
+    end
+    `endif
+
     // internal pull-up(down)
     //pullup(SDI_MISO);
-
-`ifdef COCOTB_SIM
-    // VCD, FST setting.
-    `include "../rtl/top/cocotb_sim_chip_top.v"
-`endif
 
     // ------------------------------
     // DUT 本体
@@ -155,6 +175,22 @@ module PSC_ONE_Chip_sim #(
         .sck        (SDI_SCK),
         .mosi       (SDI_MOSI),
         .miso       (SDI_MISO)
+    );
+
+    // ------------------------------
+    // LCD ILI9488モデル
+    // ------------------------------
+    PSC_LCD_ILI9488_MODEL #(
+        .DATA_WIDTH     (32)
+    ) u_lcd_model (
+        .clock      (clock),
+        .LCD_CS     (tft_cs),
+        .LCD_RST    (tft_rst),
+        .LCD_BL     (tft_bl),
+        .LCD_DC     (tft_dc),
+        .LCD_SCK    (tft_sck),
+        .LCD_SDI    (tft_sdi),
+        .LCD_SDO    (tft_sdo)
     );
 
     // ------------------------------

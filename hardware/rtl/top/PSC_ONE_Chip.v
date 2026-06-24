@@ -55,6 +55,7 @@ module PSC_ONE_Chip #(
     parameter [ADDR_WIDTH-1:0]  TIMER_ST_ADDR       = 32'h1000_2008,
     parameter [ADDR_WIDTH-1:0]  LCD_PIX_ADDRESS     = 32'h1000_3000,
     parameter [ADDR_WIDTH-1:0]  LCD_PIX_DATA        = 32'h1000_3004,
+    parameter [ADDR_WIDTH-1:0]  LCD_PIXS_ST         = 32'h1000_3008,
     parameter [ADDR_WIDTH-1:0]  LED_ADDRESS         = 32'h1000_4000,
     parameter [ADDR_WIDTH-1:0]  PSC_SA_CTRL         = 32'h0,
     parameter [ADDR_WIDTH-1:0]  PSC_SA_STATUS       = 32'h0,
@@ -179,6 +180,7 @@ module PSC_ONE_Chip #(
     wire [31:0] mmio_rdata_pio;
     wire [31:0] mmio_rdata_uart;
     wire [31:0] mmio_rdata_timer;
+    wire [31:0] mmio_rdata_lcd;
     wire [31:0] mmio_rdata_sd;
     wire [31:0] mmio_rdata_i2s;
 
@@ -189,6 +191,7 @@ module PSC_ONE_Chip #(
             UART_ADDRESS_RX:    mmio_rdata <= mmio_rdata_uart;
             UART_ADDRESS_ST:    mmio_rdata <= mmio_rdata_uart;
             UART_ADDRESS_CT:    mmio_rdata <= mmio_rdata_uart;
+            LCD_PIXS_ST:        mmio_rdata <= mmio_rdata_lcd;
             PSC_SD_IF_READ_DATA: mmio_rdata <= mmio_rdata_sd;
             PSC_SD_IF_CTRL:      mmio_rdata <= mmio_rdata_sd;
             PSC_I2S_ADDR_RX:     mmio_rdata <= mmio_rdata_i2s;
@@ -390,10 +393,11 @@ module PSC_ONE_Chip #(
     wire    mmio_wready_timer;
     wire    mmio_rready_timer;
     wire    mmio_rready_sd;
+    wire    mmio_wready_sd;
     wire    mmio_rready_i2s;
     wire    mmio_wready_led;
+    wire    mmio_rready_lcd;
     wire    mmio_wready_lcd;
-    wire    mmio_wready_sd;
 
     wire    mmio_ready = 
                 mmio_rready_pio | mmio_wready_pio | 
@@ -402,6 +406,7 @@ module PSC_ONE_Chip #(
                 mmio_rready_sd | 
                 mmio_rready_i2s | 
                 mmio_wready_led | 
+                mmio_rready_lcd | 
                 mmio_wready_lcd |
                 mmio_wready_sd;
 
@@ -418,6 +423,7 @@ module PSC_ONE_Chip #(
         .TIMER_WRITE_ADDR    (TIMER_WRITE_ADDR),
         .TIMER_READ_ADDR     (TIMER_READ_ADDR),
         .LCD_PIX_ADDRESS     (LCD_PIX_ADDRESS),
+        .LCD_PIXS_ST         (LCD_PIXS_ST),
         .LCD_PIX_DATA        (LCD_PIX_DATA),
         .LED_ADDRESS         (LED_ADDRESS),
         .PSC_SA_CTRL         (PSC_SA_CTRL),
@@ -868,6 +874,12 @@ module PSC_ONE_Chip #(
         .tft_dc         (PSCONE_LCD_DC),
         .tft_reset      (PSCONE_LCD_RST),
         .tft_cs         (PSCONE_LCD_CS),
+
+        // CPU BUS
+		.cpu_rvalid     (mmio_valid & ~mmio_rw),
+        .cpu_raddr      (mmio_addr),
+        .cpu_rdata      (mmio_rdata_lcd),
+        .cpu_rready     (mmio_rready_lcd),
 
         .cpu_wvalid     (mmio_valid & mmio_rw),
         .cpu_waddr      (mmio_addr),

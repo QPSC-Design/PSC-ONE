@@ -337,10 +337,12 @@ void s_call_sa_api(const uint8_t matrix_N)
         }
     }
 
+    /*
     A_mat[0][0] = 1;
     A_mat[2][3] = 2;
     A_mat[5][3] = 0;
     A_mat[0][0] = 3;
+    */
 
 #if 1
     // ---- A,B表示 ----

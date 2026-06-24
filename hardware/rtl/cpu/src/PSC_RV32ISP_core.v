@@ -244,7 +244,10 @@ module PSC_RV32ISP_core #(
     wire [31:0] fifo_opcode_data;
     wire        fifo_empty;
     wire        fifo_full;
+    wire        fifo_flush_sig;
     wire        fifo_read_ready;
+    wire        execute_ready;
+    wire        fifo_read_state_sig;
     wire        is_load, is_store;
     wire        is_sfence_vma;
 
@@ -306,10 +309,7 @@ module PSC_RV32ISP_core #(
     wire [1:0] pc_sel;
 
     // fifo
-    wire        execute_ready;
-    wire        fifo_read_state_sig;
-    wire        execute_state_sig;
-    wire        fifo_flush_sig;
+    wire        execute_state_sig;  // not used
 
     // MMU fault
     wire        d_pf;

@@ -24,4 +24,5 @@ typedef uint32_t vaddr_t;
 #define true  1
 #define false 0
 
+int sd_read_sector(uint32_t sector, uint8_t *buf);
 void s_call_sdcard_read_api(uint32_t sd_sector_address);

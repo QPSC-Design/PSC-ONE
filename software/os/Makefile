@@ -101,8 +101,8 @@ endif
 # ========================
 # Sources
 # ========================
-SRCS_USER   := $(Src)/shell.c $(Src)/user.c 
-SRCS_KERNEL := $(Src)/kernel.c $(Src)/common.c $(Src)/synap_api.c $(Src)/sdcard_api.c
+SRCS_USER   := $(Src)/shell.c $(Src)/user.c $(Src)/fat32.c
+SRCS_KERNEL := $(Src)/kernel.c $(Src)/common.c $(Src)/synap_api.c $(Src)/sdcard_api.c $(Src)/mic_api.c $(Src)/lcd_api.c
 SRCS_MBIOS  := $(Src)/psc_mbios.S
 
 USER_ELF    := $(Build)/shell.elf
@@ -175,6 +175,33 @@ $(BOOTLOADER_MEM): $(BOOTLOADER_BIN)
 	@echo "[BOOTLOADER] $@ generated."
 
 # ========================
+# Boot Loader FAT32 Ver.
+# ========================
+SRCS_BOOT_FAT32 := \
+    $(Src)/bootloader_entry.S \
+    $(Src)/bootloader_fat32.c \
+    $(Src)/common.c \
+    $(Src)/sdcard_api.c \
+    $(Src)/boot_fat32.c
+	
+BOOTLOADER_FAT32_ELF := $(Build)/bootloader_fat32.elf
+BOOTLOADER_FAT32_BIN := $(Build)/bootloader_fat32.bin
+BOOTLOADER_FAT32_MEM := $(Build)/bootloader_fat32.mem
+
+$(BOOTLOADER_FAT32_ELF): $(Build) $(SRCS_BOOT_FAT32)
+	$(CC) $(CFLAGS) \
+	    -Wl,-T$(Src)/bootloader.ld \
+	    -Wl,-Map=$(Build)/bootloader.map \
+	    -o $@ $(SRCS_BOOT_FAT32) $(BUILTINS_LIB)
+
+$(BOOTLOADER_FAT32_BIN): $(BOOTLOADER_FAT32_ELF)
+	$(OBJCOPY) -O binary $< $@
+
+$(BOOTLOADER_FAT32_MEM): $(BOOTLOADER_FAT32_BIN)
+	hexdump -v -e '1/4 "%08x\n"' $< > $@
+	@echo "[BOOTLOADER] $@ generated."
+
+# ========================
 # Kernel
 # ========================
 $(USER_ELF): $(Build) $(SRCS_USER) $(Build)/mulsi3.o $(Build)/divmodsi3.o
@@ -240,6 +267,11 @@ fpga_boot:
 	$(MAKE) MODE=psc $(BOOT_MEM)
 	$(MAKE) MODE=psc $(BOOTLOADER_MEM)
 
+fpga_fat32_boot:
+	@echo "[FPGA] BootROM + FAT32 Bootloader"
+	$(MAKE) MODE=psc $(BOOT_MEM)
+	$(MAKE) MODE=psc $(BOOTLOADER_FAT32_MEM)
+
 # ========================
 # Main Targets
 # ========================
@@ -288,10 +320,15 @@ disasm:
 	$(RISCV_OBJDUMP) -D -S ./build/shell.elf > ./build/shell.S
 	@echo "[OK] Generated ./build/shell.S"
 
+disasm_bootloader: 
 	@echo "[INFO] Disassembling Bootloader"
 	$(RISCV_OBJDUMP) -D -S ./build/bootloader.elf > ./build/bootloader.S
 	@echo "[OK] Generated ./build/bootloader.S"
 
+disasm_bootloader_fat32: 
+	@echo "[INFO] Disassembling Bootloader"
+	$(RISCV_OBJDUMP) -D -S ./build/bootloader_fat32.elf > ./build/bootloader_fat32.S
+	@echo "[OK] Generated ./build/bootloader.S"
 
 # ========================
 # Clean

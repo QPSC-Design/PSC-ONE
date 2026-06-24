@@ -1,0 +1,19 @@
+# Python
+myenv/
+__pycache__/
+*.pyc
+
+# Build
+build/
+sim_build/
+results.xml
+
+# FPGA
+*.vvp
+*.vcd
+*.fst
+
+# Compiler
+*.o
+*.elf
+*.bin

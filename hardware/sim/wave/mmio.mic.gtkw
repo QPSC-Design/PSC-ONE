@@ -1,0 +1,64 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Sat Jun 13 12:02:54 2026
+[*]
+[dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_MIC_test.vcd"
+[dumpfile_mtime] "Sat Jun 13 12:02:14 2026"
+[dumpfile_size] 357736
+[savefile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/mmio.mic.gtkw"
+[timestart] 0
+[size] 2671 1029
+[pos] -1 -1
+*-23.729507 26845000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] sim_PSC_I2SRX.
+[treeopen] sim_PSC_I2SRX.u_i2s_if.
+[sst_width] 278
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 290
+@28
+sim_PSC_I2SRX.I2S_LR
+sim_PSC_I2SRX.I2S_SCK
+sim_PSC_I2SRX.I2S_SD
+sim_PSC_I2SRX.I2S_WS
+@420
+sim_PSC_I2SRX.PSC_I2S_ADDR_RX
+sim_PSC_I2SRX.PSC_I2S_ADDR_ST
+@28
+sim_PSC_I2SRX.clock
+@22
+sim_PSC_I2SRX.cpu_raddr[31:0]
+sim_PSC_I2SRX.cpu_rdata[31:0]
+@28
+sim_PSC_I2SRX.cpu_rready
+sim_PSC_I2SRX.cpu_rvalid
+sim_PSC_I2SRX.reset_n
+sim_PSC_I2SRX.u_i2s_if.clock
+sim_PSC_I2SRX.u_i2s_if.reset_n
+@22
+sim_PSC_I2SRX.u_i2s_if.fifo_count[8:0]
+sim_PSC_I2SRX.u_i2s_if.fifo_d0[31:0]
+sim_PSC_I2SRX.u_i2s_if.fifo_d1[31:0]
+sim_PSC_I2SRX.u_i2s_if.fifo_d2[31:0]
+sim_PSC_I2SRX.u_i2s_if.fifo_d3[31:0]
+@28
+sim_PSC_I2SRX.u_i2s_if.fifo_empty
+sim_PSC_I2SRX.u_i2s_if.fifo_flush
+sim_PSC_I2SRX.u_i2s_if.fifo_full
+sim_PSC_I2SRX.u_i2s_if.fifo_pop
+sim_PSC_I2SRX.u_i2s_if.fifo_push
+sim_PSC_I2SRX.u_i2s_if.I2S_LR
+sim_PSC_I2SRX.u_i2s_if.I2S_SCK
+@420
+sim_PSC_I2SRX.u_i2s_if.I2S_SCK_DIV
+@28
+sim_PSC_I2SRX.u_i2s_if.I2S_SCK_d1
+sim_PSC_I2SRX.u_i2s_if.I2S_SCK_reg
+sim_PSC_I2SRX.u_i2s_if.I2S_SD
+sim_PSC_I2SRX.u_i2s_if.I2S_SD_d
+sim_PSC_I2SRX.u_i2s_if.I2S_WS
+@22
+sim_PSC_I2SRX.u_i2s_if.i2s_rsv_data[31:0]
+sim_PSC_I2SRX.u_i2s_if.fifo_push_data[23:0]
+[pattern_trace] 1
+[pattern_trace] 0

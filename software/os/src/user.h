@@ -34,9 +34,15 @@ typedef uint32_t vaddr_t;
 #define va_end   __builtin_va_end
 #define va_arg   __builtin_va_arg
 
+uint32_t cluster_to_lba(uint32_t cluster);
+int fat32_mount(void);
+
 void call_sa_api(uint32_t matrix_size);
+void call_mic_api(unsigned count);
 void call_sd_api(unsigned sector);
+int call_sd_read_buf_api(uint32_t sector, void *buf);
 void call_dump_api(uint32_t addr, uint32_t len);
+
 int test_div(int a, int b);
 int test_mod(int a, int b);
 bool is_prime(unsigned n);
@@ -44,7 +50,9 @@ unsigned parse_u32(const char *s);
 void putchar(char ch);
 int  getchar(void);
 void print_int(int v);
+
 inline static uint32_t sa_api(uint32_t n, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a4);
+static inline uint32_t mic_api(uint32_t sysno, uint32_t arg0);
 inline static uint32_t sd_api(uint32_t sysno, uint32_t arg0);
 inline static void dump_api(uint32_t sysno, uint32_t arg0, uint32_t arg1);
 char *strcpy(char *dst, const char *src);

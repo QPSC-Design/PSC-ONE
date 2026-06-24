@@ -32,6 +32,7 @@ module cache_dma_controller_io #(
     parameter [ADDR_WIDTH-1:0]  TIMER_READ_ADDR     = {ADDR_WIDTH{1'b0}},
     parameter [ADDR_WIDTH-1:0]  LCD_PIX_ADDRESS     = {ADDR_WIDTH{1'b0}},
     parameter [ADDR_WIDTH-1:0]  LCD_PIX_DATA        = {ADDR_WIDTH{1'b0}},
+    parameter [ADDR_WIDTH-1:0]  LCD_PIXS_ST         = {ADDR_WIDTH{1'b0}},
     parameter [ADDR_WIDTH-1:0]  LED_ADDRESS         = {ADDR_WIDTH{1'b0}},
     parameter [ADDR_WIDTH-1:0]  PSC_SA_CTRL         = {ADDR_WIDTH{1'b0}},   // not used
     parameter [ADDR_WIDTH-1:0]  PSC_SA_STATUS       = {ADDR_WIDTH{1'b0}},   // not used
@@ -277,6 +278,7 @@ module cache_dma_controller_io #(
                  ((TIMER_READ_ADDR      != {ADDR_WIDTH{1'b0}}) && (addr_mmio == TIMER_READ_ADDR  )) |
                  ((LCD_PIX_ADDRESS      != {ADDR_WIDTH{1'b0}}) && (addr_mmio == LCD_PIX_ADDRESS  )) |
                  ((LCD_PIX_DATA         != {ADDR_WIDTH{1'b0}}) && (addr_mmio == LCD_PIX_DATA     )) |
+                 ((LCD_PIXS_ST          != {ADDR_WIDTH{1'b0}}) && (addr_mmio == LCD_PIXS_ST      )) |
                  ((LED_ADDRESS          != {ADDR_WIDTH{1'b0}}) && (addr_mmio == LED_ADDRESS      )) |
                  ((PSC_SA_CTRL          != {ADDR_WIDTH{1'b0}}) && (addr_mmio == PSC_SA_CTRL      )) |
                  ((PSC_SA_STATUS        != {ADDR_WIDTH{1'b0}}) && (addr_mmio == PSC_SA_STATUS    )) |
@@ -311,6 +313,7 @@ module cache_dma_controller_io #(
             sa_word_addr_latch  <= 32'h0;
             sa_byte_addr_latch  <= 32'h0;
             sa_data_latch       <= 32'h0;
+            sa_rw_latch         <= 1'b0;
             sa_write_sel_latch  <= 3'b000;
             mmu_valid_latch     <= 1'b0;    // MMU
             mmu_addr_latch      <= 32'h0;
@@ -667,6 +670,7 @@ module cache_dma_controller_io #(
                                     3'b010: data_write <= place_word(ZERO_LINE, req_word_sel_r, req_wdata);                    // SW
                                     default: data_write <= place_word(ZERO_LINE, req_word_sel_r, req_wdata);
                                 endcase
+                                data_we    <= 1'b1;    // 追加
                                 tag_write  <= {cur_tag_r, 1'b1, 1'b1};
                                 tag_we     <= 1'b1;
                                 if (req_from_sa) begin

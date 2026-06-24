@@ -63,13 +63,13 @@ wire              done_out;
 wire [31:0]       ps_bottom_out_bus_0;
 wire [31:0]       ps_bottom_out_bus_1;
 
-wire [31:0]       ps_acc [0:N-1][0:N-1];
+//wire [31:0]       ps_acc [0:N-1][0:N-1];
 
 // debug
-wire [31:0]       ps_acc_0 = ps_acc[0][0];
-wire [31:0]       ps_acc_1 = ps_acc[0][1];
-wire [31:0]       ps_acc_2 = ps_acc[1][0];
-wire [31:0]       ps_acc_3 = ps_acc[1][1];
+wire [31:0]       ps_acc_0;
+wire [31:0]       ps_acc_1;
+wire [31:0]       ps_acc_2;
+wire [31:0]       ps_acc_3;
 
 //--------------------------------------------
 // SA instance

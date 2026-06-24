@@ -1,7 +1,10 @@
 // NISHIHARU
 //`define FIFO_PIPELINE_OFF;
 
-module PSC_RV32ISP_Fetch(
+module PSC_RV32ISP_Fetch #(
+    // Parameter
+    parameter integer   FIFO_DEPTH   = 4
+)(
     // clock, reset
     input wire          clock,
     input wire          reset_n,
@@ -276,7 +279,10 @@ module PSC_RV32ISP_Fetch(
     wire full, empty;
     wire [31:0] out_fetch_pc;
 
-    Fetch_Fifo u_fetch_fifo (
+    Fetch_Fifo #(
+        .WIDTH          (32),
+        .DEPTH          (FIFO_DEPTH)
+    ) u_fetch_fifo (
         .clock          (clock),
         .reset_n        (reset_n),
 

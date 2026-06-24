@@ -27,7 +27,7 @@ typedef uint32_t vaddr_t;
 #define true  1
 #define false 0
 
-#define SA_MAT_MAX    12
+#define SA_MAT_MAX    4
 
 void sa_run(const uint8_t *in_A, const uint8_t *in_B, const uint8_t Matrix_N, uint32_t *out_C);
 void s_call_sa_api(const uint8_t matrix_N);

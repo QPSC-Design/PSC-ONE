@@ -144,8 +144,10 @@ void call_sa_api(uint32_t matrix_size)
         }
     }
 
+    /*
     matrix_A[2][3] = 6;
     matrix_B[5][3] = 2;
+    */
 
     sa_api(
         SYS_SA_RUN,
@@ -190,6 +192,17 @@ void call_sa_api(uint32_t matrix_size)
         putchar('\n');
     }
     putchar('\n');
+}
+
+// -------------------------------------------------------
+// SD IF READ関数
+void call_mic_api(unsigned count)
+{
+    // API呼び出し
+    mic_api(
+        I2S_MIC_READ,
+        (uint32_t)count
+    );
 }
 
 // -------------------------------------------------------
@@ -467,6 +480,22 @@ static inline uint32_t sa_api(uint32_t n,
     return ret;
 }
 
+// I2S MIC IF API
+static inline uint32_t mic_api(uint32_t sysno, uint32_t arg0)
+{
+    register uint32_t a0 __asm__("a0") = arg0;
+    register uint32_t a3 __asm__("a3") = sysno;
+
+    __asm__ __volatile__(
+        "ecall"
+        : "+r"(a0)
+        : "r"(a3)
+        : "memory"
+    );
+
+    return a0;
+}
+
 // SD-IF API
 static inline uint32_t sd_api(uint32_t sysno, uint32_t arg0)
 {
@@ -481,6 +510,22 @@ static inline uint32_t sd_api(uint32_t sysno, uint32_t arg0)
     );
 
     return a0;
+}
+
+int call_sd_read_buf_api(uint32_t sector, void *buf)
+{
+    register uint32_t a0 __asm__("a0") = sector;
+    register uint32_t a1 __asm__("a1") = (uint32_t)buf;
+    register uint32_t a3 __asm__("a3") = SYS_SD_READ_BUF;
+
+    __asm__ __volatile__(
+        "ecall"
+        : "+r"(a0)
+        : "r"(a1), "r"(a3)
+        : "memory"
+    );
+
+    return (int)a0;
 }
 
 // dump API

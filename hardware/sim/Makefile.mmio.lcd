@@ -1,4 +1,12 @@
 # ============================================================
+# Usage
+# ============================================================
+
+#make -f Makefile.mmio.lcd simulate_PSC_LCD MODE=icarus
+#or
+#make -f Makefile.mmio.lcd simulate_PSC_LCD MODE=verilator
+
+# ============================================================
 #  SIMULATOR 切り替え (MODE=icarus / verilator)
 # ============================================================
 MODE  = icarus
@@ -9,12 +17,13 @@ SIM  := $(MODE)
 #  Verilator / Icarus ごとの設定
 # ------------------------------------------------------------
 ifeq ($(MODE),verilator)
-# verilator\
 EXTRA_ARGS = \
-	--trace --trace-fst --Wno-ASCRANGE --Wno-INITIALDLY --Wno-COMBDLY \
+	-O3 --trace --trace-fst \
+	--Wno-ASCRANGE --Wno-INITIALDLY --Wno-COMBDLY \
 	--Wno-WIDTHEXPAND --Wno-WIDTHTRUNC --Wno-REALCVT
 else ifeq ($(MODE),icarus)
-EXTRA_ARGS  =
+EXTRA_ARGS  = 
+VCD_COMPILE_ARGS = -DDUMP_VCD
 else
 $(error MODE=$(MODE) は不正です。MODE=icarus または MODE=verilator を指定してください)
 endif
@@ -35,12 +44,16 @@ COCOTB_MAKEFILE  := $(shell cocotb-config --makefiles)/Makefile.sim
 # ============================================================
 #  ソース一覧
 # ============================================================
+LCD_ILI9488_MODEL = ../rtl/LCD_model/PSC_LCD_ILI9488_MODEL.v 
 MMIO_DIR = ../rtl/mmio
+
 SRC_LCD = \
 	$(MMIO_DIR)/LCD/sim_PSC_ONE_LCD.v \
 	$(MMIO_DIR)/LCD/PSC_ONE_LCD.v \
 	$(MMIO_DIR)/LCD/tft_ili9488.v \
-	$(MMIO_DIR)/LCD/tft_ili9488_spi.v
+	$(MMIO_DIR)/LCD/tft_ili9488_spi.v \
+	$(LCD_ILI9488_MODEL)
+	
 
 # ============================================================
 #  Cocotb simulation targets
@@ -48,13 +61,14 @@ SRC_LCD = \
 # sdram_16bit_to_128bit_axi_bridge test
 simulate_PSC_LCD:
 	@echo "[SIM] MODE=$(MODE), SIM=$(SIM) (PSC_ONE_LCD test)"
+	@echo EXTRA_ARGS=$(EXTRA_ARGS)
 	$(MAKE) clean
 	@mkdir -p ./wave
 	COCOTB_TEST_MODULES=cocotb_tb.mmio.lcd_test \
 	TOPLEVEL=sim_PSC_ONE_LCD TOPLEVEL_LANG=verilog \
 	SIM=$(SIM) \
 	VERILOG_SOURCES="$(SRC_LCD)" \
-	COMPILE_ARGS="-DCOCOTB_SIM" \
+	COMPILE_ARGS="-DCOCOTB_SIM $(VCD_COMPILE_ARGS)" \
 	VLOG_ARGS="$(VLOG_ARGS)" \
 	EXTRA_ARGS="$(EXTRA_ARGS)" \
 	make -f $(COCOTB_MAKEFILE)

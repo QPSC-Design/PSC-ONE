@@ -1,5 +1,6 @@
 // shell.c
 #include "user.h"
+#include "fat32.h"
 
 void main(void) {
 
@@ -157,16 +158,26 @@ prompt:
 
         // ---- SynapEngine ----
         } else if (strcmp(argv[0], "sa_start") == 0) {
-            uint32_t matrix_max = 12;
+            uint32_t matrix_max = 4;
             if (argc >= 2) {
                 matrix_max = parse_u32(argv[1]);
-                if (matrix_max != 12) {
-                    printf("matrix size != 12\n");
+                if (matrix_max > 4) {
+                    printf("matrix size > 4\n");
                     goto prompt;
                 }
             }
             // SA API call 
             call_sa_api(matrix_max);
+
+        // ---- I2S MIC READ ----
+        } else if (strcmp(argv[0], "mic_read") == 0) {
+            if (argc < 2) {
+                printf("usage: mic_read <count>\n");
+                goto prompt;
+            }
+
+            unsigned count = parse_u32(argv[1]);
+            call_mic_api(count);
 
         // ---- SDカードREAD ----
         } else if (strcmp(argv[0], "sd_read") == 0) {
@@ -177,6 +188,35 @@ prompt:
 
             unsigned sd_sector = parse_u32(argv[1]);
             call_sd_api(sd_sector);
+
+        // ---- FAT32 Info ----
+        } else if (strcmp(argv[0], "fat32_info") == 0) {
+
+            if (fat32_mount() != 0) {
+                printf("FAT32 mount failed\n");
+                goto prompt;
+            }
+
+            printf("part_lba=%x\n",      g_fat32.part_lba);
+            printf("root_cluster=%x\n",  g_fat32.root_cluster);
+            printf("spc=%x\n",           g_fat32.sectors_per_cluster);
+            printf("fat_begin=%x\n",     g_fat32.fat_begin);
+            printf("data_begin=%x\n",    g_fat32.data_begin);
+
+        // ---- FAT32 ls ----
+        } else if (strcmp(argv[0], "fat32_ls") == 0) {
+
+            fat32_ls();
+
+        // ---- FAT32 cat ----
+        } else if (strcmp(argv[0], "fat32_cat") == 0) {
+
+            if (argc < 2) {
+                printf("usage: fat32_cat <file>\n");
+                goto prompt;
+            }
+
+            fat32_cat(argv[1]);
 
         // ---- Helps出力 ----
         } else if (strcmp(argv[0], "help") == 0) {
@@ -201,6 +241,7 @@ prompt:
     }
 }
 
+// -------------------------------------------------------
 void cmd_primes(unsigned max)
 {
     int count = 0;

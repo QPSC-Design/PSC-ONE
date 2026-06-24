@@ -149,10 +149,12 @@ I2S_RX_FILE = \
 
 I2S_MIC_MODEL = ../rtl/I2S_MIC_MODEL/PSC_I2S_MIC_MODEL.v 
 
+LCD_ILI9488_MODEL = ../rtl/LCD_model/PSC_LCD_ILI9488_MODEL.v 
+
 INPUT_32bit_FILE = \
 	$(PSCONE_SIM_TOP_FILE) $(PSCONE_TOP_FILE) $(CPU_FILES) $(SDRAM_32bit_AXI_FILES) $(PSC_ONE_BOOT_FILE) \
 	$(SA_FILE) $(PSCONELCD_FILE) $(SD_READER_FILE) $(TIMER_FILE) \
-	$(I2S_RX_FILE) $(I2S_MIC_MODEL) \
+	$(I2S_RX_FILE) $(I2S_MIC_MODEL) $(LCD_ILI9488_MODEL) \
 	$(SDCARD_MODEL)
 
 INPUT_FILE_PSCONE = \
@@ -185,16 +187,20 @@ simulate_PSCOS:
 	test -f ./mem/kernel.mem
 	test -f ./mem/user.mem
 
+	grep -n -v '^00000000$$' ./mem/bootrom.mem | tail -n 1
+	grep -n -v '^00000000$$' ./mem/kernel.mem | tail -n 1
+	grep -n -v '^00000000$$' ./mem/user.mem | tail -n 1
+
 	@tmp=$$(mktemp); \
 	head -n 128 ./mem/bootrom.mem > $$tmp; \
 	mv $$tmp ./mem/bootrom.mem
 
 	@tmp=$$(mktemp); \
-	head -n 7500 ./mem/kernel.mem > $$tmp; \
+	head -n 50000 ./mem/kernel.mem > $$tmp; \
 	mv $$tmp ./mem/kernel.mem
 
 	@tmp=$$(mktemp); \
-	head -n 2500 ./mem/user.mem > $$tmp; \
+	head -n 5000 ./mem/user.mem > $$tmp; \
 	mv $$tmp ./mem/user.mem
 	
 	@mkdir -p ./wave
@@ -236,16 +242,21 @@ simulate_SD_PSCOS:
 	test -f ./mem/user.mem
 	test -f ./mem/bootloader.mem
 
+	grep -n -v '^00000000$$' ./mem/kernel.mem | tail -n 1
+	grep -n -v '^00000000$$' ./mem/kernel.mem | tail -n 1
+	grep -n -v '^00000000$$' ./mem/user.mem | tail -n 1
+	grep -n -v '^00000000$$' ./mem/bootloader.mem | tail -n 1
+
 	@tmp=$$(mktemp); \
 	head -n 128 ./mem/bootrom.mem > $$tmp; \
 	mv $$tmp ./mem/bootrom.mem
 
 	@tmp=$$(mktemp); \
-	head -n 7500 ./mem/kernel.mem > $$tmp; \
+	head -n 50000 ./mem/kernel.mem > $$tmp; \
 	mv $$tmp ./mem/kernel.mem
 
 	@tmp=$$(mktemp); \
-	head -n 2500 ./mem/user.mem > $$tmp; \
+	head -n 5000 ./mem/user.mem > $$tmp; \
 	mv $$tmp ./mem/user.mem
 
 	@tmp=$$(mktemp); \
