@@ -269,24 +269,38 @@ If an error is detected, the system automatically retries the read operation, en
 
 ## Software
 
+## Software
+
 ### PSC-OS
 - [x] Bootloader
+- [x] FAT32 Bootloader
 - [x] Kernel
 - [x] User Mode Execution
 - [x] System Call Interface
 - [x] Command Shell
 - [x] Memory Management
+- [x] SD Card Driver
 - [x] SD Card Program Loader
-- [ ] File System
+- [x] FAT32 File System
 - [ ] Networking Stack
+
+### Device Drivers
+- [x] UART
+- [x] Timer
+- [x] SDRAM Controller
+- [x] LCD Controller (ILI9488)
+- [x] I2S Microphone Interface
+- [x] Systolic Array Accelerator
 
 ### Applications
 - [x] Prime Number Benchmark
 - [x] Matrix Multiplication Demo
 - [x] SDRAM Test
 - [x] SD Card Test
+- [x] FAT32 File Browser (`ls`, `cat`)
 - [ ] AI Inference Demo
 - [ ] Audio Processing Demo
+- [ ] Speech Recognition Demo
 
 ## Verification
 
