@@ -27,8 +27,8 @@ module sim_PSC_I2SRX #(
     // ---------------- CPU I/F ----------------
     input  wire                     cpu_rvalid,
     input  wire [ADDR_WIDTH-1:0]    cpu_raddr,
-    input  wire [31:0]              cpu_rdata,
-    output reg                      cpu_rready   // 1clk パルス
+    output wire [31:0]              cpu_rdata,
+    output wire                     cpu_rready   // 1clk パルス
 );
 
     `ifdef COCOTB_SIM
@@ -48,6 +48,11 @@ module sim_PSC_I2SRX #(
         $display("COCOTB_SIM DISABLE");
     end
     `endif
+
+    wire    I2S_SCK;
+    wire    I2S_WS;
+    wire    I2S_LR;
+    wire    I2S_SD;
 
     //==========================================================
     // I2S I/F

@@ -1,24 +1,24 @@
 // NISHIHARU
 
 module Execute(
-    input wire clock,
-    input wire reset_n,
-    input wire execute_enb,
-    input wire [4:0]  r_addr1,
-    input wire [4:0]  r_addr2,
-    input wire [31:0] reg_data_addr1,
-    input wire [31:0] reg_data_addr2,
-    input wire op1sel,
-    input wire op2sel,
-    input wire [4:0]  alucon,
-    input wire [31:0] imm,
-    input wire [31:0] in_pc,
+    input wire              clock,
+    input wire              reset_n,
+    input wire              execute_enb,
+    input wire [4:0]        r_addr1,
+    input wire [4:0]        r_addr2,
+    input wire [31:0]       reg_data_addr1,
+    input wire [31:0]       reg_data_addr2,
+    input wire              op1sel,
+    input wire              op2sel,
+    input wire [4:0]        alucon,
+    input wire [31:0]       imm,
+    input wire [31:0]       in_pc,
     // output 
-    output reg [31:0] alu_data,
-    output reg [31:0] r_data1,
-    output reg [31:0] r_data2,
+    output reg [31:0]       alu_data,
+    output reg [31:0]       r_data1,
+    output reg [31:0]       r_data2,
     // pc
-    output reg [31:0]  out_pc
+    output reg [31:0]       out_pc
 );
 
     wire [31:0] r_data1_w;

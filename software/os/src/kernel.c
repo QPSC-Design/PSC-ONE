@@ -868,8 +868,8 @@ void kernel_main(void) {
     seqential_mem_check(0x00300000u, 0x00310000u);
 #endif
 
-    // SA run.
 #if 0
+    // SA run.
     s_call_sa_api(MAT_N);
     s_printf("\n");
 #endif
@@ -905,6 +905,7 @@ void kernel_main(void) {
         s_printf("mic timeout\n");
     }
 #endif
+
 #if 1
     s_call_mic_read_samples24(10);
 #endif

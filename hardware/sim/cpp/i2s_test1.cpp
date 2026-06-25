@@ -5,11 +5,12 @@
 #define PIO32 (*reinterpret_cast<volatile uint32_t*>(0x10001000u))
 static constexpr uint32_t TEST_END_CODE      = 0xEE01;
 static constexpr uint32_t ERR_I2S_TIMEOUT    = 0xEE70;
-static constexpr uint32_t I2S_SAMPLE_COUNT   = 4;
 
 /* ---------- PSC I2S RX ---------- */
 #define PSC_I2S_RX  (*reinterpret_cast<volatile uint32_t*>(0x10007000u))
 #define PSC_I2S_ST  (*reinterpret_cast<volatile uint32_t*>(0x10007004u))
+
+static uint32_t samples[64];
 
 static inline void tiny_delay(unsigned n)
 {
@@ -20,37 +21,45 @@ static inline void tiny_delay(unsigned n)
 
 extern "C" void run()
 {
-    uint32_t sample;
+    uint32_t read_count = 0;
     uint32_t last_sample = 0;
 
     PIO32 = 0x1700;   // I2S test start
 
-    tiny_delay(1000);
+    tiny_delay(100);
 
-    for (uint32_t i = 0; i < I2S_SAMPLE_COUNT; i++) {
+    // fifo flush
+    PSC_I2S_ST = 0x01;
 
-        // fifo_empty == 0 を待つ
-        uint32_t timeout = 200000;
+    while (1) {
 
-        while ((PSC_I2S_ST & 0x1u) != 0u) {
-            if (--timeout == 0) {
-                PIO32 = ERR_I2S_TIMEOUT;
-                PIO32 = i;
-                while (1) {}
-            }
-            asm volatile("nop");
+        while (1) {
+            // FIFO count
+            uint32_t fifo_count = (PSC_I2S_ST & 0xFF000000u) >> 24;
+            if (fifo_count > 32) break;
         }
 
-        // FIFO read
-        sample = PSC_I2S_RX;
-        last_sample = sample;
+        // FIFO read x 24 times
+        for (int j = 0; j < 24; j++) {
+            samples[read_count] = PSC_I2S_RX & 0x00FFFFFFu;
+            read_count = read_count + 1;
+        }
 
-        // 下位24bitが音声絶対値
-        PIO32 = sample & 0x00FFFFFFu;
+        if (read_count > 40u) {
+            PIO32 = read_count;
+            break;
+        }
 
-        tiny_delay(100);
     }
 
+    PIO32 = 0x1800;   // I2S test end
+
+    // 下位24bitが音声絶対値
+    for (int k = 0; k < 40; k++) {
+        PIO32 = samples[k];
+    }
+    last_sample = samples[39];
+    
     PIO32 = TEST_END_CODE;
     PIO32 = last_sample;
 

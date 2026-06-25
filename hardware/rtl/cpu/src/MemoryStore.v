@@ -5,27 +5,27 @@ module MemoryStore #(
     parameter UART_MMIO_FLAG    = 32'h0000_FFF4,
     parameter COUNTER_MMIO_ADDR = 32'h0000_FFF8
 )(
-    input  wire        clock,
-    input  wire        reset_n,
-    input  wire        store_enb,
-    input  wire        mem_rw,            // 1: store, 0: load
-    input  wire [1:0]  wb_sel,
-    input  wire        pc_sel2,
-    input  wire [31:0] alu_data,
-    input  wire [2:0]  mem_val,           // funct3
-    input  wire [31:0] mem_read_data,     // 常に32bitで返る
-    input  wire [31:0] r_data2,
-    input  wire [31:0] in_pc,
-    input  wire [31:0] counter,
-    input  wire [1:0]  ld_low2,           // ★ 追加：ロード時のアドレス下位2bit
-    input  wire [31:0] csr_rdata,
+    input wire              clock,
+    input  wire             reset_n,
+    input  wire             store_enb,
+    input  wire             mem_rw,            // 1: store, 0: load
+    input  wire [1:0]       wb_sel,
+    input  wire             pc_sel2,
+    input  wire [31:0]      alu_data,
+    input  wire [2:0]       mem_val,           // funct3
+    input  wire [31:0]      mem_read_data,     // 常に32bitで返る
+    input  wire [31:0]      r_data2,
+    input  wire [31:0]      in_pc,
+    input  wire [31:0]      counter,
+    input  wire [1:0]       ld_low2,           // ★ 追加：ロード時のアドレス下位2bit
+    input  wire [31:0]      csr_rdata,
     // output 
-    output reg         mem_write_valid,
-    output reg  [31:0] mem_write_data,
-    output reg  [8:0]  uart,
-    output wire [31:0] w_data,
+    output reg              mem_write_valid,
+    output reg  [31:0]      mem_write_data,
+    output reg  [8:0]       uart,
+    output wire [31:0]      w_data,
     // pc
-    output reg [31:0]  out_pc
+    output reg [31:0]       out_pc
 );
     // ------------------------------------------------------------
     // アドレス/基本信号

@@ -1,17 +1,18 @@
-// =====================================================================================
+// nishiharu
+
 module Branch(
-    input wire clock,
-    input wire reset_n,
-    input wire branch_enb,
-    input wire [2:0] funct3,
-    input wire [31:0] r_data1,
-    input wire [31:0] r_data2,
-    input wire [1:0] pc_sel,
-    input wire [31:0] in_pc,
+    input wire              clock,
+    input wire              reset_n,
+    input wire              branch_enb,
+    input wire [2:0]        funct3,
+    input wire [31:0]       r_data1,
+    input wire [31:0]       r_data2,
+    input wire [1:0]        pc_sel,
+    input wire [31:0]       in_pc,
     // output 
-    output reg pc_sel2,
+    output reg              pc_sel2,
     // pc
-    output reg [31:0]  out_pc
+    output reg [31:0]       out_pc
 );
     
     function BRANCH_EXEC(

@@ -5,27 +5,27 @@
 //`define MMU_cache_off
 
 module MMU (
-    input  wire        clk,
-    input  wire        reset_n,
-    input  wire        MMU_enb,
-    input  wire [31:0] vaddr,       // 仮想アドレス
-    input  wire [31:0] satp,        // CSR satp
-    input  wire [1:0]  priv_mode,   // M-mode -> MMU:off
-    input  wire        access_r,    // 読みアクセス要求？
-    input  wire        access_w,    // 書きアクセス要求？
-    input  wire        access_x,    // 実行アクセス要求？
-    input  wire [31:0] mem_rdata,   // PTE値（mem_readyが1のサイクルで有効）
-    input  wire        mem_ready,   // ★追加: PTE応答レディ（この拍にmem_rdata有効）
-    input  wire        cpu_state_done,  // CPU state終了タイミング
-    input  wire        sfence_vma,      // sfence.vma（TLBキャッシュクリア）
+    input  wire             clk,
+    input  wire             reset_n,
+    input  wire             MMU_enb,
+    input  wire [31:0]      vaddr,       // 仮想アドレス
+    input  wire [31:0]      satp,        // CSR satp
+    input  wire [1:0]       priv_mode,   // M-mode -> MMU:off
+    input  wire             access_r,    // 読みアクセス要求？
+    input  wire             access_w,    // 書きアクセス要求？
+    input  wire             access_x,    // 実行アクセス要求？
+    input  wire [31:0]      mem_rdata,   // PTE値（mem_readyが1のサイクルで有効）
+    input  wire             mem_ready,   // ★追加: PTE応答レディ（この拍にmem_rdata有効）
+    input  wire             cpu_state_done,  // CPU state終了タイミング
+    input  wire             sfence_vma,      // sfence.vma（TLBキャッシュクリア）
 
-    input  wire        mem_req_ready,
-    output reg  [31:0] mem_addr,     // PTE取得用 物理アドレス
-    output reg         mem_valid,    // PTE読出し要求（1サイクルパルス）
-    output reg  [31:0] paddr,        // 変換後の 物理アドレス
-    output reg         page_fault,   // どれかのページフォールト（種別は外で解釈）
-    output wire        mode_sv32,
-    output wire        mmu_done      // MMU完了通知
+    input  wire             mem_req_ready,
+    output reg  [31:0]      mem_addr,     // PTE取得用 物理アドレス
+    output reg              mem_valid,    // PTE読出し要求（1サイクルパルス）
+    output reg  [31:0]      paddr,        // 変換後の 物理アドレス
+    output reg              page_fault,   // どれかのページフォールト（種別は外で解釈）
+    output wire             mode_sv32,
+    output wire             mmu_done      // MMU完了通知
 );
 
     // Privilege level encoding (RISC-V spec)

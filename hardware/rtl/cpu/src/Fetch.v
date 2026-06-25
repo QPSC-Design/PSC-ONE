@@ -1,17 +1,17 @@
 // NISHIHARU
 
 module Fetch(
-    input wire clock,
-    input wire reset_n,
-    input wire fetch_enb,
-    input wire [31:0] mem_read_data,
-    output wire program_mem_read_valid,
-    input wire program_mem_read_ready,
+    input wire              clock,
+    input wire              reset_n,
+    input wire              fetch_enb,
+    input wire [31:0]       mem_read_data,
+    output wire             program_mem_read_valid,
+    input wire              program_mem_read_ready,
     // Threw sig.
-    output wire opcode_read_valid,
-    output wire [31:0] opcode_read_data,
+    output wire             opcode_read_valid,
+    output wire [31:0]      opcode_read_data,
     // PSC_RV32IS sig.
-    output reg [31:0]  opcode
+    output reg [31:0]       opcode
 );
 
     // FETCH

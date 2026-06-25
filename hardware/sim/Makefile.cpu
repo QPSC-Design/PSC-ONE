@@ -169,8 +169,8 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 # tang 20k 
 PSCONE_TEST = \
-	lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
-	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdb8e
+	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdaca
+	#lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
 
 # run test
 .PHONY: simulate_PSC_ONE

@@ -16,6 +16,11 @@ module PSC_I2SRX #(
     output reg  [31:0] cpu_rdata,
     output reg         cpu_rready,
 
+    input  wire        cpu_wvalid,
+    input  wire [31:0] cpu_waddr,
+    input  wire [31:0] cpu_wdata,
+    output reg         cpu_wready,
+
     // ------------------ I2S ------------------
     output wire        I2S_SCK,
     output reg         I2S_WS,
@@ -42,16 +47,20 @@ module PSC_I2SRX #(
     // ============================================================
     // CPU BUS (MMIO)
     // ============================================================
-    reg     cpu_rvalid_latch;
     reg     fifo_pop;
     reg     fifo_flush;
     
     // ---------------- cpu_valid latch ----------------
+    reg     cpu_rvalid_latch;
+    reg     cpu_wvalid_latch;
+    
     always @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
             cpu_rvalid_latch    <= 1'b0;
+            cpu_wvalid_latch    <= 1'b0;
         end else begin
             cpu_rvalid_latch    <= cpu_rvalid;
+            cpu_wvalid_latch    <= cpu_wvalid;
         end
     end
 
@@ -59,12 +68,15 @@ module PSC_I2SRX #(
     always @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
             cpu_rready       <= 1'b0;
+            cpu_wready       <= 1'b0;
             cpu_rdata        <= 32'h0;
             fifo_pop         <= 1'b0;
             fifo_flush       <= 1'b0;
         end else begin
             cpu_rready       <= 1'b0;
+            cpu_wready       <= 1'b0;
             fifo_pop         <= 1'b0;
+            fifo_flush       <= 1'b0;
 
             // ------------ CPU Bus ----------------
             // READ: DATA FIFO
@@ -81,7 +93,16 @@ module PSC_I2SRX #(
                     end
                     I2S_ADDR_ST: begin
                         cpu_rready <= 1'b1;
-                        cpu_rdata <= {31'd0, fifo_empty};
+                        cpu_rdata <= {fifo_count[7:0], 16'd0, 6'h0, fifo_full, fifo_empty};
+                    end
+                endcase
+            end
+            // WRITE: 
+            if (cpu_wvalid_latch) begin
+                case (cpu_waddr)
+                    I2S_ADDR_ST: begin
+                        cpu_wready <= 1'b1;
+                        fifo_flush <= cpu_wdata[0];
                     end
                 endcase
             end
@@ -91,8 +112,9 @@ module PSC_I2SRX #(
     // ============================================================
     // I2S SCK CLK 
     // ============================================================
+    // 16KHz モノラル
     localparam I2S_SCK_DIV =
-            (CLK_FREQ_MHz * 1_000_000) / (2 * 2_800_000);         // 2.8MHz
+            (CLK_FREQ_MHz * 1_000_000) / (2 * 1_024_000);
             
     reg [15:0] divcnt;
     reg        I2S_SCK_reg;
@@ -219,24 +241,24 @@ module PSC_I2SRX #(
                 end
             end
 
+            // flush
+            if (fifo_flush) begin
+                fifo_wr_ptr <= {FIFO_AW{1'b0}};
+                fifo_rd_ptr <= {FIFO_AW{1'b0}};
+                fifo_count  <= {(FIFO_AW+1){1'b0}};
+            end
+
             // push
-            if (fifo_push && !fifo_full) begin
+            else if (fifo_push && !fifo_full) begin
                 fifo_R_mem[fifo_wr_ptr] <= fifo_push_data;
                 fifo_wr_ptr <= fifo_wr_ptr + 1'b1;
                 fifo_count  <= fifo_count + 1'b1;
             end
 
             // pop
-            if (fifo_pop && !fifo_empty) begin
+            else if (fifo_pop && !fifo_empty) begin
                 fifo_rd_ptr <= fifo_rd_ptr + 1'b1;
                 fifo_count  <= fifo_count - 1'b1;
-            end
-
-            // flush
-            if (fifo_flush) begin
-                fifo_wr_ptr <= {FIFO_AW{1'b0}};
-                fifo_rd_ptr <= {FIFO_AW{1'b0}};
-                fifo_count  <= {(FIFO_AW+1){1'b0}};
             end
 
         end

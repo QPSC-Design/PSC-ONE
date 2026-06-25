@@ -1,17 +1,17 @@
 // NISHIHARU
 
 module Register(
-    input wire          clock,
-    input wire          reset_n,
-    input wire          store_enb,
-    input wire          rf_wen,
-    input wire [4:0]    w_addr,
-    input wire [31:0]   w_data,
-    input wire [4:0]    r_addr1,
-    input wire [4:0]    r_addr2,
+    input wire              clock,
+    input wire              reset_n,
+    input wire              store_enb,
+    input wire              rf_wen,
+    input wire [4:0]        w_addr,
+    input wire [31:0]       w_data,
+    input wire [4:0]        r_addr1,
+    input wire [4:0]        r_addr2,
     // output
-    output reg [31:0]   reg_data_1,
-    output reg [31:0]   reg_data_2
+    output reg [31:0]       reg_data_1,
+    output reg [31:0]       reg_data_2
 );
 
     // Register 32bit x 32

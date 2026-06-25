@@ -300,43 +300,43 @@ module PSC_ONE_Chip #(
     // SA module to AXI
     // =========================================================
     // Write Address
-    wire [ID_W-1:0]         sa_axi_awid;
-    wire [ADDR_W-1:0]       sa_axi_awaddr;
-    wire [7:0]              sa_axi_awlen;
-    wire [2:0]              sa_axi_awsize;
-    wire [1:0]              sa_axi_awburst;
-    wire                    sa_axi_awvalid = 1'b0;
-    wire                    sa_axi_awready;
+    wire [ID_W-1:0]         dma_axi_awid;
+    wire [ADDR_W-1:0]       dma_axi_awaddr;
+    wire [7:0]              dma_axi_awlen;
+    wire [2:0]              dma_axi_awsize;
+    wire [1:0]              dma_axi_awburst;
+    wire                    dma_axi_awvalid = 1'b0;
+    wire                    dma_axi_awready;
 
     // Write Data
-    wire [DW-1:0]           sa_axi_wdata;
-    wire [(DW/8)-1:0]       sa_axi_wstrb;
-    wire                    sa_axi_wlast;
-    wire                    sa_axi_wvalid = 1'b0;
-    wire                    sa_axi_wready;
+    wire [DW-1:0]           dma_axi_wdata;
+    wire [(DW/8)-1:0]       dma_axi_wstrb;
+    wire                    dma_axi_wlast;
+    wire                    dma_axi_wvalid = 1'b0;
+    wire                    dma_axi_wready;
 
     // Write Response
-    wire [ID_W-1:0]         sa_axi_bid;
-    wire [1:0]              sa_axi_bresp;
-    wire                    sa_axi_bvalid;
-    wire                    sa_axi_bready;
+    wire [ID_W-1:0]         dma_axi_bid;
+    wire [1:0]              dma_axi_bresp;
+    wire                    dma_axi_bvalid;
+    wire                    dma_axi_bready;
 
     // Read Address
-    wire [ID_W-1:0]         sa_axi_arid;
-    wire [ADDR_W-1:0]       sa_axi_araddr;
-    wire [7:0]              sa_axi_arlen;
-    wire [2:0]              sa_axi_arsize;
-    wire [1:0]              sa_axi_arburst;
-    wire                    sa_axi_arvalid = 1'b0;
-    wire                    sa_axi_arready;
+    wire [ID_W-1:0]         dma_axi_arid;
+    wire [ADDR_W-1:0]       dma_axi_araddr;
+    wire [7:0]              dma_axi_arlen;
+    wire [2:0]              dma_axi_arsize;
+    wire [1:0]              dma_axi_arburst;
+    wire                    dma_axi_arvalid = 1'b0;
+    wire                    dma_axi_arready;
 
     // Read Data
-    wire [ID_W-1:0]         sa_axi_rid;
-    wire [DW-1:0]           sa_axi_rdata;
-    wire [1:0]              sa_axi_rresp;
-    wire                    sa_axi_rlast;
-    wire                    sa_axi_rvalid;
-    wire                    sa_axi_rready;
+    wire [ID_W-1:0]         dma_axi_rid;
+    wire [DW-1:0]           dma_axi_rdata;
+    wire [1:0]              dma_axi_rresp;
+    wire                    dma_axi_rlast;
+    wire                    dma_axi_rvalid;
+    wire                    dma_axi_rready;
 
     // =========================================================
     // Boot Rom to AXI
@@ -395,6 +395,7 @@ module PSC_ONE_Chip #(
     wire    mmio_rready_sd;
     wire    mmio_wready_sd;
     wire    mmio_rready_i2s;
+    wire    mmio_wready_i2s;
     wire    mmio_wready_led;
     wire    mmio_rready_lcd;
     wire    mmio_wready_lcd;
@@ -405,6 +406,7 @@ module PSC_ONE_Chip #(
                 mmio_wready_timer | mmio_rready_timer | 
                 mmio_rready_sd | 
                 mmio_rready_i2s | 
+                mmio_wready_i2s | 
                 mmio_wready_led | 
                 mmio_rready_lcd | 
                 mmio_wready_lcd |
@@ -690,45 +692,45 @@ module PSC_ONE_Chip #(
         .s1_axi_rvalid      (d_rvalid),
         .s1_axi_rready      (d_rready),
 
-        // ==== ch:2 (unused) ====
+        // ==== ch:2 (DMA) ====
         // AXI4 Write Address
-        .s2_axi_awid        (sa_axi_awid),
-        .s2_axi_awaddr      (sa_axi_awaddr[23:0]),   // 下位24bitへスライス
-        .s2_axi_awlen       (sa_axi_awlen),
-        .s2_axi_awsize      (sa_axi_awsize),
-        .s2_axi_awburst     (sa_axi_awburst),
-        .s2_axi_awvalid     (sa_axi_awvalid),
-        .s2_axi_awready     (sa_axi_awready),
+        .s2_axi_awid        (dma_axi_awid),
+        .s2_axi_awaddr      (dma_axi_awaddr[23:0]),   // 下位24bitへスライス
+        .s2_axi_awlen       (dma_axi_awlen),
+        .s2_axi_awsize      (dma_axi_awsize),
+        .s2_axi_awburst     (dma_axi_awburst),
+        .s2_axi_awvalid     (dma_axi_awvalid),
+        .s2_axi_awready     (dma_axi_awready),
 
         // AXI4 Write Data
-        .s2_axi_wdata       (sa_axi_wdata),
-        .s2_axi_wstrb       (sa_axi_wstrb),
-        .s2_axi_wlast       (sa_axi_wlast),
-        .s2_axi_wvalid      (sa_axi_wvalid),
-        .s2_axi_wready      (sa_axi_wready),
+        .s2_axi_wdata       (dma_axi_wdata),
+        .s2_axi_wstrb       (dma_axi_wstrb),
+        .s2_axi_wlast       (dma_axi_wlast),
+        .s2_axi_wvalid      (dma_axi_wvalid),
+        .s2_axi_wready      (dma_axi_wready),
 
         // AXI4 Write Response
-        .s2_axi_bid         (sa_axi_bid),
-        .s2_axi_bresp       (sa_axi_bresp),
-        .s2_axi_bvalid      (sa_axi_bvalid),
-        .s2_axi_bready      (sa_axi_bready),
+        .s2_axi_bid         (dma_axi_bid),
+        .s2_axi_bresp       (dma_axi_bresp),
+        .s2_axi_bvalid      (dma_axi_bvalid),
+        .s2_axi_bready      (dma_axi_bready),
 
         // AXI4 Read Address
-        .s2_axi_arid        (sa_axi_arid),
-        .s2_axi_araddr      (sa_axi_araddr[23:0]),
-        .s2_axi_arlen       (sa_axi_arlen),
-        .s2_axi_arsize      (sa_axi_arsize),
-        .s2_axi_arburst     (sa_axi_arburst),
-        .s2_axi_arvalid     (sa_axi_arvalid),
-        .s2_axi_arready     (sa_axi_arready),
+        .s2_axi_arid        (dma_axi_arid),
+        .s2_axi_araddr      (dma_axi_araddr[23:0]),
+        .s2_axi_arlen       (dma_axi_arlen),
+        .s2_axi_arsize      (dma_axi_arsize),
+        .s2_axi_arburst     (dma_axi_arburst),
+        .s2_axi_arvalid     (dma_axi_arvalid),
+        .s2_axi_arready     (dma_axi_arready),
 
         // AXI4 Read Data
-        .s2_axi_rid         (sa_axi_rid),
-        .s2_axi_rdata       (sa_axi_rdata),
-        .s2_axi_rresp       (sa_axi_rresp),
-        .s2_axi_rlast       (sa_axi_rlast),
-        .s2_axi_rvalid      (sa_axi_rvalid),
-        .s2_axi_rready      (sa_axi_rready),
+        .s2_axi_rid         (dma_axi_rid),
+        .s2_axi_rdata       (dma_axi_rdata),
+        .s2_axi_rresp       (dma_axi_rresp),
+        .s2_axi_rlast       (dma_axi_rlast),
+        .s2_axi_rvalid      (dma_axi_rvalid),
+        .s2_axi_rready      (dma_axi_rready),
 
         // ==== ch:3 ====
         // AXI4 Write Address
@@ -937,6 +939,12 @@ module PSC_ONE_Chip #(
         .cpu_raddr      (mmio_addr),
         .cpu_rdata      (mmio_rdata_i2s),
         .cpu_rready     (mmio_rready_i2s),
+
+		.cpu_wvalid     (mmio_valid & mmio_rw),
+        .cpu_waddr      (mmio_addr),
+        .cpu_wdata      (mmio_wdata),
+        .cpu_wready     (mmio_wready_i2s),
+
 
         // I2S IF
         .I2S_SCK        (I2S_SCK),

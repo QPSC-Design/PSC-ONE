@@ -1,48 +1,48 @@
 // NISHIHARU
 
 module Decorder(
-    input  wire        clock,
-    input  wire        reset_n,
-    input  wire        decode_enb,
-    input  wire [31:0] opcode,
-    input  wire [31:0] in_pc,
+    input wire              clock,
+    input  wire             reset_n,
+    input  wire             decode_enb,
+    input  wire [31:0]      opcode,
+    input  wire [31:0]      in_pc,
     // ==== 既存出力 ====
-    output reg  [4:0]  r_addr1, 
-    output reg  [4:0]  r_addr2, 
-    output reg  [4:0]  w_addr,
-    output reg  [31:0] imm,
-    output reg  [4:0]  alucon,
-    output reg  [2:0]  funct3,
-    output reg         op1sel, 
-    output reg         op2sel, 
-    output reg         mem_rw, 
-    output reg         rf_wen,
-    output reg  [1:0]  wb_sel,
-    output reg  [1:0]  pc_sel,
-    output reg         is_fence,
-    output reg         is_fence_i,
-    output reg         is_sfence_vma,
+    output reg  [4:0]       r_addr1, 
+    output reg  [4:0]       r_addr2, 
+    output reg  [4:0]       w_addr,
+    output reg  [31:0]      imm,
+    output reg  [4:0]       alucon,
+    output reg  [2:0]       funct3,
+    output reg              op1sel, 
+    output reg              op2sel, 
+    output reg              mem_rw, 
+    output reg              rf_wen,
+    output reg  [1:0]       wb_sel,
+    output reg  [1:0]       pc_sel,
+    output reg              is_fence,
+    output reg              is_fence_i,
+    output reg              is_sfence_vma,
     // Privilege level encoding (RISC-V spec)
-    input wire [1:0]   current_priv,
+    input wire [1:0]        current_priv,
     // ==== CSR命令デコード結果 ====
-    output reg         csr_wr,        // CSRRW/CSRRS/CSRRC/CSRR*I
-    output reg  [1:0]  csr_cmd,       // 0:RW, 1:RS, 2:RC
-    output reg         csr_use_imm,   // *I 版（zimm使用）
-    output reg  [11:0] csr_addr,      // CSRアドレス
-    output reg  [4:0]  csr_zimm,
-    output reg         is_sret,
-    output reg         is_mret,
-    output reg         is_ecall, 
+    output reg              csr_wr,        // CSRRW/CSRRS/CSRRC/CSRR*I
+    output reg  [1:0]       csr_cmd,       // 0:RW, 1:RS, 2:RC
+    output reg              csr_use_imm,   // *I 版（zimm使用）
+    output reg  [11:0]      csr_addr,      // CSRアドレス
+    output reg  [4:0]       csr_zimm,
+    output reg              is_sret,
+    output reg              is_mret,
+    output reg              is_ecall, 
     // ==== ロード/ストア判定 ====
-    output reg         is_load,
-    output reg         is_store,
+    output reg              is_load,
+    output reg              is_store,
     // pipeline sig.
-    output reg         is_R_type,
-    output reg         is_op_imm,
+    output reg              is_R_type,
+    output reg              is_op_imm,
     // pc
-    output reg [31:0]  out_pc,
+    output reg [31:0]       out_pc,
     // illegal_instruction
-    output reg         raise_illegal_instruction
+    output reg              raise_illegal_instruction
 );
 
     // Privilege level encoding (RISC-V spec)
@@ -323,78 +323,6 @@ module Decorder(
             out_pc      <= in_pc;
             // illegal_instruction
             raise_illegal_instruction <= raise_illegal_instruction_sw | raise_illegal_instruction_mw;
-        end
-    end
-
-endmodule
-
-// =============================================================================
-// Decorder for ALU_2
-// =============================================================================
-module Decorder_2(
-    input  wire        clock,
-    input  wire        reset_n,
-    input  wire        decode_enb,
-    input  wire [31:0] opcode,
-    input  wire [31:0] in_pc,
-    // ==== Decorder Output ====
-    output reg  [4:0]  r_addr1, 
-    output reg  [4:0]  r_addr2, 
-    output reg  [4:0]  w_addr,
-    // pipeline sig.
-    output reg         is_R_type,
-    output reg         is_op_imm,
-    // pc
-    output reg [31:0]  out_pc
-);
-
-    // オプコード定数
-    localparam [6:0] RFORMAT       = 7'b0110011;
-    localparam [6:0] IFORMAT_ALU   = 7'b0010011;
-    localparam [6:0] IFORMAT_LOAD  = 7'b0000011;
-    localparam [6:0] SFORMAT       = 7'b0100011;
-    localparam [6:0] SBFORMAT      = 7'b1100011;
-    localparam [6:0] UFORMAT_LUI   = 7'b0110111;
-    localparam [6:0] UFORMAT_AUIPC = 7'b0010111;
-    localparam [6:0] UJFORMAT      = 7'b1101111;
-    localparam [6:0] IFORMAT_JALR  = 7'b1100111;
-    localparam [6:0] ECALLEBREAK   = 7'b1110011; // SYSTEM
-    localparam [6:0] FENCE         = 7'b0001111;
-    localparam [6:0] MULDIV        = 7'b0110011; // (未使用なら無視)
-
-    // ---- rs1/rs2/rd 選出（*I時はrs1未使用のため0固定）----
-    assign r_addr1_w = opcode[19:15];
-    assign r_addr2_w = opcode[24:20];
-    assign w_addr_w  = opcode[11:7];
-
-    wire [6:0]  op = opcode[6:0];
-
-
-    // パイプライン処理 R-type判定
-    wire is_R_type_w = (op == RFORMAT);
-
-    // パイプライン処理 IMM判定
-    wire is_op_imm_w = (op == IFORMAT_ALU);
-
-    // =============================================================================
-    // パイプラインレジスタ
-    // =============================================================================
-    always @(posedge clock or negedge reset_n) begin
-        if(!reset_n) begin
-            r_addr1     <= 5'd0; 
-            r_addr2     <= 5'd0;
-            w_addr      <= 5'd0;
-            // pc
-            out_pc      <= 32'h0;
-        end else if (decode_enb) begin
-            r_addr1     <= r_addr1_w; 
-            r_addr2     <= r_addr2_w;
-            w_addr      <= w_addr_w;
-            // pipeline sig.
-            is_R_type   <= is_R_type_w;
-            is_op_imm   <= is_op_imm_w;
-            // pc
-            out_pc      <= in_pc;
         end
     end
 

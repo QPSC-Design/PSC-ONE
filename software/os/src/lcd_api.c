@@ -126,16 +126,19 @@ void lcd_draw_boot_logo(void)
     lcd_write_pix32x32_beta(0u, 0u,              0u,  0u,  0u);
 
     // 本番
+    /*
     lcd_write_pix32x32_beta(0u, 0u,             63u,  0u,  0u);
     lcd_write_pix32x32_beta(0u, 32u,            63u,  0u, 63u);
     lcd_write_pix32x32_beta(0u, 64u,             0u,  0u, 63u);
     lcd_write_pix32x32_beta(320u-32u, 0u,        0u, 63u,  0u);
     lcd_write_pix32x32_beta(320u-32u, 480u-32u,  0u,  0u, 63u);
     lcd_write_pix32x32_beta(0u,       480u-32u, 63u, 63u, 63u);
+    */
 
     // wait
     tiny_delay(10000);
 
+#if 0
     for (uint32_t y = 0; y < 32; y++) {
         for (uint32_t x = 0; x < 32; x++) {
             tile_buf[y][x] = 0x3F000; // 赤
@@ -152,6 +155,7 @@ void lcd_draw_boot_logo(void)
     }
 
     lcd_write_pix32x32_img(128u, 248u, tile_buf);
+#endif
 
 #if 1
 
