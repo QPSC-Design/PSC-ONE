@@ -24,7 +24,9 @@ TARGET ?= divmod_test1
 # 自動生成ファイル名（TARGET を使って再評価）
 ###############################################################################
 CPP_SRC := $(TARGET).cpp
-OBJ     := $(STARTUP:.S=.o) $(CPP_SRC:.cpp=.o) mulsi3.o divmodsi3.o
+#OBJ     := $(STARTUP:.S=.o) $(CPP_SRC:.cpp=.o) mulsi3.o divmodsi3.o
+OBJ     := $(STARTUP:.S=.o) $(CPP_SRC:.cpp=.o) divmodsi3.o
+#OBJ     := $(STARTUP:.S=.o) $(CPP_SRC:.cpp=.o)
 ELF     := $(TARGET).elf
 BIN     := $(TARGET).bin
 MEM     := $(TARGET).mem
@@ -38,7 +40,7 @@ divmodsi3.o: divmodsi3.c
 ###############################################################################
 # コンパイル/リンクフラグ
 ###############################################################################
-CXXFLAGS := -std=c++23 -march=rv32i_zicsr_zifencei -mabi=ilp32 -O0 -g \
+CXXFLAGS := -std=c++23 -march=rv32i_zmmul_zicsr_zifencei -mabi=ilp32 -O0 -g \
   -ffreestanding -nostdlib -fno-rtti -fno-exceptions -fimplicit-constexpr \
   -fno-toplevel-reorder -Wfatal-errors -Werror -Wall -Wextra -Wpedantic \
   -Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual \

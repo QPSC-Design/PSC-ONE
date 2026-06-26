@@ -889,7 +889,7 @@ void kernel_main(void) {
     s_printf("--- memset done ---\n");
 
     // compline number.
-    s_printf("Test Ver: test_1.4.4\n");
+    s_printf("Test Ver: test_1.4.5\n");
 
     s_printf("Draw PSC Logo\n");
     lcd_draw_boot_logo();

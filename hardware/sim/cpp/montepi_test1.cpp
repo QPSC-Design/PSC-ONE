@@ -26,6 +26,20 @@ static uint32_t rand32()
     return x;
 }
 
+/* ---------- MUL direct asm ---------- */
+static inline uint32_t alu_mul_asm(uint32_t a, uint32_t b)
+{
+    uint32_t r;
+
+    __asm__ volatile (
+        "mul %0, %1, %2"
+        : "=r"(r)
+        : "r"(a), "r"(b)
+    );
+
+    return r;
+}
+
 /* ---------- エントリ ---------- */
 extern "C" void run()
 {
@@ -43,8 +57,10 @@ extern "C" void run()
         uint32_t x = rand32() >> 20;
         uint32_t y = rand32() >> 20;
 
-        uint32_t xx = x * x;
-        uint32_t yy = y * y;
+        //uint32_t xx = x * x;
+        uint32_t xx = alu_mul_asm(x,x);
+        //uint32_t yy = y * y;
+        uint32_t yy = alu_mul_asm(y,y);
 
         const uint32_t r2 = 4095u * 4095u;
 

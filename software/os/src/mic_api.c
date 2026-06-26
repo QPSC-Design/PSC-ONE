@@ -7,6 +7,8 @@
 #define MIC_FIFO_EMPTY  0x00000001u
 #define MIC_SAMPLE_MASK 0x00FFFFFFu
 
+static uint32_t mic_samples[1024];
+
 static inline void tiny_delay(unsigned n)
 {
     while (n--) {
@@ -97,38 +99,42 @@ uint32_t mic_read_samples24(uint32_t *buf, uint32_t count)
 
 uint32_t s_call_mic_read_samples24(uint32_t count)
 {
-    uint32_t sample24;
-    uint32_t i;
+    uint32_t read_count = 0;
 
-    for (i = 0; i < count; i++) {
+    if (count == 0) {
+        return 0;
+    }
 
-        int retry_max = 3;
-        int success = 0;
+    // mic data fifo flush
+    PSC_I2S_ST = 0x01;
 
-        for (int retry = 0; retry < retry_max; retry++) {
+    while (read_count < count) {
 
-            if (mic_read_sample24(&sample24) == 0) {
-                success = 1;
+        // wait until FIFO has enough samples
+        while (1) {
+            uint32_t fifo_count = (PSC_I2S_ST & 0xFF000000u) >> 24;
+            if (fifo_count >= 24) {
                 break;
             }
-
-            s_printf("MIC READ FAIL retry=%d\n", retry);
-            tiny_delay(100);
         }
 
-        if (!success) {
-            s_printf("MIC READ FAILED index=%d\n", i);
-            break;
+        // read up to 24 samples, but do not exceed count
+        for (uint32_t j = 0; j < 24 && read_count < count; j++) {
+            mic_samples[read_count] = PSC_I2S_RX & 0x00FFFFFFu;
+            read_count++;
         }
-
-        s_printf("MIC[%d]=%x\n", i, sample24);
 
         tiny_delay(10);
     }
 
-    s_printf("MIC SAMPLE COUNT=%d\n", i);
+    // dump after capture
+    for (uint32_t k = 0; k < read_count; k++) {
+        s_printf("MIC[%d]=%x\n", k, mic_samples[k]);
+    }
 
-    return i;
+    s_printf("MIC SAMPLE COUNT=%d\n", read_count);
+
+    return read_count;
 }
 
 /*

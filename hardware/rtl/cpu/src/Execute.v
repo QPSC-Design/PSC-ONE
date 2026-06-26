@@ -46,6 +46,29 @@ module Execute(
             5'b1_0101: ALU_EXEC     = $signed(data1) >>> data2[4:0]; // SRA/SRAI（bit30=1）
             5'b0_0110: ALU_EXEC     = data1 | data2;                 // OR/ORI
             5'b0_0111: ALU_EXEC     = data1 & data2;                 // AND/ANDI
+            
+            // RV32M: MUL, MULLHSU, MULHUのみ対応
+            5'b1_1000: ALU_EXEC     = data1 * data2;  // MUL
+            5'b1_1001: begin
+                // MULH（仮実装でも可）
+                ALU_EXEC = ($signed({{32{data1[31]}}, data1}) *
+                            $signed({{32{data2[31]}}, data2})) >> 32;
+            end
+            5'b1_1010: begin
+                // MULHSU（仮実装）
+                ALU_EXEC = ($signed({{32{data1[31]}}, data1}) *
+                            {32'b0, data2}) >> 32;
+            end
+            5'b1_1011: begin
+                // MULHU
+                ALU_EXEC = ({32'b0, data1} * {32'b0, data2}) >> 32;
+            end
+            /*
+            5'b1_1100: ALU_EXEC     = $signed(data1) / $signed(data2); // DIV
+            5'b1_1101: ALU_EXEC     = data1 / data2;                   // DIVU
+            5'b1_1110: ALU_EXEC     = $signed(data1) % $signed(data2); // REM
+            5'b1_1111: ALU_EXEC     = data1 % data2;                   // REMU
+            */
             default:   ALU_EXEC     = 32'b0;
         endcase
     endfunction

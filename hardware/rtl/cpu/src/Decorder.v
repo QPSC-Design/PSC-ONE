@@ -187,12 +187,73 @@ module Decorder(
                     32'b0;
 
     // ---- ALU制御 ----
-    assign alucon_w = ((op == RFORMAT) || (op == MULDIV))
-                      ? {opcode[30], opcode[25], opcode[14:12]} :
-                      ((op == IFORMAT_ALU) && (opcode[14:12] == 3'b101))
-                      ? {opcode[30], opcode[25], opcode[14:12]} : // SRLI/SRAI
-                      (op == IFORMAT_ALU)
-                      ? {2'b00, opcode[14:12]} : 5'b0;
+    wire is_mul;
+    wire is_mulh;
+    wire is_mulhsu;
+    wire is_mulhu;
+    wire is_div;
+    wire is_divu;
+    wire is_rem;
+    wire is_remu;
+
+    assign is_mul  = (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b000);
+
+    assign is_mulh =
+                    (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b001);
+
+    assign is_mulhsu =
+                    (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b010);
+
+    assign is_mulhu =
+                    (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b011);
+
+    assign is_div  = (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b100);
+
+    assign is_divu = (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b101);
+
+    assign is_rem  = (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b110);
+
+    assign is_remu = (op == RFORMAT) &&
+                    (opcode[31:25] == 7'b0000001) &&
+                    (opcode[14:12] == 3'b111);
+
+    // illegal checks
+    // DIV以下は未対応
+    wire raise_illegal_instruction_alu = is_div | is_divu | is_rem | is_remu;
+
+    assign alucon_w =
+                    is_mul    ? 5'b1_1000 :
+                    is_mulh   ? 5'b1_1001 :
+                    is_mulhsu ? 5'b1_1010 :
+                    is_mulhu  ? 5'b1_1011 :
+                    is_div    ? 5'b1_1100 :
+                    is_divu   ? 5'b1_1101 :
+                    is_rem    ? 5'b1_1110 :
+                    is_remu   ? 5'b1_1111 :
+                    (op == RFORMAT)
+                        ? {opcode[30], opcode[25], opcode[14:12]}
+                    :
+                    ((op == IFORMAT_ALU) && (opcode[14:12] == 3'b101))
+                        ? {opcode[30], opcode[25], opcode[14:12]}
+                    :
+                    (op == IFORMAT_ALU)
+                        ? {2'b00, opcode[14:12]}
+                    :
+                    5'b00000;
 
     assign funct3_w = opcode[14:12];
 
@@ -322,7 +383,8 @@ module Decorder(
             // pc
             out_pc      <= in_pc;
             // illegal_instruction
-            raise_illegal_instruction <= raise_illegal_instruction_sw | raise_illegal_instruction_mw;
+            raise_illegal_instruction <= raise_illegal_instruction_sw | raise_illegal_instruction_mw 
+                                        | raise_illegal_instruction_alu;
         end
     end
 

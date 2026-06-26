@@ -228,13 +228,13 @@ sbi_ret:
 
 00000000 <.riscv.attributes>:
     la      sp, _mstack_top
-   0:	2241                	.insn	2, 0x2241
+   0:	3741                	.insn	2, 0x3741
    2:	0000                	.insn	2, 0x0000
    4:	7200                	.insn	2, 0x7200
    6:	7369                	.insn	2, 0x7369
     la      t0, m_trap_vector
    8:	01007663          	bgeu	zero,a6,14 <_start+0x14>
-   c:	0018                	.insn	2, 0x0018
+   c:	002d                	.insn	2, 0x002d
    e:	0000                	.insn	2, 0x0000
     csrw    mtvec, t0
   10:	7205                	.insn	2, 0x7205
@@ -249,7 +249,15 @@ sbi_ret:
   1c:	32727363          	bgeu	tp,t2,342 <$d.3+0x212>
     csrr    t0, mstatus
   20:	3070                	.insn	2, 0x3070
-	...
+  22:	7a5f 6669 6e65      	.insn	6, 0x6e6566697a5f
+    li      t1, ~(3 << 11)     # MPP mask clear
+  28:	32696563          	bltu	s2,t1,352 <$d.3+0x222>
+    and     t0, t0, t1
+  2c:	3070                	.insn	2, 0x3070
+  2e:	7a5f 6d6d 6c75      	.insn	6, 0x6c756d6d7a5f
+    li      t1, (1 << 11)      # MPP = S
+  34:	7031                	.insn	2, 0x7031
+  36:	0030                	.insn	2, 0x0030
 
 セクション .debug_info の逆アセンブル:
 

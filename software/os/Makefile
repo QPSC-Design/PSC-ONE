@@ -64,7 +64,7 @@ DUSERBASE   := -DUSER_BASE=$(USER_BASE_VAL)
 # ========================
 # ARCH / FLAGS
 # ========================
-ARCH := -march=rv32i_zicsr -mabi=ilp32 -mno-relax
+ARCH := -march=rv32i_zmmul_zicsr_zifencei -mabi=ilp32 -mno-relax
 
 CFLAGS ?= -std=c11 -O2 -g3 -Wall -Wextra \
           --target=riscv32-unknown-elf $(ARCH) \
@@ -114,7 +114,7 @@ MEM_FILE    := $(Build)/kernel.mem
 
 RISCV_CLANG := clang
 RISCV_TARGET := --target=riscv32-unknown-elf
-RISCV_ARCH   := -march=rv32i_zicsr -mabi=ilp32
+RISCV_ARCH   := -march=rv32i_zmmul_zicsr_zifencei -mabi=ilp32
 
 $(Build)/mulsi3.o: $(Src)/mulsi3.c | $(Build)
 	$(RISCV_CLANG) $(RISCV_TARGET) $(RISCV_ARCH) \
@@ -204,10 +204,10 @@ $(BOOTLOADER_FAT32_MEM): $(BOOTLOADER_FAT32_BIN)
 # ========================
 # Kernel
 # ========================
-$(USER_ELF): $(Build) $(SRCS_USER) $(Build)/mulsi3.o $(Build)/divmodsi3.o
+$(USER_ELF): $(Build) $(SRCS_USER) $(Build)/divmodsi3.o
 	$(CC) $(CFLAGS) $(KCPPFLAGS) $(DUSERBASE) $(DEFUSERBASE) \
 		$(LDFLAGS_USER) -o $@ $(SRCS_USER) \
-		$(Build)/mulsi3.o $(Build)/divmodsi3.o
+		$(Build)/divmodsi3.o
 
 $(USER_BIN): $(USER_ELF)
 	$(OBJCOPY) --set-section-flags .bss=alloc,contents -O binary $< $@
@@ -239,11 +239,11 @@ $(KERNEL_ELF): KERNEL_LD := $(Src)/kernel_fpga.ld
 kernel_mem:    KERNEL_LD := $(Src)/kernel_fpga.ld
 endif
 
-$(KERNEL_ELF): $(Build) $(SRCS_KERNEL) $(USER_BINO) $(Build)/mulsi3.o $(Build)/divmodsi3.o
+$(KERNEL_ELF): $(Build) $(SRCS_KERNEL) $(USER_BINO) $(Build)/divmodsi3.o
 	$(CC) $(CFLAGS) $(KCPPFLAGS) $(DUSERBASE) \
 		-Wl,-T$(KERNEL_LD) $(LDFLAGS_KERNEL) \
 		-o $@ $(SRCS_KERNEL) $(USER_BINO) \
-		$(Build)/mulsi3.o $(Build)/divmodsi3.o
+		$(Build)/divmodsi3.o
 
 kernel_mem: $(KERNEL_ELF)
 	$(OBJCOPY) --strip-debug --strip-unneeded -O binary $(KERNEL_ELF) $(KERNEL_BIN)

@@ -89,7 +89,7 @@ void lcd_write_pix32x32_beta(
 
     // wait
     //tiny_delay(1000);
-    s_printf("before LCD_ST = %x\n", PSC_LCD_PIXS_ST);
+    //s_printf("before LCD_ST = %x\n", PSC_LCD_PIXS_ST);
 
     uint32_t timeout = 1000000;
     while ((PSC_LCD_PIXS_ST & 0x01) == 0x01) {
@@ -100,7 +100,7 @@ void lcd_write_pix32x32_beta(
         }
     }
 
-    s_printf("after LCD_ST = %x\n", PSC_LCD_PIXS_ST);
+    //s_printf("after LCD_ST = %x\n", PSC_LCD_PIXS_ST);
 
     //tiny_delay(3000);
 
@@ -126,14 +126,12 @@ void lcd_draw_boot_logo(void)
     lcd_write_pix32x32_beta(0u, 0u,              0u,  0u,  0u);
 
     // 本番
-    /*
     lcd_write_pix32x32_beta(0u, 0u,             63u,  0u,  0u);
     lcd_write_pix32x32_beta(0u, 32u,            63u,  0u, 63u);
     lcd_write_pix32x32_beta(0u, 64u,             0u,  0u, 63u);
     lcd_write_pix32x32_beta(320u-32u, 0u,        0u, 63u,  0u);
     lcd_write_pix32x32_beta(320u-32u, 480u-32u,  0u,  0u, 63u);
     lcd_write_pix32x32_beta(0u,       480u-32u, 63u, 63u, 63u);
-    */
 
     // wait
     tiny_delay(10000);

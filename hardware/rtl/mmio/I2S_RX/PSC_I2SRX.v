@@ -178,7 +178,7 @@ module PSC_I2SRX #(
     // I2S DATA RSV
     // ============================================================
     reg [31:0] i2s_rsv_data;
-    wire  pos_SCK = ~I2S_SCK_reg & I2S_SCK;
+    wire  pos_SCK = ~I2S_SCK_d1 & I2S_SCK_reg;
 
     always @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
@@ -222,43 +222,56 @@ module PSC_I2SRX #(
 
     integer  i;
 
+    wire fifo_push_sig = pos_SCK && (i2s_data_divcnt == 31) && !fifo_full;
+    wire fifo_pop_sig  = fifo_pop && !fifo_empty;
+
     // FIFO Write/Read
     always @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
             fifo_rd_ptr <= {FIFO_AW{1'b0}};
             fifo_wr_ptr <= {FIFO_AW{1'b0}};
             fifo_count  <= {FIFO_AW{1'b0}};
+            
+            `ifdef COCOTB_SIM
             for (i=0; i<FIFO_DEPTH; i++) begin
                 fifo_R_mem[i] <= 24'h0;
             end
-        end else begin
-            fifo_push <= 1'b0;
-            // push
-            if (pos_SCK) begin
-                if (i2s_data_divcnt == 31 && divcnt == 8) begin
-                    fifo_push_data <= i2s_to_abs24(i2s_rsv_data);
-                    fifo_push <= 1'b1;
-                end
-            end
+            `endif
 
+        end else begin
             // flush
             if (fifo_flush) begin
                 fifo_wr_ptr <= {FIFO_AW{1'b0}};
                 fifo_rd_ptr <= {FIFO_AW{1'b0}};
                 fifo_count  <= {(FIFO_AW+1){1'b0}};
-            end
 
-            // push
-            else if (fifo_push && !fifo_full) begin
-                fifo_R_mem[fifo_wr_ptr] <= fifo_push_data;
-                fifo_wr_ptr <= fifo_wr_ptr + 1'b1;
-                fifo_count  <= fifo_count + 1'b1;
-            end
+            end else begin
 
-            // pop
-            else if (fifo_pop && !fifo_empty) begin
-                fifo_rd_ptr <= fifo_rd_ptr + 1'b1;
-                fifo_count  <= fifo_count - 1'b1;
+                case ({fifo_push_sig, fifo_pop_sig})
+                    // push
+                    2'b10: begin
+                        fifo_R_mem[fifo_wr_ptr] <= i2s_to_abs24(i2s_rsv_data);
+                        fifo_wr_ptr <= (fifo_wr_ptr == FIFO_DEPTH-1) ? 0 : fifo_wr_ptr + 1'b1;
+                        fifo_count  <= fifo_count + 1'b1;
+                    end
+
+                    // pop
+                    2'b01: begin
+                        fifo_rd_ptr <= (fifo_rd_ptr == FIFO_DEPTH-1) ? 0 : fifo_rd_ptr + 1'b1;
+                        fifo_count  <= fifo_count - 1'b1;
+                    end
+
+                    // push & pop
+                    2'b11: begin
+                        fifo_R_mem[fifo_wr_ptr] <= i2s_to_abs24(i2s_rsv_data);
+                        fifo_wr_ptr <= (fifo_wr_ptr == FIFO_DEPTH-1) ? 0 : fifo_wr_ptr + 1'b1;
+                        fifo_rd_ptr <= (fifo_rd_ptr == FIFO_DEPTH-1) ? 0 : fifo_rd_ptr + 1'b1;
+                        fifo_count  <= fifo_count;
+                    end
+                    default: begin
+                        fifo_count  <= fifo_count;
+                    end
+                endcase
             end
 
         end

@@ -169,7 +169,14 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 # tang 20k 
 PSCONE_TEST = \
-	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdaca
+	fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef
+	#q15_fft_test1:RV32ISP_chip_test:./mem/q15_fft_test1.mem:0x0000beef
+	#fft_test1:RV32ISP_chip_test:./mem/fft_test1.mem:0x0000beef
+	#montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef
+	#alu_mul_test1:RV32ISP_chip_test:./mem/alu_mul_test1.mem:0x00000000
+	#divmod_test1:RV32ISP_chip_test:./mem/divmod_test1.mem:0x00000e02
+	#montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef
+	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdaca
 	#lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
 
 # run test
@@ -213,7 +220,12 @@ simulate_PSC_ONE:
 PSCONE_TESTS = \
 	add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b \
 	add_test2:RV32ISP_chip_test:./mem/add_test2.mem:0x00000000 \
+	mulsi3_test1:RV32ISP_chip_test:./mem/mulsi3_test1.mem:0x00000015 \
 	xor_test1:RV32ISP_chip_test:./mem/xor_test1.mem:0x00003344 \
+	alu_mul_test1:RV32ISP_chip_test:./mem/alu_mul_test1.mem:0x00000000 \
+	fft_test1:RV32ISP_chip_test:./mem/fft_test1.mem:0x0000beef \
+	q15_fft_test1:RV32ISP_chip_test:./mem/q15_fft_test1.mem:0x0000beef \
+	fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef \
 	sub_test1:RV32ISP_chip_test:./mem/sub_test1.mem:0x0000006e \
 	mem_write1:RV32ISP_chip_test:./mem/mem_write1.mem:0x00000037 \
 	shift_test1:RV32ISP_chip_test:./mem/shift_test1.mem:0x00001234 \
@@ -232,6 +244,7 @@ PSCONE_TESTS = \
 	sbwrite_test1:RV32ISP_chip_test:./mem/sbwrite_test1.mem:0xE500000F \
 	jal_test1:RV32ISP_chip_test:./mem/jal_test1.mem:0x12345678 \
 	timer_test1:RV32ISP_chip_test:./mem/timer_test1.mem:0x00000123 \
+	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdaca \
 	sa_test1:RV32ISP_chip_test:./mem/sa_test1.mem:0x0000BEEF \
 	sa_test2:RV32ISP_chip_test:./mem/sa_test2.mem:0x0000BEEF \
 	sa_test3:RV32ISP_chip_test:./mem/sa_test3.mem:0x0000BEEF \
@@ -250,7 +263,6 @@ PSCONE_TESTS = \
 	pagefault_test1:RV32ISP_chip_test:./mem/pagefault_test1.mem:0x0000EF99 \
 	lui_test1:RV32ISP_chip_test:./mem/lui_test1.mem:0x12345000 \
 	prime_test1:RV32ISP_chip_test:./mem/prime_test1.mem:0x00000061 \
-	mulsi3_test1:RV32ISP_chip_test:./mem/mulsi3_test1.mem:0x00000015 \
 	divmod_test1:RV32ISP_chip_test:./mem/divmod_test1.mem:0x00000e02 \
 	pipeline_test1:RV32ISP_chip_test:./mem/pipeline_test1.mem:0x0000009d \
 	pipeline_test2:RV32ISP_chip_test:./mem/pipeline_test2.mem:0xfc1667c7 \

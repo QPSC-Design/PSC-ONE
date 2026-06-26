@@ -17,3 +17,4 @@ results.xml
 *.o
 *.elf
 *.bin
+*.mem
