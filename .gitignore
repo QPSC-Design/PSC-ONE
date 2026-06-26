@@ -8,6 +8,9 @@ build/
 sim_build/
 results.xml
 
+# Sim
+*.log
+
 # FPGA
 *.vvp
 *.vcd
