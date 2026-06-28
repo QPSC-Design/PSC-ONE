@@ -120,7 +120,7 @@ uint32_t s_call_mic_read_samples24(uint32_t count)
 
         // read up to 24 samples, but do not exceed count
         for (uint32_t j = 0; j < 24 && read_count < count; j++) {
-            mic_samples[read_count] = PSC_I2S_RX & 0x00FFFFFFu;
+            mic_samples[read_count] = PSC_I2S_RX & 0xFFFFFFFFu;
             read_count++;
         }
 

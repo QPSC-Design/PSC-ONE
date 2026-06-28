@@ -169,14 +169,16 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 # tang 20k 
 PSCONE_TEST = \
-	fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef
+	memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521
+	#sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff
+	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x008034aa
+	#fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef
 	#q15_fft_test1:RV32ISP_chip_test:./mem/q15_fft_test1.mem:0x0000beef
 	#fft_test1:RV32ISP_chip_test:./mem/fft_test1.mem:0x0000beef
 	#montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef
 	#alu_mul_test1:RV32ISP_chip_test:./mem/alu_mul_test1.mem:0x00000000
 	#divmod_test1:RV32ISP_chip_test:./mem/divmod_test1.mem:0x00000e02
 	#montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef
-	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdaca
 	#lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
 
 # run test
@@ -233,6 +235,7 @@ PSCONE_TESTS = \
 	matrix_test1:RV32ISP_chip_test:./mem/matrix_test1.mem:0x0000ABCD \
 	mul_test1:RV32ISP_chip_test:./mem/mul_test1.mem:0x00000063 \
 	mul_test2:RV32ISP_chip_test:./mem/mul_test2.mem:0x00000033 \
+	memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521 \
 	fetch_test1:RV32ISP_chip_test:./mem/fetch_test1.mem:0xcd1023bb \
 	csr_test1:RV32ISP_chip_test:./mem/csr_test1.mem:0x00000022 \
 	cache_RW_test1:RV32ISP_chip_test:./mem/cache_RW_test1.mem:0x600DCAFE \
@@ -244,7 +247,7 @@ PSCONE_TESTS = \
 	sbwrite_test1:RV32ISP_chip_test:./mem/sbwrite_test1.mem:0xE500000F \
 	jal_test1:RV32ISP_chip_test:./mem/jal_test1.mem:0x12345678 \
 	timer_test1:RV32ISP_chip_test:./mem/timer_test1.mem:0x00000123 \
-	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x000fdaca \
+	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x008034aa \
 	sa_test1:RV32ISP_chip_test:./mem/sa_test1.mem:0x0000BEEF \
 	sa_test2:RV32ISP_chip_test:./mem/sa_test2.mem:0x0000BEEF \
 	sa_test3:RV32ISP_chip_test:./mem/sa_test3.mem:0x0000BEEF \
@@ -269,7 +272,6 @@ PSCONE_TESTS = \
 	sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff \
 	boot_test1:RV32ISP_chip_test:./mem/boot_test1.mem:0x00001321 \
 	boot_test2:RV32ISP_chip_test:./mem/boot_test2.mem:0x00002321 \
-	memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521 \
 	lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
 
 # Sub List

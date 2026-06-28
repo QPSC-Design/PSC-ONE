@@ -1,4 +1,17 @@
 # ============================================================
+# Usage
+# ============================================================
+
+#TBD
+
+# ============================================================
+#  SIMULATOR 切り替え (MODE=icarus / verilator)
+# ============================================================
+MODE  = icarus
+#MODE  = verilator
+SIM  := $(MODE)
+
+# ============================================================
 #  SIMULATOR 切り替え (MODE=icarus / verilator)
 # ============================================================
 MODE  = icarus
@@ -38,24 +51,3 @@ endif
 VLOG_ARGS = -g2012 $(addprefix -D,$(DEFS))
 
 COCOTB_MAKEFILE  := $(shell cocotb-config --makefiles)/Makefile.sim
-
-# ============================================================
-#  ソース一覧
-# ============================================================
-SRC_BRIDGE = \
-	../rtl/axi/sdram_32bit_to_128bit_axi_bridge.v
-
-# ============================================================
-#  Cocotb simulation targets
-# ============================================================
-# sdram_32bit_to_128bit_axi_bridge test
-simulate_32bit_to_128bit_axi_bridge:
-	@echo "[SIM] MODE=$(MODE), SIM=$(SIM) (sdram_32bit_to_128bit_axi_bridge test)"
-	$(MAKE) clean
-	COCOTB_TEST_MODULES=cocotb_tb.cache.bridge_test \
-	TOPLEVEL=sdram_32bit_to_128bit_axi_bridge TOPLEVEL_LANG=verilog \
-	SIM=$(SIM) \
-	VERILOG_SOURCES="$(SRC_BRIDGE)" \
-	VLOG_ARGS="$(VLOG_ARGS)" \
-	EXTRA_ARGS="$(EXTRA_ARGS)" \
-	make -f $(COCOTB_MAKEFILE)

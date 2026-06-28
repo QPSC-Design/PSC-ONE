@@ -2,9 +2,9 @@
 # Usage
 # ============================================================
 
-#make -f Makefile.mmio.lcd simulate_PSC_LCD MODE=icarus
+#make -f Makefile.mmio.mic simulate_PSC_MIC MODE=icarus
 #or
-#make -f Makefile.mmio.lcd simulate_PSC_LCD MODE=verilator
+#make -f Makefile.mmio.mic simulate_PSC_MIC MODE=verilator
 
 # ============================================================
 #  SIMULATOR 切り替え (MODE=icarus / verilator)

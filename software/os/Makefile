@@ -102,7 +102,8 @@ endif
 # Sources
 # ========================
 SRCS_USER   := $(Src)/shell.c $(Src)/user.c $(Src)/fat32.c
-SRCS_KERNEL := $(Src)/kernel.c $(Src)/common.c $(Src)/synap_api.c $(Src)/sdcard_api.c $(Src)/mic_api.c $(Src)/lcd_api.c
+SRCS_KERNEL := $(Src)/kernel.c $(Src)/common.c $(Src)/synap_api.c $(Src)/sdcard_api.c \
+							   $(Src)/mic_api.c $(Src)/lcd_api.c $(Src)/fft_api.c $(Src)/mem_test.c 
 SRCS_MBIOS  := $(Src)/psc_mbios.S
 
 USER_ELF    := $(Build)/shell.elf

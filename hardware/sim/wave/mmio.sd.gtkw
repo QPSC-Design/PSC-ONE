@@ -1,0 +1,77 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Sat Jun 27 16:19:57 2026
+[*]
+[dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_SD_test.vcd"
+[dumpfile_mtime] "Sat Jun 27 16:19:29 2026"
+[dumpfile_size] 299210
+[savefile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/mmio.sd.gtkw"
+[timestart] 0
+[size] 2620 1211
+[pos] -1 -1
+*-24.664078 100195000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] sim_PSC_SDReader.
+[sst_width] 278
+[signals_width] 182
+[sst_expanded] 1
+[sst_vpaned_height] 370
+@420
+sim_PSC_SDReader.u_sd.ST_WAIT_TOKEN
+@28
+sim_PSC_SDReader.u_sd.busy
+@22
+sim_PSC_SDReader.u_sd.byte_cnt[9:0]
+@28
+sim_PSC_SDReader.u_sd.clock
+@22
+sim_PSC_SDReader.u_sd.cmd_i[6:0]
+sim_PSC_SDReader.u_sd.cmd_rx[7:0]
+sim_PSC_SDReader.u_sd.cpu_raddr[31:0]
+sim_PSC_SDReader.u_sd.cpu_rdata[31:0]
+@28
+sim_PSC_SDReader.u_sd.cpu_rready
+sim_PSC_SDReader.u_sd.cpu_rvalid
+sim_PSC_SDReader.u_sd.cpu_rvalid_latch
+@22
+sim_PSC_SDReader.u_sd.cpu_waddr[31:0]
+sim_PSC_SDReader.u_sd.cpu_wdata[31:0]
+@28
+sim_PSC_SDReader.u_sd.cpu_wready
+sim_PSC_SDReader.u_sd.cpu_wvalid
+sim_PSC_SDReader.u_sd.cpu_wvalid_latch
+@22
+sim_PSC_SDReader.u_sd.crc_data1[7:0]
+sim_PSC_SDReader.u_sd.crc_data2[7:0]
+sim_PSC_SDReader.u_sd.crc_rdata[7:0]
+@28
+sim_PSC_SDReader.u_sd.crc_write1
+sim_PSC_SDReader.u_sd.crc_write2
+sim_PSC_SDReader.u_sd.error
+@22
+sim_PSC_SDReader.u_sd.fifo_count[9:0]
+sim_PSC_SDReader.u_sd.fifo_d0[7:0]
+sim_PSC_SDReader.u_sd.fifo_d1[7:0]
+sim_PSC_SDReader.u_sd.fifo_d2[7:0]
+sim_PSC_SDReader.u_sd.fifo_d3[7:0]
+@28
+sim_PSC_SDReader.u_sd.fifo_empty
+sim_PSC_SDReader.u_sd.fifo_flush
+sim_PSC_SDReader.u_sd.fifo_full
+sim_PSC_SDReader.u_sd.fifo_pop
+sim_PSC_SDReader.u_sd.fifo_push
+@22
+sim_PSC_SDReader.u_sd.fifo_push_data[7:0]
+sim_PSC_SDReader.u_sd.fifo_rd_ptr[8:0]
+sim_PSC_SDReader.u_sd.fifo_wr_ptr[8:0]
+sim_PSC_SDReader.u_sd.next_state[4:0]
+@28
+sim_PSC_SDReader.u_sd.read_ready
+sim_PSC_SDReader.u_sd.read_start
+sim_PSC_SDReader.u_sd.reset_n
+@22
+sim_PSC_SDReader.u_sd.rx_cmd_sd_card[7:0]
+@28
+sim_PSC_SDReader.u_sd.sck_fast_mode
+sim_PSC_SDReader.u_sd.sd_card_ready
+[pattern_trace] 1
+[pattern_trace] 0

@@ -6,8 +6,9 @@ from cocotb.triggers import Timer, RisingEdge, ReadOnly
 
 CLK_NS = 10
 
-I2S_ADDR_RX = 0x1000_7000
-I2S_ADDR_ST = 0x1000_7004
+SD_IF_DATA      = 0x1000_6000
+SD_IF_SECTOR    = 0x1000_6004
+SD_IF_CTRL      = 0x1000_6008
 
 
 # ------------------------------------------------
@@ -75,24 +76,13 @@ async def mic_reset_test(dut):
     for _ in range(10000):
         await RisingEdge(dut.clock)
 
-    value = await cpu_read(dut, I2S_ADDR_RX)
-    value = await cpu_read(dut, I2S_ADDR_RX)
+    value = await cpu_read(dut, SD_IF_CTRL)
+    value = await cpu_read(dut, SD_IF_CTRL)
 
-    dut._log.info(f"Read = 0x{value:08X}")
+    #dut._log.info(f"Read = 0x{value:08X}")
 
-    raw = int(dut.u_mic_model.sample_l.value) + (1 << 8)
-
-    # RTLに合わせる（24bitデータを上位から取り出す）
-    model_value = (raw >> 8) & 0x00FFFFFF
-
-    # 24bit -> 32bit 符号拡張
-    if model_value & 0x00800000:
-        model_value |= 0xFF000000
-
-    model_value &= 0xFFFFFFFF
-
-    assert value == model_value, \
-        f"pix_waddr mismatch: got=0x{value:08X}, exp=0x{model_value:08X}"
+    #assert value == model_value, \
+    #    f"pix_waddr mismatch: got=0x{value:08X}, exp=0x{model_value:08X}"
 
     for _ in range(100):
         await RisingEdge(dut.clock)

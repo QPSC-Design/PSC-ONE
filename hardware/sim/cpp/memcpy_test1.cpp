@@ -12,6 +12,7 @@ extern "C" volatile uint32_t result;
  * memcpy_byte : LB/SB
  * ============================================================ */
 static void* memcpy_byte(void* dst, const void* src, size_t n) {
+
     auto* d = reinterpret_cast<uint8_t*>(dst);
     const auto* s = reinterpret_cast<const uint8_t*>(src);
     while (n--) *d++ = *s++;
@@ -149,44 +150,68 @@ extern "C" void run() {
     PIO32=0xA1;
     init_buf();
     memcpy_byte(DST,SRC,256);
+
+    /*
+    uint32_t sum_s = 0;
+    uint32_t sum_d = 0;
+    for (size_t i=0;i<256;i++) {
+        sum_s += SRC[i];
+        sum_d += DST[i];
+    }
+
+    PIO32 = 0xE101;
+    PIO32 = sum_s;
+    PIO32 = sum_d;
+    */
+
     if (!memeq8(DST,SRC,256)) fail|=1<<0;
+    PIO32 = fail;
 
     /* --- half memcpy --- */
     PIO32=0xA2;
     init_buf();
     memcpy_half(DST,SRC,256);
     if (!memeq8(DST,SRC,256)) fail|=1<<1;
+    PIO32 = fail;
 
     /* --- word memcpy --- */
     PIO32=0xA3;
     init_buf();
     memcpy_word(DST,SRC,256);
     if (!memeq8(DST,SRC,256)) fail|=1<<2;
+    PIO32 = fail;
 
     /* --- misaligned --- */
     PIO32=0xA4;
     init_buf();
     memcpy_byte(DST+1,SRC+3,123);
     if (!memeq8(DST+1,SRC+3,123)) fail|=1<<3;
+    PIO32 = fail;
 
     /* --- 境界またぎ --- */
     PIO32=0xA5;
     init_buf();
     memcpy_byte(DST+15,SRC+15,17);
     if (!memeq8(DST+15,SRC+15,17)) fail|=1<<4;
+    PIO32 = fail;
 
     /* --- LH/SH --- */
     PIO32=0xA6;
     init_buf();
     if (!test_lh_sh(DST+2)) fail|=1<<5;
+    PIO32 = fail;
 
     /* --- LW/SW --- */
     PIO32=0xA7;
     init_buf();
     if (!test_lw_sw(DST+4)) fail|=1<<6;
+    PIO32 = fail;
+#if 1
 
     /* --- guard --- */
     if (!check_guard()) fail|=1<<7;
+    PIO32 = fail;
+#endif
 
     /* --- result --- */
     if (fail==0) result=0x2521;

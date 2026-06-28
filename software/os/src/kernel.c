@@ -4,6 +4,8 @@
 #include "sdcard_api.h"
 #include "mic_api.h"
 #include "lcd_api.h"
+#include "fft_api.h"
+#include "mem_test.h"
 #include "kernel.h"
 #include <stdint.h>
 
@@ -668,22 +670,6 @@ void handle_syscall(struct trap_frame *f) {
     }
 }
 
-//void handle_trap(struct trap_frame *f) {
-/*
-void handle_trap(struct trap_frame *f) {
-    uint32_t scause = READ_CSR(scause);
-    uint32_t stval = READ_CSR(stval);
-    uint32_t user_pc = READ_CSR(sepc);
-    if (scause == SCAUSE_ECALL) {
-        handle_syscall(f);
-        user_pc += 4;
-    } else {
-        PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
-    }
-
-    WRITE_CSR(sepc, user_pc);
-}
-*/
 void handle_trap(struct trap_frame *f)
 {
     uint32_t scause = READ_CSR(scause);
@@ -720,136 +706,6 @@ void boot(void) {
         :
         : [stack_top] "r" (__kernel_stack_top)
     );
-}
-
-#define MEM_STEP 4u   // 32bit access
-
-/* 32bit LFSR (Galois) */
-static inline uint32_t lfsr_next(uint32_t x) {
-    uint32_t lsb = x & 1u;
-    x >>= 1;
-    if (lsb) {
-        x ^= 0xA3000000u;
-    }
-    return x;
-}
-
-static inline uint32_t test_pattern(uint32_t addr) {
-    return addr ^ 0xA5A5A5A5u;
-}
-
-void random_mem_check(uint32_t start_addr, uint32_t end_addr)
-{
-    bool TestPass = true;
-    uint32_t lfsr;
-    uint32_t addr;
-
-    uint32_t range_bytes = end_addr - start_addr;
-    uint32_t range_words = range_bytes / MEM_STEP;
-
-    /* range_bytes must be power-of-two */
-    uint32_t mask = range_bytes - MEM_STEP;
-
-    s_printf("[mem_check] range %x - %x\n", start_addr, end_addr);
-
-    /* ================= write phase ================= */
-    s_printf("[mem_check] random write phase\n");
-
-    lfsr = 0x12345678u;
-
-    for (uint32_t i = 0; i < range_words; i++)
-    {
-        addr = start_addr + (lfsr & mask);
-
-        *(volatile uint32_t *)addr = test_pattern(addr);
-
-        lfsr = lfsr_next(lfsr);
-    }
-
-    /* ================= read & verify ================= */
-    s_printf("[mem_check] random read & verify phase\n");
-
-    lfsr = 0x12345678u;
-
-    for (uint32_t i = 0; i < range_words; i++)
-    {
-        addr = start_addr + (lfsr & mask);
-
-        uint32_t v   = *(volatile uint32_t *)addr;
-        uint32_t exp = test_pattern(addr);
-
-        if (v != exp)
-        {
-            TestPass = false;
-
-            s_printf("MEM ERROR addr=%x read=%x exp=%x\n",
-                     addr, v, exp);
-
-            mmio_w32(UART_MMIO_BASE + UART_TX, 0xEE01);
-        }
-
-        lfsr = lfsr_next(lfsr);
-    }
-
-    /* ================= result ================= */
-
-    if (TestPass)
-        s_printf("[mem_check] OK (RV32I safe)\n");
-    else
-        s_printf("[mem_check] NG!!! (RV32I fail)\n");
-}
-
-void seqential_mem_check(uint32_t start_addr, uint32_t end_addr) {
-    bool TestPass = true;
-    volatile uint32_t *p;
-    uint32_t lfsr;
-    uint32_t addr;
-
-    /* 範囲サイズ（バイト） */
-    uint32_t range_bytes = end_addr - start_addr;
-
-    s_printf("[mem_check] range %x - %x\n", start_addr, end_addr);
-
-    /* ---------- write phase ---------- */
-    s_printf("[mem_check] sequential write phase\n");
-
-    lfsr = 0x123456ABu;
-    for (uint32_t i = 0; i < (range_bytes / MEM_STEP); i++) {
-        addr = start_addr + i * MEM_STEP;
-
-        p = (volatile uint32_t *)addr;
-        *p = test_pattern(addr);
-
-        lfsr = lfsr_next(lfsr);
-    }
-
-    /* ---------- read & verify ---------- */
-    s_printf("[mem_check] sequential read & verify phase\n");
-
-    lfsr = 0x123456ABu;
-    for (uint32_t i = 0; i < (range_bytes / MEM_STEP); i++) {
-        addr = start_addr + i * MEM_STEP;
-
-        p = (volatile uint32_t *)addr;
-        uint32_t v   = *p;
-        uint32_t exp = test_pattern(addr);
-
-        if (v != exp) {
-            TestPass = false;
-            s_printf("MEM ERROR addr=%x read=%x exp=%x\n",
-                   addr, v, exp);
-            //PANIC("mem_check failed");
-            mmio_w32(UART_MMIO_BASE + UART_TX, 0xEE01);
-        }
-
-        lfsr = lfsr_next(lfsr);
-    }
-
-    if(TestPass==true) {
-        s_printf("[mem_check] OK (RV32I safe)\n");
-    } else {
-        s_printf("[mem_check] NG!!! (RV32I fail)\n");
-    }
 }
 
 #define MAT_N 8
@@ -891,10 +747,10 @@ void kernel_main(void) {
     // compline number.
     s_printf("Test Ver: test_1.4.5\n");
 
-    s_printf("Draw PSC Logo\n");
-    lcd_draw_boot_logo();
+    //s_printf("Draw PSC Logo\n");
+    //lcd_draw_boot_logo();
 
-#if 1
+#if 0
     // I2S mic 
     uint32_t sample24;
 
@@ -906,8 +762,41 @@ void kernel_main(void) {
     }
 #endif
 
-#if 1
+#if 0
     s_call_mic_read_samples24(10);
+#endif
+
+#if 1
+    fft_complex_t a = {32767, 0};
+    fft_complex_t b = {32767, 0};
+
+    fft_complex_t c = fft_mul_q15(a, b);
+
+    s_printf("%d %d\n", c.re, c.im);
+    
+    // fft
+    fft_complex_t fft_test_data[8] =
+    {
+        {32767, 0},
+        {32767, 0},
+        {32767, 0},
+        {32767, 0},
+        {    0, 0},
+        {    0, 0},
+        {    0, 0},
+        {    0, 0},
+    };
+
+    fft_q15(fft_test_data, 8);
+
+    for (int i = 0; i < 8; i++)
+    {
+        s_printf("%d : %d %d\n",
+            i,
+            fft_test_data[i].re,
+            fft_test_data[i].im);
+    }
+
 #endif
     
     //s_printf("Draw PSC BOX\n");

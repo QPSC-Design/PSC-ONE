@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`define fast_sck
+//`define fast_sck
 
 module PSC_SDReader #(
     parameter ADDR_WIDTH    = 32,
@@ -108,7 +108,8 @@ module PSC_SDReader #(
     // ============================================================
     localparam integer FIFO_AW = 9;     // max 512
 
-    reg [7:0] fifo_mem [0:FIFO_DEPTH-1];
+    reg [7:0] fifo_R_mem [0:FIFO_DEPTH-1];
+    reg [7:0] fifo_W_mem [0:FIFO_DEPTH-1];
     reg [FIFO_AW-1:0] fifo_wr_ptr, fifo_rd_ptr;
     reg [FIFO_AW:0]   fifo_count; // 0..FIFO_DEPTH
 
@@ -184,7 +185,7 @@ module PSC_SDReader #(
                     SD_IF_DATA: begin
                         cpu_rready <= 1'b1;
                         if (!fifo_empty) begin
-                            cpu_rdata <= {24'h0, fifo_mem[fifo_rd_ptr]};
+                            cpu_rdata <= {24'h0, fifo_R_mem[fifo_rd_ptr]};
                             fifo_pop  <= 1'b1;
                         end else begin
                             cpu_rdata <= 32'h0000_00E0; // empty marker (好みで)
@@ -255,7 +256,7 @@ module PSC_SDReader #(
             // ------------ FIFO ----------------
             // push
             if (fifo_push && !fifo_full) begin
-                fifo_mem[fifo_wr_ptr] <= fifo_push_data;
+                fifo_R_mem[fifo_wr_ptr] <= fifo_push_data;
                 fifo_wr_ptr <= fifo_wr_ptr + 1'b1;
                 fifo_count  <= fifo_count + 1'b1;
             end
@@ -289,24 +290,33 @@ module PSC_SDReader #(
     // SD INIT + READ FSM
     // ============================================================
     localparam [4:0]
-        ST_RESET       = 5'd0,
-        ST_INIT_CLK    = 5'd1,
+        ST_RESET            = 5'd0,
+        ST_INIT_CLK         = 5'd1,
 
-        ST_CMD0_SEND   = 5'd2,
-        ST_CMD8_SEND   = 5'd3,
-        ST_CMD55_SEND  = 5'd4,
-        ST_ACMD41_SEND = 5'd5,
-        ST_CMD58_SEND  = 5'd6,
+        ST_CMD0_SEND        = 5'd2,
+        ST_CMD8_SEND        = 5'd3,
+        ST_CMD55_SEND       = 5'd4,
+        ST_ACMD41_SEND      = 5'd5,
+        ST_CMD58_SEND       = 5'd6,
 
-        ST_WAIT_R1     = 5'd7,
-        ST_READY       = 5'd8,
+        ST_WAIT_R1          = 5'd7,
+        ST_READY            = 5'd8,
 
-        ST_CMD17_SEND  = 5'd9,
-        ST_WAIT_TOKEN  = 5'd10,
-        ST_READ_DATA   = 5'd11,
-        ST_READ_CRC1   = 5'd12,
-        ST_READ_CRC2   = 5'd13,
-        ST_DONE        = 5'd14,
+        ST_CMD17_SEND       = 5'd9,
+        ST_WAIT_TOKEN       = 5'd10,
+        ST_READ_DATA        = 5'd11,
+        ST_READ_CRC1        = 5'd12,
+        ST_READ_CRC2        = 5'd13,
+        ST_DONE             = 5'd14,
+
+        ST_CMD24_SEND       = 5'd15,
+        ST_WRITE_TOKEN      = 5'd16,
+        ST_WRITE_DATA       = 5'd17,
+        ST_WRITE_CRC1       = 5'd18,
+        ST_WRITE_CRC2       = 5'd19,
+        ST_WAIT_DATA_RESP   = 5'd20,
+        ST_WAIT_BUSY        = 5'd21,
+        ST_WRITE_DONE       = 5'd22,
 
         ST_FULL        = 5'd30,
         ST_ERROR       = 5'd31;
@@ -583,6 +593,10 @@ module PSC_SDReader #(
                 end
 
                 // -------------------------------------------------
+                // SD READ Sequence
+                // -------------------------------------------------
+
+                // -------------------------------------------------
                 // READY (待機: read開始待ち)
                 // state = 8
                 ST_READY: begin
@@ -721,6 +735,100 @@ module PSC_SDReader #(
                         end
                     end
                 end
+
+                // -------------------------------------------------
+                // SD WRITE Sequence
+                // -------------------------------------------------
+                // state = 15
+                ST_CMD24_SEND: begin
+                if (spi_tx_start_d) begin
+                    case (cmd_i)
+                        3'd0: spi_send(8'h58);              // CMD24
+                        3'd1: spi_send(sector_reg[31:24]);
+                        3'd2: spi_send(sector_reg[23:16]);
+                        3'd3: spi_send(sector_reg[15:8]);
+                        3'd4: spi_send(sector_reg[7:0]);
+                        3'd5: spi_send(8'hFF);              // Dummy CRC
+                        default: spi_send(8'hFF);
+                    endcase
+                end
+
+                if (spi_tx_start) begin
+                    if (cmd_i == 3'd5) begin
+                        cmd_i      <= 3'd0;
+                        next_state <= ST_WRITE_TOKEN;
+                        state      <= ST_WAIT_R1;
+                    end
+                end
+                end
+
+                // -------------------------------------------------
+                // state = 16
+                ST_WRITE_TOKEN: begin
+                    if (spi_tx_start_d) begin
+                        spi_send(8'hFE);          // Data Token
+                    end
+
+                    if (spi_tx_start) begin
+                        byte_cnt <= 10'd0;
+                        state    <= ST_WRITE_DATA;
+                    end
+                end
+
+                // -------------------------------------------------
+                // state = 17
+                ST_WRITE_DATA: begin
+                    if (spi_tx_start_d) begin
+                        spi_send(8'hFF);
+                    end
+                end
+
+                // -------------------------------------------------
+                // state = 18
+                ST_WRITE_CRC1: begin
+                    if (spi_tx_start_d) begin
+                        spi_send(8'hFF);
+                    end
+                end
+
+                // -------------------------------------------------
+                // state = 19
+                ST_WRITE_CRC2: begin
+                    if (spi_tx_start_d) begin
+                        spi_send(8'hFF);
+                    end
+                end
+
+                // -------------------------------------------------
+                // state = 20
+                ST_WAIT_DATA_RESP: begin
+                    if (spi_tx_start_d) begin
+                        spi_send(8'hFF);
+                    end
+                end
+                // -------------------------------------------------
+                // state = 21
+                ST_WAIT_BUSY: begin
+                    if (spi_tx_start_d)
+                        spi_send(8'hFF);
+
+                    if (spi_tx_start) begin
+                        if (spi_rx_data == 8'hFF) begin
+                            state <= ST_READY;
+                            cmd_i <= 0;
+                        end
+                    end
+                end
+
+                // -------------------------------------------------
+                // state = 22
+                ST_WRITE_DONE: begin
+                    if (spi_rx_data == 8'hFF) begin
+                        state <= ST_READY;
+                        cmd_i <= 3'd0;
+                    end
+                end
+
                 // -------------------------------------------------
                 // state = 30
                 ST_FULL: begin
@@ -746,13 +854,15 @@ module PSC_SDReader #(
     end
 
     // debug
-    wire [7:0] fifo_d0 = fifo_mem[0];
-    wire [7:0] fifo_d1 = fifo_mem[1];
-    wire [7:0] fifo_d2 = fifo_mem[2];
-    wire [7:0] fifo_d3 = fifo_mem[3];
-    wire [7:0] fifo_d4 = fifo_mem[4];
-    wire [7:0] fifo_d5 = fifo_mem[5];
-    wire [7:0] fifo_d6 = fifo_mem[6];
-    wire [7:0] fifo_d7 = fifo_mem[7];
+    wire [7:0] fifo_rd0 = fifo_R_mem[0];
+    wire [7:0] fifo_rd1 = fifo_R_mem[1];
+    wire [7:0] fifo_rd2 = fifo_R_mem[2];
+    wire [7:0] fifo_rd3 = fifo_R_mem[3];
+
+    // debug
+    wire [7:0] fifo_wd0 = fifo_W_mem[0];
+    wire [7:0] fifo_wd1 = fifo_W_mem[1];
+    wire [7:0] fifo_wd2 = fifo_W_mem[2];
+    wire [7:0] fifo_wd3 = fifo_W_mem[3];
 
 endmodule

@@ -85,7 +85,8 @@ module PSC_I2SRX #(
                     I2S_ADDR_RX: begin
                         cpu_rready <= 1'b1;
                         if (!fifo_empty) begin
-                            cpu_rdata <= {8'h0, fifo_R_mem[fifo_rd_ptr]};
+                            //cpu_rdata <= {8'h0, fifo_R_mem[fifo_rd_ptr]};
+                            cpu_rdata <= {{8{fifo_R_mem[fifo_rd_ptr][23]}}, fifo_R_mem[fifo_rd_ptr]};
                             fifo_pop  <= 1'b1;
                         end else begin
                             cpu_rdata <= 32'h0000_00C0; // empty marker (好みで)
@@ -186,7 +187,7 @@ module PSC_I2SRX #(
         end else begin
             if (pos_SCK) begin
                 if (i2s_data_divcnt < 32)
-                    i2s_rsv_data[31 - i2s_data_divcnt] <= I2S_SD_d;
+                    i2s_rsv_data[32 - i2s_data_divcnt] <= I2S_SD_d;
             end
         end
     end
@@ -198,7 +199,7 @@ module PSC_I2SRX #(
     reg         fifo_push;
 
     // 32bit to 24bit mask funcition
-    function [23:0] i2s_to_abs24;
+    function [23:0] i2s_to_24bit;
         input [31:0] i2s_data;
 
         reg [31:0] masked;
@@ -206,17 +207,11 @@ module PSC_I2SRX #(
 
     begin
         // マスク（元コードと同じ）
-        masked = i2s_data & 32'h7FFF_FF80;
+        masked = i2s_data & 32'hFFFF_FF00;
 
         // 24bit切り出し（符号付きとして扱う）
-        data_24 = masked[30:7];
+        i2s_to_24bit = masked[31:8];
 
-        // 絶対値
-        if (data_24[23] == 1'b1) begin
-            i2s_to_abs24 = ~data_24 + 1'b1;
-        end else begin
-            i2s_to_abs24 = data_24;
-        end
     end
     endfunction
 
@@ -250,7 +245,7 @@ module PSC_I2SRX #(
                 case ({fifo_push_sig, fifo_pop_sig})
                     // push
                     2'b10: begin
-                        fifo_R_mem[fifo_wr_ptr] <= i2s_to_abs24(i2s_rsv_data);
+                        fifo_R_mem[fifo_wr_ptr] <= i2s_to_24bit(i2s_rsv_data);
                         fifo_wr_ptr <= (fifo_wr_ptr == FIFO_DEPTH-1) ? 0 : fifo_wr_ptr + 1'b1;
                         fifo_count  <= fifo_count + 1'b1;
                     end
@@ -263,7 +258,7 @@ module PSC_I2SRX #(
 
                     // push & pop
                     2'b11: begin
-                        fifo_R_mem[fifo_wr_ptr] <= i2s_to_abs24(i2s_rsv_data);
+                        fifo_R_mem[fifo_wr_ptr] <= i2s_to_24bit(i2s_rsv_data);
                         fifo_wr_ptr <= (fifo_wr_ptr == FIFO_DEPTH-1) ? 0 : fifo_wr_ptr + 1'b1;
                         fifo_rd_ptr <= (fifo_rd_ptr == FIFO_DEPTH-1) ? 0 : fifo_rd_ptr + 1'b1;
                         fifo_count  <= fifo_count;
