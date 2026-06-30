@@ -18,6 +18,10 @@ The displayed color bars are generated directly by the PSC-ONE hardware and conf
 
 <img src="docs/images/PSCONE_IPS_20260612.jpg" width="400">
 
+The PSC-ONE boot logo rendered on the actual FPGA hardware during system startup, demonstrating successful LCD initialization and graphics output.  
+
+<img src="docs/images/PSC_Boot_pic.jpg" width="600">
+
 ## What is PSC-ONE?
 
 PSC-ONE is an open-source full-stack RISC-V SoC project developed by QPSC-Design.
