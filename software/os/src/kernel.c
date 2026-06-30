@@ -58,6 +58,10 @@ long uart_getchar(void) {
 
 #else   // ==== MMIO版（FPGA用）====
 
+#ifndef PIO32_ADDR
+#define PIO32_ADDR (*(volatile uint32_t *)0x10001000)
+#endif
+
 // UART ベースやビット定義が common.h に無ければ保険として定義
 #ifndef UART_MMIO_BASE
 #define UART_MMIO_BASE 0x10000000u
@@ -96,6 +100,21 @@ void uart_putchar(char ch) {
         __asm__ __volatile__("nop");
     }
     mmio_w32(UART_MMIO_BASE + UART_TX, (uint32_t)(uint8_t)ch);
+}
+
+// タイムアウト処理付き
+// TBD
+long uart_getchar_timeout(uint32_t timeout)
+{
+    while (timeout--) {
+        if (mmio_r32(UART_MMIO_BASE + UART_ST) & ST_RX_AVAIL) {
+            return (long)(mmio_r32(UART_MMIO_BASE + UART_RX) & 0xFF);
+        }
+
+        __asm__ __volatile__("nop");
+    }
+
+    return -1;      // タイムアウト
 }
 
 // U-Mode ecall 用: getchar
@@ -144,41 +163,6 @@ paddr_t alloc_pages(uint32_t n) {
     return paddr;
 }
 
-
-/*
-void user_entry(void) {
-    PANIC("not yet implemented"); // 後で実装する
-}
-*/
-
-// ↓ __attribute__((naked)) が追加されていることに注意
-/*
-__attribute__((naked)) void user_entry(void) {
-    __asm__ __volatile__(
-        "csrw sepc, %[sepc]\n"
-        "csrw sstatus, %[sstatus]\n"
-        "sret\n"
-        :
-        : [sepc] "r" (USER_BASE),
-          [sstatus] "r" (SSTATUS_SPIE | SSTATUS_SUM)
-    );
-}
-*/
-/*
-__attribute__((naked)) void user_entry(void) {
-    __asm__ __volatile__(
-        "mv sp, %[user_sp]\n"
-        "csrw sepc, %[sepc]\n"
-        "csrw sstatus, %[sstatus]\n"
-        "sret\n"
-        :
-        : [user_sp] "r" (USER_STACK_TOP),
-          [sepc] "r" (USER_BASE),
-          [sstatus] "r" (SSTATUS_SPIE | SSTATUS_SUM)
-        : "memory"
-    );
-}
-*/
 __attribute__((naked)) void user_entry(void) {
     __asm__ __volatile__(
         "mv sp, %[user_sp]\n"
@@ -567,6 +551,7 @@ __attribute__((noreturn)) void reboot(void)
 // syscall処理
 void handle_syscall(struct trap_frame *f) {
     switch (f->a3) {             // ★ syscall番号は a3
+
         // -------------------------------------------
         case SYS_PUTCHAR:
             uart_putchar(f->a0);      // ★ 引数は a0
@@ -582,6 +567,13 @@ void handle_syscall(struct trap_frame *f) {
                 }
                 yield();
             }
+            break;
+        }
+
+        // -------------------------------------------
+        case SYS_GETCHAR_TIMEOUT: {
+            long ch = uart_getchar_timeout(1000);
+            f->a0 = ch;   // 入力なしなら -1
             break;
         }
 
@@ -619,6 +611,13 @@ void handle_syscall(struct trap_frame *f) {
         }
         
         // -------------------------------------------
+        case SYS_SD_WRITE: {
+            //TBD
+            s_call_sdcard_write_api(f->a0);
+            break;
+        }
+        
+        // -------------------------------------------
         case SYS_SD_READ_BUF: {
             static uint8_t kbuf[512];
 
@@ -646,7 +645,15 @@ void handle_syscall(struct trap_frame *f) {
             hexdump((const void *)addr, len, addr);
             break;
         }
-
+        
+        // -------------------------------------------
+        case SYS_SW_READ: {
+            //s_printf("SYS_SW_READ\n");
+            volatile uint32_t tmp = PIO32_ADDR;
+            f->a0 = tmp & 0x03;
+            break;
+        }
+        
         // -------------------------------------------
         case SYS_EXIT: {
             /*
@@ -708,6 +715,10 @@ void boot(void) {
     );
 }
 
+// -------------------------------------------
+// kernel main
+// -------------------------------------------
+
 #define MAT_N 8
 
 extern char __kernel_base[];
@@ -740,15 +751,26 @@ void kernel_main(void) {
     cmd_dump(2, argv);
 #endif
 
+#if BSS_CLEAR
+    s_printf("memset = OFF\n");
     memset(__bss, 0, (size_t) __bss_end - (size_t) __bss);
+#else
+    s_printf("memset = ON\n");
+#endif
     s_printf("PSC_OS Boot Start.........\n");
     s_printf("--- memset done ---\n");
 
     // compline number.
-    s_printf("Test Ver: test_1.4.5\n");
+    s_printf("Test Ver: test_1.4.6\n");
 
-    //s_printf("Draw PSC Logo\n");
-    //lcd_draw_boot_logo();
+    s_printf("Draw PSC Logo\n");
+    lcd_draw_boot_logo();
+
+#if 0
+    s_printf("SW data\n");
+    uint32_t sw = PIO32_ADDR & 0x03;
+    s_printf("%x\n", sw);
+#endif
 
 #if 0
     // I2S mic 
@@ -766,7 +788,8 @@ void kernel_main(void) {
     s_call_mic_read_samples24(10);
 #endif
 
-#if 1
+#if 0
+    s_printf("FFT data\n");
     fft_complex_t a = {32767, 0};
     fft_complex_t b = {32767, 0};
 
@@ -798,10 +821,6 @@ void kernel_main(void) {
     }
 
 #endif
-    
-    //s_printf("Draw PSC BOX\n");
-    //lcd_write_pix32x32_beta(30u, 50u);
-    //lcd_write_pix32x32_beta(120u, 50u);
 
     s_printf(
         "\n"
@@ -815,7 +834,7 @@ void kernel_main(void) {
         "| UART  : SBI console or\n"
         "| UART  : MMIO console\n"
         "| CMD1  : hello, primes, dump, sa_start\n"
-        "| CMD2  : sd_read, mic_read\n"
+        "| CMD2  : sd_read, sd_write, mic_read\n"
         "| CMD3  : fat32_mount, fat32_ls, fat32_cat\n"
         "| quit  : Ctl+A C. q.\n"
         "+--------------------------------------------------+\n",

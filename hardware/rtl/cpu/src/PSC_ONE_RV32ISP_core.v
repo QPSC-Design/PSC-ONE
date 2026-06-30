@@ -3,10 +3,6 @@
 //  外部I/F：32bit SDRAM 単発アクセス
 // ===============================================================
 `timescale 1ns/1ps
-
-// ON:  PSC_RV32ISP_core. Fetch, Execute 分離
-// OFF: PSC_RV32IS_core
-`define CPU_PIPELINE
 `define DCache_SUB
 
 module PSC_ONE_RV32ISP_core #(
@@ -25,19 +21,19 @@ module PSC_ONE_RV32ISP_core #(
     parameter integer CPU_DATA_WIDTH  = 32,  
 
     // PIO アドレス（0なら無効）
-    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_TX  = 32'h1000_0000,
-    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_RX  = 32'h1000_0004,
-    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_ST  = 32'h1000_0008,
-    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_CT  = 32'h1000_000C,
-    parameter [ADDR_WIDTH-1:0]  PIO_ADDRESS      = 32'h1000_1000,
-    parameter [ADDR_WIDTH-1:0]  TIMER_WRITE_ADDR = 32'h1000_2000,
-    parameter [ADDR_WIDTH-1:0]  TIMER_READ_ADDR  = 32'h1000_2004,
-    parameter [ADDR_WIDTH-1:0]  LCD_PIX_ADDRESS  = 32'h1000_3000,
-    parameter [ADDR_WIDTH-1:0]  LCD_PIX_DATA     = 32'h1000_3004,
-    parameter [ADDR_WIDTH-1:0]  LCD_PIXS_ST      = 32'h1000_3008,
-    parameter [ADDR_WIDTH-1:0]  LED_ADDRESS      = 32'h1000_4000,
-    parameter [ADDR_WIDTH-1:0]  PSC_SA_CTRL      = 32'h0,
-    parameter [ADDR_WIDTH-1:0]  PSC_SA_STATUS    = 32'h0,
+    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_TX     = 32'h1000_0000,
+    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_RX     = 32'h1000_0004,
+    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_ST     = 32'h1000_0008,
+    parameter [ADDR_WIDTH-1:0]  UART_ADDRESS_CT     = 32'h1000_000C,
+    parameter [ADDR_WIDTH-1:0]  PIO_ADDRESS         = 32'h1000_1000,
+    parameter [ADDR_WIDTH-1:0]  TIMER_WRITE_ADDR    = 32'h1000_2000,
+    parameter [ADDR_WIDTH-1:0]  TIMER_READ_ADDR     = 32'h1000_2004,
+    parameter [ADDR_WIDTH-1:0]  LCD_PIX_ADDRESS     = 32'h1000_3000,
+    parameter [ADDR_WIDTH-1:0]  LCD_PIX_DATA        = 32'h1000_3004,
+    parameter [ADDR_WIDTH-1:0]  LCD_PIXS_ST         = 32'h1000_3008,
+    parameter [ADDR_WIDTH-1:0]  LED_ADDRESS         = 32'h1000_4000,
+    parameter [ADDR_WIDTH-1:0]  PSC_SA_CTRL         = 32'h0,
+    parameter [ADDR_WIDTH-1:0]  PSC_SA_STATUS       = 32'h0,
     parameter [ADDR_WIDTH-1:0]  PSC_SD_IF_READ_DATA = 32'h1000_6000,
     parameter [ADDR_WIDTH-1:0]  PSC_SD_IF_SECTOR    = 32'h1000_6004,
     parameter [ADDR_WIDTH-1:0]  PSC_SD_IF_CTRL      = 32'h1000_6008,
@@ -45,10 +41,10 @@ module PSC_ONE_RV32ISP_core #(
     parameter [ADDR_WIDTH-1:0]  PSC_I2S_ADDR_ST     = 32'h1000_7004
 )(
     // CLK, RESET
-    input  wire         clock,
-    input  wire         reset_n,
-    input  wire         cpu_stop,
-    output wire [8:0]   uart_out,
+    input  wire                         clock,
+    input  wire                         reset_n,
+    input  wire                         cpu_stop,
+    output wire [8:0]                   uart_out,
 
     // MMIO
     output  wire                         mmio_valid,
@@ -58,14 +54,14 @@ module PSC_ONE_RV32ISP_core #(
     input wire                           mmio_ready,
     output wire  [CPU_DATA_WIDTH-1:0]    mmio_wdata,
 
-    // SynapEngine
-    /*
-    output wire [31:0]                  csr_SA_CTRL,
-    input  wire [31:0]                  csr_SA_STATUS,
-    output wire [31:0]                  csr_SA_ADDR_A,
-    output wire [31:0]                  csr_SA_ADDR_B,
-    output wire [31:0]                  csr_SA_ADDR_C,
-    */
+    // -------------------------------
+    // DMA IF
+    // -------------------------------
+    output wire  [CPU_DATA_WIDTH-1:0]    csr_DMA_CTRL,
+    output wire  [CPU_DATA_WIDTH-1:0]    csr_DMA_WORDS,
+    output wire  [CPU_DATA_WIDTH-1:0]    csr_DMA_SRC,
+    output wire  [CPU_DATA_WIDTH-1:0]    csr_DMA_DST,
+    input  wire  [CPU_DATA_WIDTH-1:0]    csr_DMA_STATUS,
 
     // -------------------------------
     // 外部：Program側 16bit AXI IF
@@ -155,12 +151,6 @@ module PSC_ONE_RV32ISP_core #(
 );
 
     // --------------------------------
-    // 内部クロック/リセット
-    // --------------------------------
-    wire clk = clock;
-    wire rst = ~reset_n;   // cache_dma_controller は正論理リセット
-
-    // --------------------------------
     // Csr to SynapEngine
     // --------------------------------
     wire [31:0]  csr_SA_CTRL;
@@ -177,6 +167,9 @@ module PSC_ONE_RV32ISP_core #(
     wire         program_mem_read_ready;
     wire [31:0]  program_mem_read_address;
     wire [31:0]  program_mem_read_data;
+    wire         program_mem_req_ready;
+
+    wire         is_fence_i;
 
     wire         data_mem_read_valid;
     wire         data_mem_read_ready;
@@ -201,7 +194,6 @@ module PSC_ONE_RV32ISP_core #(
     // --------------------------------
     // CORE
     // --------------------------------
-`ifdef CPU_PIPELINE
     PSC_RV32ISP_core #(
         .COUNTER_MMIO_ADDR          (32'hF004_FFF0)
     ) u_core (
@@ -214,6 +206,7 @@ module PSC_ONE_RV32ISP_core #(
         .program_mem_read_ready     (program_mem_read_ready),
         .program_mem_read_address   (program_mem_read_address),
         .program_mem_read_data      (program_mem_read_data),
+        .program_mem_req_ready      (program_mem_req_ready),
 
         .data_mem_read_valid        (data_mem_read_valid),
         .data_mem_read_ready        (data_mem_read_ready),
@@ -233,7 +226,15 @@ module PSC_ONE_RV32ISP_core #(
         .mmu_data_mem_read_data     (mmu_mem_read_data),
         .mmu_data_req_ready         (mmu_data_req_ready),
 
-        .csr_SA_CTRL                (csr_SA_CTRL), // SynapEngine
+        .is_fence_i                 (is_fence_i),       // cache clear
+
+        .csr_DMA_CTRL               (csr_DMA_CTRL),     // DMA
+        .csr_DMA_WORDS              (csr_DMA_WORDS), 
+        .csr_DMA_SRC                (csr_DMA_SRC), 
+        .csr_DMA_DST                (csr_DMA_DST), 
+        .csr_DMA_STATUS             (csr_DMA_STATUS), 
+
+        .csr_SA_CTRL                (csr_SA_CTRL),      // SynapEngine
         .csr_SA_MODE                (csr_SA_MODE), 
         .csr_SA_STATUS              (csr_SA_STATUS),
         .csr_SA_ADDR_A              (csr_SA_ADDR_A),
@@ -242,45 +243,6 @@ module PSC_ONE_RV32ISP_core #(
 
         .uart_out                   (uart_out)
     );
-`else
-    // MMU port
-    assign   mmu_mem_read_valid     = 1'b0;
-    assign   mmu_mem_read_address   = 32'h0;
-
-    PSC_RV32IS_core #(
-        .COUNTER_MMIO_ADDR        (32'hF004_FFF0)
-    ) u_core (
-        .clock                    (clock),
-        .reset_n                  (reset_n),
-        .cpu_stop                 (cpu_stop),
-        .irq_ext                  (1'b0),
-
-        .program_mem_read_valid   (program_mem_read_valid),
-        .program_mem_read_ready   (program_mem_read_ready),
-        .program_mem_read_address (program_mem_read_address),
-        .program_mem_read_data    (program_mem_read_data),
-
-        .data_mem_read_valid      (data_mem_read_valid),
-        .data_mem_read_ready      (data_mem_read_ready),
-        .data_mem_read_address    (data_mem_read_address),
-        .data_mem_read_data       (data_mem_read_data),
-
-        .data_mem_write_ready     (data_mem_write_ready),
-        .data_mem_write_valid     (data_mem_write_valid),
-        .mem_write_sel            (mem_write_sel),
-        .mem_write_address        (data_mem_write_address),
-        .mem_write_data           (mem_write_data),
-
-        .csr_SA_CTRL              (csr_SA_CTRL), // SynapEngine
-        .csr_SA_MODE              (csr_SA_MODE), 
-        .csr_SA_STATUS            (csr_SA_STATUS),
-        .csr_SA_ADDR_A            (csr_SA_ADDR_A),
-        .csr_SA_ADDR_B            (csr_SA_ADDR_B),
-        .csr_SA_ADDR_C            (csr_SA_ADDR_C),
-
-        .uart_out                 (uart_out)
-    );
-`endif
 
     // ============================================================
     //  SynapEngine 2x2
@@ -362,8 +324,6 @@ module PSC_ONE_RV32ISP_core #(
     // ===========================================================
     //  Program キャッシュ（I-Cache 相当）
     // ===========================================================
-    wire [31:0]  cpu_program_addr = program_mem_read_address[31:0];
-
     // cache <-> bridge（128bit ライン側）
     wire         p_mem_valid128;
     wire         p_mem_rw128;
@@ -380,14 +340,16 @@ module PSC_ONE_RV32ISP_core #(
         .TAGMSB              (31),
         .TAGLSB              (14)
     ) u_program_dma_ctrl (
-        .clk                (clk),
-        .rst                (rst),
+        .clock              (clock),
+        .reset_n            (reset_n),
         .cpu_valid          (program_mem_read_valid),
         .cpu_rw             (1'b0),
-        .cpu_addr           (cpu_program_addr),
+        .cpu_addr           (program_mem_read_address),
         .cpu_data           (32'd0),            // 未使用
         .cpu_ready          (program_mem_read_ready),
         .cpu_data_out       (program_mem_read_data),
+        .cpu_req_ready      (program_mem_req_ready),
+        .cpu_cache_clear    (is_fence_i),
         // 128b 側
         .mem_req_ready      (1'b1),             // 1'b1 fix
         .mem_valid          (p_mem_valid128),
@@ -425,54 +387,54 @@ module PSC_ONE_RV32ISP_core #(
         .ID_WIDTH           (AXI_ID_WIDTH),
         .DATA_WIDTH         (AXI_DATA_WIDTH)
     ) p_axi_bridge (
-        .clock          (clk),
-        .reset_n        (reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
 
         // Cache side (128b)
-        .read_valid     (p_cache_rd_valid),
-        .read_ready     (p_cache_rd_ready),
-        .read_addr      (p_cache_rd_addr),
-        .read_data      (p_cache_rd_data),
+        .read_valid         (p_cache_rd_valid),
+        .read_ready         (p_cache_rd_ready),
+        .read_addr          (p_cache_rd_addr),
+        .read_data          (p_cache_rd_data),
 
-        .write_valid    (p_cache_wr_valid),
-        .write_ready    (p_cache_wr_ready),
-        .write_addr     (p_cache_wr_addr),
-        .write_data     (p_cache_wr_data),
+        .write_valid        (p_cache_wr_valid),
+        .write_ready        (p_cache_wr_ready),
+        .write_addr         (p_cache_wr_addr),
+        .write_data         (p_cache_wr_data),
 
         // AXI4 Master (to SDRAM AXI-S)
-        .m_axi_awid     (p_axi_awid),
-        .m_axi_awaddr   (p_axi_awaddr),
-        .m_axi_awlen    (p_axi_awlen),
-        .m_axi_awsize   (p_axi_awsize),
-        .m_axi_awburst  (p_axi_awburst),
-        .m_axi_awvalid  (p_axi_awvalid),
-        .m_axi_awready  (p_axi_awready),
+        .m_axi_awid         (p_axi_awid),
+        .m_axi_awaddr       (p_axi_awaddr),
+        .m_axi_awlen        (p_axi_awlen),
+        .m_axi_awsize       (p_axi_awsize),
+        .m_axi_awburst      (p_axi_awburst),
+        .m_axi_awvalid      (p_axi_awvalid),
+        .m_axi_awready      (p_axi_awready),
 
-        .m_axi_wdata    (p_axi_wdata),
-        .m_axi_wstrb    (p_axi_wstrb),
-        .m_axi_wlast    (p_axi_wlast),
-        .m_axi_wvalid   (p_axi_wvalid),
-        .m_axi_wready   (p_axi_wready),
+        .m_axi_wdata        (p_axi_wdata),
+        .m_axi_wstrb        (p_axi_wstrb),
+        .m_axi_wlast        (p_axi_wlast),
+        .m_axi_wvalid       (p_axi_wvalid),
+        .m_axi_wready       (p_axi_wready),
 
-        .m_axi_bid      (p_axi_bid),
-        .m_axi_bresp    (p_axi_bresp),
-        .m_axi_bvalid   (p_axi_bvalid),
-        .m_axi_bready   (p_axi_bready),
+        .m_axi_bid          (p_axi_bid),
+        .m_axi_bresp        (p_axi_bresp),
+        .m_axi_bvalid       (p_axi_bvalid),
+        .m_axi_bready       (p_axi_bready),
 
-        .m_axi_arid     (p_axi_arid),
-        .m_axi_araddr   (p_axi_araddr),
-        .m_axi_arlen    (p_axi_arlen),
-        .m_axi_arsize   (p_axi_arsize),
-        .m_axi_arburst  (p_axi_arburst),
-        .m_axi_arvalid  (p_axi_arvalid),
-        .m_axi_arready  (p_axi_arready),
+        .m_axi_arid         (p_axi_arid),
+        .m_axi_araddr       (p_axi_araddr),
+        .m_axi_arlen        (p_axi_arlen),
+        .m_axi_arsize       (p_axi_arsize),
+        .m_axi_arburst      (p_axi_arburst),
+        .m_axi_arvalid      (p_axi_arvalid),
+        .m_axi_arready      (p_axi_arready),
 
-        .m_axi_rid      (p_axi_rid),
-        .m_axi_rdata    (p_axi_rdata),
-        .m_axi_rresp    (p_axi_rresp),
-        .m_axi_rlast    (p_axi_rlast),
-        .m_axi_rvalid   (p_axi_rvalid),
-        .m_axi_rready   (p_axi_rready)
+        .m_axi_rid          (p_axi_rid),
+        .m_axi_rdata        (p_axi_rdata),
+        .m_axi_rresp        (p_axi_rresp),
+        .m_axi_rlast        (p_axi_rlast),
+        .m_axi_rvalid       (p_axi_rvalid),
+        .m_axi_rready       (p_axi_rready)
     );
 
     // ===========================================================
@@ -526,8 +488,8 @@ module PSC_ONE_RV32ISP_core #(
         .PSC_I2S_ADDR_RX     (PSC_I2S_ADDR_RX),
         .PSC_I2S_ADDR_ST     (PSC_I2S_ADDR_ST)
     ) u_data_dma_ctrl (
-        .clk                (clk),
-        .rst                (rst),
+        .clock              (clock),
+        .reset_n            (reset_n),
         // CPU Data
         .cpu_valid          (data_mem_read_valid | data_mem_write_valid),
         .cpu_rw             (data_mem_write_valid),
@@ -592,54 +554,54 @@ module PSC_ONE_RV32ISP_core #(
         .ID_WIDTH           (AXI_ID_WIDTH),
         .DATA_WIDTH         (32)
     ) d_axi_bridge (
-        .clock          (clk),
-        .reset_n        (reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
 
         // Cache side (128b)
-        .read_valid     (d_cache_rd_valid),
-        .read_ready     (d_cache_rd_ready),
-        .read_addr      (d_cache_rd_addr),
-        .read_data      (d_cache_rd_data),
+        .read_valid         (d_cache_rd_valid),
+        .read_ready         (d_cache_rd_ready),
+        .read_addr          (d_cache_rd_addr),
+        .read_data          (d_cache_rd_data),
 
-        .write_valid    (d_cache_wr_valid),
-        .write_ready    (d_cache_wr_ready),
-        .write_addr     (d_cache_wr_addr),
-        .write_data     (d_cache_wr_data),
+        .write_valid        (d_cache_wr_valid),
+        .write_ready        (d_cache_wr_ready),
+        .write_addr         (d_cache_wr_addr),
+        .write_data         (d_cache_wr_data),
 
         // AXI4 Master (to SDRAM AXI-S)
-        .m_axi_awid     (d_axi_awid),
-        .m_axi_awaddr   (d_axi_awaddr),
-        .m_axi_awlen    (d_axi_awlen),
-        .m_axi_awsize   (d_axi_awsize),
-        .m_axi_awburst  (d_axi_awburst),
-        .m_axi_awvalid  (d_axi_awvalid),
-        .m_axi_awready  (d_axi_awready),
+        .m_axi_awid         (d_axi_awid),
+        .m_axi_awaddr       (d_axi_awaddr),
+        .m_axi_awlen        (d_axi_awlen),
+        .m_axi_awsize       (d_axi_awsize),
+        .m_axi_awburst      (d_axi_awburst),
+        .m_axi_awvalid      (d_axi_awvalid),
+        .m_axi_awready      (d_axi_awready),
 
-        .m_axi_wdata    (d_axi_wdata),
-        .m_axi_wstrb    (d_axi_wstrb),
-        .m_axi_wlast    (d_axi_wlast),
-        .m_axi_wvalid   (d_axi_wvalid),
-        .m_axi_wready   (d_axi_wready),
+        .m_axi_wdata        (d_axi_wdata),
+        .m_axi_wstrb        (d_axi_wstrb),
+        .m_axi_wlast        (d_axi_wlast),
+        .m_axi_wvalid       (d_axi_wvalid),
+        .m_axi_wready       (d_axi_wready),
 
-        .m_axi_bid      (d_axi_bid),
-        .m_axi_bresp    (d_axi_bresp),
-        .m_axi_bvalid   (d_axi_bvalid),
-        .m_axi_bready   (d_axi_bready),
+        .m_axi_bid          (d_axi_bid),
+        .m_axi_bresp        (d_axi_bresp),
+        .m_axi_bvalid       (d_axi_bvalid),
+        .m_axi_bready       (d_axi_bready),
 
-        .m_axi_arid     (d_axi_arid),
-        .m_axi_araddr   (d_axi_araddr),
-        .m_axi_arlen    (d_axi_arlen),
-        .m_axi_arsize   (d_axi_arsize),
-        .m_axi_arburst  (d_axi_arburst),
-        .m_axi_arvalid  (d_axi_arvalid),
-        .m_axi_arready  (d_axi_arready),
+        .m_axi_arid         (d_axi_arid),
+        .m_axi_araddr       (d_axi_araddr),
+        .m_axi_arlen        (d_axi_arlen),
+        .m_axi_arsize       (d_axi_arsize),
+        .m_axi_arburst      (d_axi_arburst),
+        .m_axi_arvalid      (d_axi_arvalid),
+        .m_axi_arready      (d_axi_arready),
 
-        .m_axi_rid      (d_axi_rid),
-        .m_axi_rdata    (d_axi_rdata),
-        .m_axi_rresp    (d_axi_rresp),
-        .m_axi_rlast    (d_axi_rlast),
-        .m_axi_rvalid   (d_axi_rvalid),
-        .m_axi_rready   (d_axi_rready)
+        .m_axi_rid          (d_axi_rid),
+        .m_axi_rdata        (d_axi_rdata),
+        .m_axi_rresp        (d_axi_rresp),
+        .m_axi_rlast        (d_axi_rlast),
+        .m_axi_rvalid       (d_axi_rvalid),
+        .m_axi_rready       (d_axi_rready)
     );
 
 endmodule

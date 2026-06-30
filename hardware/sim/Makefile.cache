@@ -23,18 +23,17 @@ SIM  := $(MODE)
 # ------------------------------------------------------------
 ifeq ($(MODE),verilator)
 # verilator
-SDRAM_MODEL = ../SDRAM_model/w9825g6kh_verilator.v
-GW2AR_SDRAM_MODEL 	= ../SDRAM_model/GW2AR_sdram_verilator.v
+GW2AR_SDRAM_MODEL 	= ../rtl/SDRAM_model/GW2AR_sdram_verilator.v
 
 EXTRA_ARGS = \
 	--trace --trace-fst --Wno-ASCRANGE --Wno-INITIALDLY --Wno-COMBDLY \
 	--Wno-WIDTHEXPAND --Wno-WIDTHTRUNC --Wno-REALCVT
 else ifeq ($(MODE),icarus)
 # icarus
-SDRAM_MODEL 		= ../SDRAM_model/w9825g6kh.v
-GW2AR_SDRAM_MODEL 	= ../SDRAM_model/GW2AR_sdram.v
+GW2AR_SDRAM_MODEL 	= ../rtl/SDRAM_model/GW2AR_sdram.v 
 
 EXTRA_ARGS  =
+VCD_COMPILE_ARGS = -DDUMP_VCD
 else
 $(error MODE=$(MODE) は不正です。MODE=icarus または MODE=verilator を指定してください)
 endif
@@ -51,3 +50,40 @@ endif
 VLOG_ARGS = -g2012 $(addprefix -D,$(DEFS))
 
 COCOTB_MAKEFILE  := $(shell cocotb-config --makefiles)/Makefile.sim
+
+# ============================================================
+#  ソース一覧
+# ============================================================
+SRC_SIMTOP = \
+	../rtl/cache/src/sim_cache_dma_controller.v
+SRC_CASHE = \
+	../rtl/cache/src/cache_dma_controller.v \
+	../rtl/cache/src/cache_dma_controller_io.v \
+	../rtl/cache/src/dm_cache_data.v \
+	../rtl/cache/src/dm_cache_tag.v
+SRC_BRIDGE = \
+	../rtl/axi/sdram_32bit_to_128bit_axi_bridge.v
+SRC_AXI_SDRAM_CNT = \
+	../rtl/axi/sdram_4port_controller_axi_slave_bX_32bit.v \
+	../rtl/sdram_controller/sdram_controller.v
+
+SIM_SRC = $(SRC_SIMTOP) $(SRC_CASHE) $(SRC_BRIDGE) $(SRC_AXI_SDRAM_CNT) $(GW2AR_SDRAM_MODEL)
+	
+# ============================================================
+#  Cocotb simulation targets
+# ============================================================
+simulate_CACHE:
+	@echo "[SIM] MODE=$(MODE), SIM=$(SIM) (PSC_DM_CACHE test)"
+	@echo EXTRA_ARGS=$(EXTRA_ARGS)
+	$(MAKE) clean
+	@mkdir -p ./wave
+	COCOTB_TEST_MODULES=cocotb_tb.cache.dm_cache_test \
+	TOPLEVEL=sim_cache_dma_controller TOPLEVEL_LANG=verilog \
+	SIM=$(SIM) \
+	VERILOG_SOURCES="$(SIM_SRC)" \
+	COMPILE_ARGS="-DCOCOTB_SIM $(VCD_COMPILE_ARGS)" \
+	VLOG_ARGS="$(VLOG_ARGS)" \
+	EXTRA_ARGS="$(EXTRA_ARGS)" \
+	make -f $(COCOTB_MAKEFILE)
+
+

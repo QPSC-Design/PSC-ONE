@@ -4,7 +4,7 @@
 # SDカードからのOSブート
 
 bootloader:
-	$(MAKE) -C ../../software/os sim_mem
+	$(MAKE) -C ../../software/os fpga_mem
 	$(MAKE) -C ../../software/os fpga_boot
 	$(MAKE) -C ../../software/os disasm
 	$(MAKE) -C ../../software/os disasm_bootloader
@@ -32,7 +32,7 @@ bootloader:
 # SDカードからのOSブート
 
 bootloader_fat32:
-	$(MAKE) -C ../../software/os sim_mem
+	$(MAKE) -C ../../software/os fpga_mem
 	$(MAKE) -C ../../software/os fpga_fat32_boot
 	$(MAKE) -C ../../software/os disasm
 	$(MAKE) -C ../../software/os disasm_bootloader_fat32

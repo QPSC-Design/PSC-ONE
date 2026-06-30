@@ -1,4 +1,7 @@
+# ============================================================
 # Usage
+# ============================================================
+
 # make -f Makefile.cpu -f Makefile.yosys yosys_cpu
 # make -f Makefile.cpu -f Makefile.yosys yosys_se
 

@@ -238,7 +238,7 @@ extern "C" void run() {
 
     WRITE_CSR<CSR_SATP>(satp_set);
     asm volatile("sfence.vma x0, x0");
-    asm volatile("fence.i");
+    asm volatile ("fence.i" ::: "memory");
 
     /* ========== 8) MRET で S-mode へ ========== */
     uint32_t mstatus = READ_CSR<CSR_MSTATUS>();

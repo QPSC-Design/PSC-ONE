@@ -132,3 +132,53 @@ void s_call_sdcard_read_api(uint32_t sd_sector_address)
         if ((i & 15) == 15) putchar('\n');
     }
 }
+// -------------------------------------------------------
+// SDカードWRITE実行関数
+// TBD
+void s_call_sdcard_write_api(uint32_t sd_sector_address)
+{
+    unsigned char buf[512];
+
+    int retry_max = 3;
+    int success = 0;
+
+    for (int retry = 0; retry < retry_max; retry++) {
+
+        if (sd_read_once(sd_sector_address, buf) != 0) {
+            s_printf("READ FAIL retry=%d\n", retry);
+            continue;
+        }
+
+        // CRC HW
+        uint32_t ctrl = PSC_SD_IF_CTRL;
+        uint16_t crc_hw = ((ctrl >> 24) & 0xFF) << 8 |
+                          ((ctrl >> 16) & 0xFF);
+
+        // CRC SW
+        uint16_t crc = sd_crc16(buf);
+
+        if (crc == crc_hw) {
+            s_printf("CRC OK (retry=%d)\n", retry);
+            success = 1;
+            break;
+        } else {
+            s_printf("CRC NG retry=%d (calc=%x hw=%x)\n",
+                     retry, crc, crc_hw);
+        }
+    }
+
+    if (!success) {
+        s_printf("CRC FAILED (final)\n");
+    }
+
+    // ---- dump（常に実行）----
+    const char hex[] = "0123456789ABCDEF";
+
+    for (int i = 0; i < 512; i++) {
+        unsigned char d = buf[i];
+        putchar(hex[(d >> 4) & 0xF]);
+        putchar(hex[d & 0xF]);
+        putchar(' ');
+        if ((i & 15) == 15) putchar('\n');
+    }
+}

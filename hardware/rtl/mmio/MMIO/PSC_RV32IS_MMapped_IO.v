@@ -26,8 +26,8 @@ module PSC_RV32IS_MMapped_IO #(
 );
 
     // アドレス
-    wire [ADDR_WIDTH+1:0]     cpu_byte_waddr = cpu_waddr;   // byte address
-    wire [ADDR_WIDTH+1:0]     cpu_byte_raddr = cpu_raddr;   // byte address
+    wire [ADDR_WIDTH-1:0]     cpu_byte_waddr = cpu_waddr;   // byte address
+    wire [ADDR_WIDTH-1:0]     cpu_byte_raddr = cpu_raddr;   // byte address
 
     // reg
     reg [31:0] PIO_out_reg;

@@ -32,6 +32,7 @@ module PSC_RV32ISP_Execute #(
     output wire         do_sret,
     output wire         do_mret,
     output wire         is_ecall,
+    output wire         is_fence_i,
     output wire         d_pf,
     output wire         illegal_instruction,
     // CSR sig
@@ -67,7 +68,7 @@ module PSC_RV32ISP_Execute #(
     // fifo sig
     assign fifo_read_state_sig  = (execute_state==FIFO_READ);
     assign execute_state_sig    = (execute_state==EXECUTE);
-    assign fifo_flush_sig       = (execute_state==STORE) & (pc_sel2 | is_sfence_vma | is_ecall | do_mret | do_sret | cpu_trap);
+    assign fifo_flush_sig       = (execute_state==STORE) & (pc_sel2 | is_sfence_vma | is_fence_i | is_ecall | do_mret | do_sret | cpu_trap);
 
     // CSR
     assign csr_enb      = (execute_state==BRANCH);
@@ -203,10 +204,11 @@ module PSC_RV32ISP_Execute #(
             // =====================
             BRANCH_MMU_W:
                 if (is_load | is_store) begin
-                    if (d_mmu_done)
+                    if (d_mmu_done) 
                         next_state = BRANCH;
-                end else
+                end else begin
                     next_state = BRANCH;
+                end
 
             // =====================
             BRANCH:
@@ -229,8 +231,9 @@ module PSC_RV32ISP_Execute #(
                 if (is_load | is_store) begin
                     if (d_mmu_done)
                         next_state = STORE;
-                end else
+                end else begin
                     next_state = STORE;
+                end
 
             // =====================
             STORE:
@@ -299,7 +302,8 @@ module PSC_RV32ISP_Execute #(
     wire [2:0] funct3;
     wire op1sel, op2sel, mem_rw, rf_wen;
     wire [1:0] wb_sel, pc_sel;
-    wire is_fence, is_fence_i;
+    wire is_fence;
+    //wire is_fence_i;
 
     //wire        is_load;
     //wire        is_store;
@@ -311,46 +315,46 @@ module PSC_RV32ISP_Execute #(
     assign csr_reg_data_1       = reg_data_1;
 
     Decorder u_decorder (
-        .clock          (clock),       // クロック
-        .reset_n        (reset_n),     // リセット（負論理）
-        .decode_enb     (execute_state==DECODE),   // デコード有効信号. 
-        .opcode         (opcode),      // 32bit命令コード入力
-        .in_pc          (pc),          // PC
+        .clock              (clock),       // クロック
+        .reset_n            (reset_n),     // リセット（負論理）
+        .decode_enb         (execute_state==DECODE),   // デコード有効信号. 
+        .opcode             (opcode),      // 32bit命令コード入力
+        .in_pc              (pc),          // PC
 
-        .r_addr1        (r_addr1),     // レジスタ読み出しアドレス1
-        .r_addr2        (r_addr2),     // レジスタ読み出しアドレス2
-        .w_addr         (w_addr),      // レジスタ書き込みアドレス
-        .imm            (imm),         // 即値
-        .alucon         (alucon),      // ALU制御
-        .funct3         (funct3),      // funct3
-        .op1sel         (op1sel),      // オペランド1選択
-        .op2sel         (op2sel),      // オペランド2選択
-        .mem_rw         (mem_rw),      // メモリR/W制御
-        .rf_wen         (rf_wen),      // レジスタファイル書き込み有効
-        .wb_sel         (wb_sel),      // Write Back 選択
-        .pc_sel         (pc_sel),      // PC選択
-        .is_fence       (is_fence),
-        .is_fence_i     (is_fence_i),
-        .is_sfence_vma  (is_sfence_vma),
+        .r_addr1            (r_addr1),     // レジスタ読み出しアドレス1
+        .r_addr2            (r_addr2),     // レジスタ読み出しアドレス2
+        .w_addr             (w_addr),      // レジスタ書き込みアドレス
+        .imm                (imm),         // 即値
+        .alucon             (alucon),      // ALU制御
+        .funct3             (funct3),      // funct3
+        .op1sel             (op1sel),      // オペランド1選択
+        .op2sel             (op2sel),      // オペランド2選択
+        .mem_rw             (mem_rw),      // メモリR/W制御
+        .rf_wen             (rf_wen),      // レジスタファイル書き込み有効
+        .wb_sel             (wb_sel),      // Write Back 選択
+        .pc_sel             (pc_sel),      // PC選択
+        .is_fence           (is_fence),
+        .is_fence_i         (is_fence_i),
+        .is_sfence_vma      (is_sfence_vma),
 
         // Privilege level encoding (RISC-V spec)
-        .current_priv   (priv_mode),
+        .current_priv       (priv_mode),
         // ==== CSR outputs ====
-        .csr_wr         (csr_wr),
-        .csr_cmd        (csr_cmd),
-        .csr_use_imm    (csr_use_imm),
-        .csr_addr       (csr_addr),
-        .csr_zimm       (csr_zimm),
-        .is_sret        (do_sret),
-        .is_mret        (do_mret),
-        .is_ecall       (is_ecall),
+        .csr_wr             (csr_wr),
+        .csr_cmd            (csr_cmd),
+        .csr_use_imm        (csr_use_imm),
+        .csr_addr           (csr_addr),
+        .csr_zimm           (csr_zimm),
+        .is_sret            (do_sret),
+        .is_mret            (do_mret),
+        .is_ecall           (is_ecall),
         // pipeline sig
-        .is_R_type      (is_R_type),
-        .is_op_imm      (is_op_imm),
+        .is_R_type          (is_R_type),
+        .is_op_imm          (is_op_imm),
         // Load Store
-        .is_load        (is_load),
-        .is_store       (is_store),
-        .out_pc         (decode_pc),
+        .is_load            (is_load),
+        .is_store           (is_store),
+        .out_pc             (decode_pc),
         .raise_illegal_instruction (illegal_instruction)
     );
 
@@ -363,23 +367,23 @@ module PSC_RV32ISP_Execute #(
     wire [31:0] r_data1, r_data2;
 
     Execute u_execute (
-        .clock          (clock),             // クロック
-        .reset_n        (reset_n),           // リセット（負論理）
-        .execute_enb    (execute_state==EXECUTE),    // 実行有効信号 1
-        .r_addr1        (r_addr1),           // レジスタアドレス1（Decorder出力）
-        .r_addr2        (r_addr2),           // レジスタアドレス2（Decorder出力）
-        .reg_data_addr1 (reg_data_1),        // レジスタデータ1入力
-        .reg_data_addr2 (reg_data_2),        // レジスタデータ2入力
-        .op1sel         (op1sel),            // オペランド1選択（Decorder出力）
-        .op2sel         (op2sel),            // オペランド2選択（Decorder出力）
-        .alucon         (alucon),            // ALU制御コード（Decorder出力）
-        .imm            (imm),               // 即値（Decorder出力）
-        .in_pc          (pc),                // 現在のPC値
+        .clock              (clock),             // クロック
+        .reset_n            (reset_n),           // リセット（負論理）
+        .execute_enb        (execute_state==EXECUTE),    // 実行有効信号 1
+        .r_addr1            (r_addr1),           // レジスタアドレス1（Decorder出力）
+        .r_addr2            (r_addr2),           // レジスタアドレス2（Decorder出力）
+        .reg_data_addr1     (reg_data_1),        // レジスタデータ1入力
+        .reg_data_addr2     (reg_data_2),        // レジスタデータ2入力
+        .op1sel             (op1sel),            // オペランド1選択（Decorder出力）
+        .op2sel             (op2sel),            // オペランド2選択（Decorder出力）
+        .alucon             (alucon),            // ALU制御コード（Decorder出力）
+        .imm                (imm),               // 即値（Decorder出力）
+        .in_pc              (pc),                // 現在のPC値
 
-        .alu_data       (alu_data),          // ALU演算結果
-        .r_data1        (r_data1),           // レジスタデータ1保持
-        .r_data2        (r_data2),           // レジスタデータ2保持
-        .out_pc         (execute_pc)
+        .alu_data           (alu_data),          // ALU演算結果
+        .r_data1            (r_data1),           // レジスタデータ1保持
+        .r_data2            (r_data2),           // レジスタデータ2保持
+        .out_pc             (execute_pc)
     );
 
     // =====================================
@@ -392,27 +396,27 @@ module PSC_RV32ISP_Execute #(
     assign vaddr = alu_data;
 
     MMU u_mmu_d (
-        .clk            (clock),
-        .reset_n        (reset_n),
-        .MMU_enb        (d_MMU_enb && !pipeline_mode),
-        .vaddr          (vaddr),
-        .satp           (csr_satp),
-        .priv_mode      (priv_mode),
-        .access_r       (is_load),
-        .access_w       (is_store),
-        .access_x       (1'b0),
-        .mem_req_ready  (data_mem_read_req_ready),     // 暫定.
-        .mem_rdata      (d_pte_mem_rdata),
-        .mem_addr       (d_mmu_mem_addr),
-        .mem_valid      (d_mmu_mem_valid),
-        .mem_ready      (d_mmu_mem_ready),
-        .cpu_state_done (execute_state==STORE),
-        .sfence_vma     (fifo_flush_sig & is_sfence_vma),
+        .clk                (clock),
+        .reset_n            (reset_n),
+        .MMU_enb            (d_MMU_enb && !pipeline_mode),
+        .vaddr              (vaddr),
+        .satp               (csr_satp),
+        .priv_mode          (priv_mode),
+        .access_r           (is_load),
+        .access_w           (is_store),
+        .access_x           (1'b0),
+        .mem_req_ready      (data_mem_read_req_ready),     // 暫定.
+        .mem_rdata          (d_pte_mem_rdata),
+        .mem_addr           (d_mmu_mem_addr),
+        .mem_valid          (d_mmu_mem_valid),
+        .mem_ready          (d_mmu_mem_ready),
+        .cpu_state_done     (execute_state==STORE),
+        .sfence_vma         (fifo_flush_sig & is_sfence_vma),
         
-        .paddr          (d_paddr),
-        .page_fault     (d_pf),
-        .mode_sv32      (d_mode_sv32),
-        .mmu_done       (d_mmu_done)
+        .paddr              (d_paddr),
+        .page_fault         (d_pf),
+        .mode_sv32          (d_mode_sv32),
+        .mmu_done           (d_mmu_done)
     );
 
     // =====================================
@@ -421,17 +425,17 @@ module PSC_RV32ISP_Execute #(
     wire [31:0] branch_pc; 
 
     Branch u_branch (
-        .clock          (clock),            // クロック
-        .reset_n        (reset_n),          // リセット（負論理）
+        .clock              (clock),            // クロック
+        .reset_n            (reset_n),          // リセット（負論理）
         // ブランチ有効信号. pc_sel2更新のためpipeline_modeはEXECUTEで更新
-        .branch_enb     (execute_state==BRANCH || (execute_state==EXECUTE && pipeline_mode)),    
-        .funct3         (funct3),           // funct3（Decorder出力）
-        .r_data1        (r_data1),          // レジスタデータ1（Execute出力）
-        .r_data2        (r_data2),          // レジスタデータ2（Execute出力）
-        .pc_sel         (pc_sel),           // PC選択（Decorder出力）
-        .in_pc          (execute_pc),       // PC
-        .pc_sel2        (pc_sel2),          // 分岐結果によるPC選択（Branch出力）
-        .out_pc         (branch_pc)
+        .branch_enb         (execute_state==BRANCH || (execute_state==EXECUTE && pipeline_mode)),    
+        .funct3             (funct3),           // funct3（Decorder出力）
+        .r_data1            (r_data1),          // レジスタデータ1（Execute出力）
+        .r_data2            (r_data2),          // レジスタデータ2（Execute出力）
+        .pc_sel             (pc_sel),           // PC選択（Decorder出力）
+        .in_pc              (execute_pc),       // PC
+        .pc_sel2            (pc_sel2),          // 分岐結果によるPC選択（Branch出力）
+        .out_pc             (branch_pc)
     );
 
     // =====================================

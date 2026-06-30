@@ -19,8 +19,8 @@ module cache_dma_controller #(
     parameter TAG_WIDTH         = TAGMSB - TAGLSB + 1,         // 例:18
     parameter TAG_ENTRY_WIDTH   = TAG_WIDTH + 2                // {tag,valid,dirty}
 )(
-    input  wire                           clk,
-    input  wire                           rst,
+    input  wire                           clock,
+    input  wire                           reset_n,
 
     // --------- CPU リクエスト/レスポンス ---------
     input  wire                           cpu_valid,
@@ -29,6 +29,9 @@ module cache_dma_controller #(
     input  wire [CPU_DATA_WIDTH-1:0]      cpu_data,
     output reg                            cpu_ready,
     output reg  [CPU_DATA_WIDTH-1:0]      cpu_data_out,
+    output wire                           cpu_req_ready,
+
+    input  wire                           cpu_cache_clear, 
 
     // --------- 外部メモリ（ライン転送） ---------
     input  wire                           mem_ready,       // 1ライン応答
@@ -45,6 +48,9 @@ module cache_dma_controller #(
     localparam integer INDEX_WIDTH_BA = TAGLSB - 4;   // 例:10（index=[13:4]）
     localparam integer USED_BITS_BA   = TAG_WIDTH + INDEX_WIDTH_BA + 4;
     localparam integer DEPTH          = (1 << INDEX_WIDTH_BA);
+
+    // Req Ready
+    assign  cpu_req_ready      = (state == S_IDLE);                 // Data port(Main)
 
     // FSM ステート
     localparam [3:0]
@@ -69,6 +75,9 @@ module cache_dma_controller #(
     reg  [ADDR_WIDTH-1:0]     req_addr_w;        // word address
     reg  [CPU_DATA_WIDTH-1:0] req_wdata;
     reg  [1:0]                req_word_sel_r;    // ライン内 word 選択（[1:0]）
+
+    reg                       cpu_cache_clear_d1;
+    reg                       cpu_cache_clear_latch;
 
     // アドレス
     wire [ADDR_WIDTH+1:0]     cpu_byte_addr = {cpu_addr[31:2], 2'b00};   // byte address [1:0]==2'b00
@@ -143,8 +152,8 @@ module cache_dma_controller #(
     wire [CACHE_DATA_WIDTH-1:0] ZERO_LINE = {CACHE_DATA_WIDTH{1'b0}};
 
     // ------------------------ FSM 本体 ------------------------
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
+    always @(posedge clock or negedge reset_n) begin
+        if (~reset_n) begin
             // 出力/制御初期化
             state         <= S_INIT;        // ★まず初期化へ
             init_idx      <= {INDEX_WIDTH_BA{1'b0}};
@@ -155,6 +164,9 @@ module cache_dma_controller #(
 
             cpu_ready     <= 1'b0;
             cpu_data_out  <= {CPU_DATA_WIDTH{1'b0}};
+
+            cpu_cache_clear_d1    <= 1'b0;
+            cpu_cache_clear_latch <= 1'b0;
 
             tag_we        <= 1'b0;
             data_write    <= {CPU_DATA_WIDTH{1'b0}};
@@ -182,6 +194,13 @@ module cache_dma_controller #(
             tag_we    <= 1'b0;
             data_we   <= 1'b0;
 
+            cpu_cache_clear_d1 <= cpu_cache_clear;
+
+            // cpu_cache_clear posedge
+            if (cpu_cache_clear & !cpu_cache_clear_d1) begin
+                cpu_cache_clear_latch <= 1'b1;
+            end
+
             case (state)
                 // ---------- 初期化：全インデックスを invalid=0 にする ----------
                 S_INIT: begin
@@ -207,7 +226,11 @@ module cache_dma_controller #(
                         cur_index_r <= cpu_byte_addr[TAGLSB-1:4];
                         cur_tag_r   <= cpu_byte_addr[TAGMSB:TAGLSB];
                         state       <= S_LOOKUP_ISSUE;
-                    end
+                    end 
+                    else if (cpu_cache_clear_latch) begin
+                        state       <= S_INIT;
+                        cpu_cache_clear_latch <= 1'b0;
+                    end 
                 end
 
                 // ---- index提示（1clk 後に tag/data が有効） ----
@@ -331,7 +354,7 @@ module cache_dma_controller #(
         .TAG_WIDTH  (TAG_ENTRY_WIDTH),      // ★パック幅を指定
         .INDEX_WIDTH(INDEX_WIDTH_BA)
     ) u_tag (
-        .clk       (clk),
+        .clk       (clock),
         .we        (tag_we),
         .index     (cur_index_r),
         .tag_write (tag_write),
@@ -343,7 +366,7 @@ module cache_dma_controller #(
         .DATA_WIDTH (CACHE_DATA_WIDTH),
         .INDEX_WIDTH(INDEX_WIDTH_BA)
     ) u_data (
-        .clk        (clk),
+        .clk        (clock),
         .we         (data_we),
         .index      (cur_index_r),
         .data_write (data_write),

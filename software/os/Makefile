@@ -24,7 +24,15 @@ MODE ?= sim
 ifeq ($(MODE),sim)
   BOOT_FLOW     := direct
   RUN_QEMU      := 1
-  KCPPFLAGS     :=
+  #KCPPFLAGS     :=
+  KCPPFLAGS     := -DBSS_CLEAR=1
+  USER_BASE_VAL := 0x00400000
+
+else ifeq ($(MODE),fpga_mem)
+  BOOT_FLOW     := direct
+  RUN_QEMU      := 1
+  #KCPPFLAGS     :=
+  KCPPFLAGS     := -DBSS_CLEAR=0
   USER_BASE_VAL := 0x00400000
 
 else ifeq ($(MODE),sbi)
@@ -36,11 +44,12 @@ else ifeq ($(MODE),sbi)
 else ifeq ($(MODE),psc)
   BOOT_FLOW     := loader
   RUN_QEMU      := 0
-  KCPPFLAGS     :=
+  #KCPPFLAGS     :=
+  KCPPFLAGS     := -DBSS_CLEAR=0
   USER_BASE_VAL := 0x00400000
 
 else
-  $(error Unknown MODE '$(MODE)' (use: sim | sbi | psc))
+  $(error Unknown MODE '$(MODE)' (use: sim | fpga_mem |sbi | psc))
 endif
 
 # ========================
@@ -232,6 +241,9 @@ $(USER_MEM): $(USER_BIN)
 ifeq ($(MODE),sim)
 $(KERNEL_ELF): KERNEL_LD := $(Src)/kernel_fpga.ld
 kernel_mem:    KERNEL_LD := $(Src)/kernel_fpga.ld
+else ifeq ($(MODE),fpga_mem)
+$(KERNEL_ELF): KERNEL_LD := $(Src)/kernel_fpga.ld
+kernel_mem:    KERNEL_LD := $(Src)/kernel_fpga.ld
 else ifeq ($(MODE),sbi)
 $(KERNEL_ELF): KERNEL_LD := $(Src)/kernel.ld
 kernel_mem:    KERNEL_LD := $(Src)/kernel.ld
@@ -262,6 +274,12 @@ sim_mem:
 	$(MAKE) MODE=sim $(BOOT_MEM)
 	$(MAKE) MODE=sim kernel_mem
 	$(MAKE) MODE=sim $(USER_MEM)
+
+fpga_mem:
+	@echo "[SIM] BootROM + Kernel + User"
+	$(MAKE) MODE=fpga_mem $(BOOT_MEM)
+	$(MAKE) MODE=fpga_mem kernel_mem
+	$(MAKE) MODE=fpga_mem $(USER_MEM)
 
 fpga_boot:
 	@echo "[FPGA] BootROM + Bootloader"

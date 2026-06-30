@@ -39,7 +39,8 @@ int fat32_mount(void);
 
 void call_sa_api(uint32_t matrix_size);
 void call_mic_api(unsigned count);
-void call_sd_api(unsigned sector);
+void call_sd_read_api(unsigned sector);
+void call_sd_write_api(unsigned sector);
 int call_sd_read_buf_api(uint32_t sector, void *buf);
 void call_dump_api(uint32_t addr, uint32_t len);
 
@@ -48,7 +49,8 @@ int test_mod(int a, int b);
 bool is_prime(unsigned n);
 unsigned parse_u32(const char *s);
 void putchar(char ch);
-int  getchar(void);
+int getchar(void);
+int getchar_timeout(void);
 void print_int(int v);
 
 inline static uint32_t sa_api(uint32_t n, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a4);
@@ -59,5 +61,6 @@ char *strcpy(char *dst, const char *src);
 int strcmp(const char *s1, const char *s2);
 void cmd_primes(unsigned max);
 int parse_hex(const char *s, uintptr_t *out);
+uint32_t poll_switch_api(void);
 void printf(const char *fmt, ...);
 __attribute__((noreturn)) void exit(void);

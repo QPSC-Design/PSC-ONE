@@ -180,6 +180,7 @@ module PSC_ONE_Chip #(
     wire [31:0] mmio_rdata_pio;
     wire [31:0] mmio_rdata_uart;
     wire [31:0] mmio_rdata_timer;
+    wire [31:0] mmio_rdata_led = 32'h0;     // not used
     wire [31:0] mmio_rdata_lcd;
     wire [31:0] mmio_rdata_sd;
     wire [31:0] mmio_rdata_i2s;
@@ -201,17 +202,6 @@ module PSC_ONE_Chip #(
         endcase
     end
 
-    // --------------------------------
-    // Csr to SynapEngine
-    // --------------------------------
-    /*
-    wire [31:0] csr_SA_CTRL;
-    wire [31:0] csr_SA_STATUS;
-    wire [31:0] csr_SA_ADDR_A;
-    wire [31:0] csr_SA_ADDR_B;
-    wire [31:0] csr_SA_ADDR_C;
-    */
-
     // =========================================================
     // Program-side AXI (32-bit) — SLAVE-facing ports of DUT
     // Declare wires and connect them to your AXI master/bridge.
@@ -221,80 +211,80 @@ module PSC_ONE_Chip #(
     localparam DW     = 32;
 
     // Write Address
-    wire [ID_W-1:0]         p_awid;
-    wire [ADDR_W-1:0]       p_awaddr;
-    wire [7:0]              p_awlen;
-    wire [2:0]              p_awsize;
-    wire [1:0]              p_awburst;
-    wire                    p_awvalid;
-    wire                    p_awready;
+    wire [ID_W-1:0]         p_axi_awid;
+    wire [ADDR_W-1:0]       p_axi_awaddr;
+    wire [7:0]              p_axi_awlen;
+    wire [2:0]              p_axi_awsize;
+    wire [1:0]              p_axi_awburst;
+    wire                    p_axi_awvalid;
+    wire                    p_axi_awready;
 
     // Write Data
-    wire [DW-1:0]           p_wdata;
-    wire [(DW/8)-1:0]       p_wstrb;
-    wire                    p_wlast;
-    wire                    p_wvalid;
-    wire                    p_wready;
+    wire [DW-1:0]           p_axi_wdata;
+    wire [(DW/8)-1:0]       p_axi_wstrb;
+    wire                    p_axi_wlast;
+    wire                    p_axi_wvalid;
+    wire                    p_axi_wready;
 
     // Write Response
-    wire [ID_W-1:0]         p_bid;
-    wire [1:0]              p_bresp;
-    wire                    p_bvalid;
-    wire                    p_bready;
+    wire [ID_W-1:0]         p_axi_bid;
+    wire [1:0]              p_axi_bresp;
+    wire                    p_axi_bvalid;
+    wire                    p_axi_bready;
 
     // Read Address
-    wire [ID_W-1:0]         p_arid;
-    wire [ADDR_W-1:0]       p_araddr;
-    wire [7:0]              p_arlen;
-    wire [2:0]              p_arsize;
-    wire [1:0]              p_arburst;
-    wire                    p_arvalid;
-    wire                    p_arready;
+    wire [ID_W-1:0]         p_axi_arid;
+    wire [ADDR_W-1:0]       p_axi_araddr;
+    wire [7:0]              p_axi_arlen;
+    wire [2:0]              p_axi_arsize;
+    wire [1:0]              p_axi_arburst;
+    wire                    p_axi_arvalid;
+    wire                    p_axi_arready;
 
     // Read Data
-    wire [ID_W-1:0]         p_rid;
-    wire [DW-1:0]           p_rdata;
-    wire [1:0]              p_rresp;
-    wire                    p_rlast;
-    wire                    p_rvalid;
-    wire                    p_rready;
+    wire [ID_W-1:0]         p_axi_rid;
+    wire [DW-1:0]           p_axi_rdata;
+    wire [1:0]              p_axi_rresp;
+    wire                    p_axi_rlast;
+    wire                    p_axi_rvalid;
+    wire                    p_axi_rready;
 
     // =========================================================
     // Data-side AXI (16-bit) — SLAVE-facing ports of DUT
     // =========================================================
-    wire [ID_W-1:0]         d_awid;
-    wire [ADDR_W-1:0]       d_awaddr;
-    wire [7:0]              d_awlen;
-    wire [2:0]              d_awsize;
-    wire [1:0]              d_awburst;
-    wire                    d_awvalid;
-    wire                    d_awready;
+    wire [ID_W-1:0]         d_axi_awid;
+    wire [ADDR_W-1:0]       d_axi_awaddr;
+    wire [7:0]              d_axi_awlen;
+    wire [2:0]              d_axi_awsize;
+    wire [1:0]              d_axi_awburst;
+    wire                    d_axi_awvalid;
+    wire                    d_axi_awready;
 
-    wire [DW-1:0]           d_wdata;
-    wire [(DW/8)-1:0]       d_wstrb;
-    wire                    d_wlast;
-    wire                    d_wvalid;
-    wire                    d_wready;
+    wire [DW-1:0]           d_axi_wdata;
+    wire [(DW/8)-1:0]       d_axi_wstrb;
+    wire                    d_axi_wlast;
+    wire                    d_axi_wvalid;
+    wire                    d_axi_wready;
 
-    wire [ID_W-1:0]         d_bid;
-    wire [1:0]              d_bresp;
-    wire                    d_bvalid;
-    wire                    d_bready;
+    wire [ID_W-1:0]         d_axi_bid;
+    wire [1:0]              d_axi_bresp;
+    wire                    d_axi_bvalid;
+    wire                    d_axi_bready;
 
-    wire [ID_W-1:0]         d_arid;
-    wire [ADDR_W-1:0]       d_araddr;
-    wire [7:0]              d_arlen;
-    wire [2:0]              d_arsize;
-    wire [1:0]              d_arburst;
-    wire                    d_arvalid;
-    wire                    d_arready;
+    wire [ID_W-1:0]         d_axi_arid;
+    wire [ADDR_W-1:0]       d_axi_araddr;
+    wire [7:0]              d_axi_arlen;
+    wire [2:0]              d_axi_arsize;
+    wire [1:0]              d_axi_arburst;
+    wire                    d_axi_arvalid;
+    wire                    d_axi_arready;
 
-    wire [ID_W-1:0]         d_rid;
-    wire [DW-1:0]           d_rdata;
-    wire [1:0]              d_rresp;
-    wire                    d_rlast;
-    wire                    d_rvalid;
-    wire                    d_rready;
+    wire [ID_W-1:0]         d_axi_rid;
+    wire [DW-1:0]           d_axi_rdata;
+    wire [1:0]              d_axi_rresp;
+    wire                    d_axi_rlast;
+    wire                    d_axi_rvalid;
+    wire                    d_axi_rready;
 
     // =========================================================
     // SA module to AXI
@@ -305,14 +295,14 @@ module PSC_ONE_Chip #(
     wire [7:0]              dma_axi_awlen;
     wire [2:0]              dma_axi_awsize;
     wire [1:0]              dma_axi_awburst;
-    wire                    dma_axi_awvalid = 1'b0;
+    wire                    dma_axi_awvalid;
     wire                    dma_axi_awready;
 
     // Write Data
     wire [DW-1:0]           dma_axi_wdata;
     wire [(DW/8)-1:0]       dma_axi_wstrb;
     wire                    dma_axi_wlast;
-    wire                    dma_axi_wvalid = 1'b0;
+    wire                    dma_axi_wvalid;
     wire                    dma_axi_wready;
 
     // Write Response
@@ -327,7 +317,7 @@ module PSC_ONE_Chip #(
     wire [7:0]              dma_axi_arlen;
     wire [2:0]              dma_axi_arsize;
     wire [1:0]              dma_axi_arburst;
-    wire                    dma_axi_arvalid = 1'b0;
+    wire                    dma_axi_arvalid;
     wire                    dma_axi_arready;
 
     // Read Data
@@ -396,6 +386,7 @@ module PSC_ONE_Chip #(
     wire    mmio_wready_sd;
     wire    mmio_rready_i2s;
     wire    mmio_wready_i2s;
+    wire    mmio_rready_led;
     wire    mmio_wready_led;
     wire    mmio_rready_lcd;
     wire    mmio_wready_lcd;
@@ -408,9 +399,19 @@ module PSC_ONE_Chip #(
                 mmio_rready_i2s | 
                 mmio_wready_i2s | 
                 mmio_wready_led | 
+                mmio_rready_led | 
                 mmio_rready_lcd | 
                 mmio_wready_lcd |
                 mmio_wready_sd;
+
+    // CPU to DMA
+    wire [31:0] csr_DMA_CTRL;
+    wire [31:0] csr_DMA_WORDS;
+    wire [31:0] csr_DMA_SRC;
+    wire [31:0] csr_DMA_DST;
+
+    wire        dma_done;
+    wire [31:0] csr_DMA_STATUS = {31'd0, dma_done};
 
     PSC_ONE_RV32ISP_core #(
         .ADDR_WIDTH         (ADDR_W),
@@ -449,144 +450,82 @@ module PSC_ONE_Chip #(
         .mmio_ready         (mmio_ready),
         .mmio_wdata         (mmio_wdata),
 
+        // ---- DMA ----
+        .csr_DMA_CTRL       (csr_DMA_CTRL),
+        .csr_DMA_WORDS      (csr_DMA_WORDS),
+        .csr_DMA_SRC        (csr_DMA_SRC),
+        .csr_DMA_DST        (csr_DMA_DST),
+        .csr_DMA_STATUS     (csr_DMA_STATUS),
+
         // ---- Program AXI (SLAVE interface of this module) ----
-        .p_axi_awid         (p_awid),
-        .p_axi_awaddr       (p_awaddr),
-        .p_axi_awlen        (p_awlen),
-        .p_axi_awsize       (p_awsize),
-        .p_axi_awburst      (p_awburst),
-        .p_axi_awvalid      (p_awvalid),
-        .p_axi_awready      (p_awready),
+        .p_axi_awid         (p_axi_awid),
+        .p_axi_awaddr       (p_axi_awaddr),
+        .p_axi_awlen        (p_axi_awlen),
+        .p_axi_awsize       (p_axi_awsize),
+        .p_axi_awburst      (p_axi_awburst),
+        .p_axi_awvalid      (p_axi_awvalid),
+        .p_axi_awready      (p_axi_awready),
 
-        .p_axi_wdata        (p_wdata),
-        .p_axi_wstrb        (p_wstrb),
-        .p_axi_wlast        (p_wlast),
-        .p_axi_wvalid       (p_wvalid),
-        .p_axi_wready       (p_wready),
+        .p_axi_wdata        (p_axi_wdata),
+        .p_axi_wstrb        (p_axi_wstrb),
+        .p_axi_wlast        (p_axi_wlast),
+        .p_axi_wvalid       (p_axi_wvalid),
+        .p_axi_wready       (p_axi_wready),
 
-        .p_axi_bid          (p_bid),
-        .p_axi_bresp        (p_bresp),
-        .p_axi_bvalid       (p_bvalid),
-        .p_axi_bready       (p_bready),
+        .p_axi_bid          (p_axi_bid),
+        .p_axi_bresp        (p_axi_bresp),
+        .p_axi_bvalid       (p_axi_bvalid),
+        .p_axi_bready       (p_axi_bready),
 
-        .p_axi_arid         (p_arid),
-        .p_axi_araddr       (p_araddr),
-        .p_axi_arlen        (p_arlen),
-        .p_axi_arsize       (p_arsize),
-        .p_axi_arburst      (p_arburst),
-        .p_axi_arvalid      (p_arvalid),
-        .p_axi_arready      (p_arready),
+        .p_axi_arid         (p_axi_arid),
+        .p_axi_araddr       (p_axi_araddr),
+        .p_axi_arlen        (p_axi_arlen),
+        .p_axi_arsize       (p_axi_arsize),
+        .p_axi_arburst      (p_axi_arburst),
+        .p_axi_arvalid      (p_axi_arvalid),
+        .p_axi_arready      (p_axi_arready),
 
-        .p_axi_rid          (p_rid),
-        .p_axi_rdata        (p_rdata),
-        .p_axi_rresp        (p_rresp),
-        .p_axi_rlast        (p_rlast),
-        .p_axi_rvalid       (p_rvalid),
-        .p_axi_rready       (p_rready),
+        .p_axi_rid          (p_axi_rid),
+        .p_axi_rdata        (p_axi_rdata),
+        .p_axi_rresp        (p_axi_rresp),
+        .p_axi_rlast        (p_axi_rlast),
+        .p_axi_rvalid       (p_axi_rvalid),
+        .p_axi_rready       (p_axi_rready),
 
         // ---- Data AXI (SLAVE interface of this module) ----
-        .d_axi_awid         (d_awid),
-        .d_axi_awaddr       (d_awaddr),
-        .d_axi_awlen        (d_awlen),
-        .d_axi_awsize       (d_awsize),
-        .d_axi_awburst      (d_awburst),
-        .d_axi_awvalid      (d_awvalid),
-        .d_axi_awready      (d_awready),
+        .d_axi_awid         (d_axi_awid),
+        .d_axi_awaddr       (d_axi_awaddr),
+        .d_axi_awlen        (d_axi_awlen),
+        .d_axi_awsize       (d_axi_awsize),
+        .d_axi_awburst      (d_axi_awburst),
+        .d_axi_awvalid      (d_axi_awvalid),
+        .d_axi_awready      (d_axi_awready),
 
-        .d_axi_wdata        (d_wdata),
-        .d_axi_wstrb        (d_wstrb),
-        .d_axi_wlast        (d_wlast),
-        .d_axi_wvalid       (d_wvalid),
-        .d_axi_wready       (d_wready),
+        .d_axi_wdata        (d_axi_wdata),
+        .d_axi_wstrb        (d_axi_wstrb),
+        .d_axi_wlast        (d_axi_wlast),
+        .d_axi_wvalid       (d_axi_wvalid),
+        .d_axi_wready       (d_axi_wready),
 
-        .d_axi_bid          (d_bid),
-        .d_axi_bresp        (d_bresp),
-        .d_axi_bvalid       (d_bvalid),
-        .d_axi_bready       (d_bready),
+        .d_axi_bid          (d_axi_bid),
+        .d_axi_bresp        (d_axi_bresp),
+        .d_axi_bvalid       (d_axi_bvalid),
+        .d_axi_bready       (d_axi_bready),
 
-        .d_axi_arid         (d_arid),
-        .d_axi_araddr       (d_araddr),
-        .d_axi_arlen        (d_arlen),
-        .d_axi_arsize       (d_arsize),
-        .d_axi_arburst      (d_arburst),
-        .d_axi_arvalid      (d_arvalid),
-        .d_axi_arready      (d_arready),
+        .d_axi_arid         (d_axi_arid),
+        .d_axi_araddr       (d_axi_araddr),
+        .d_axi_arlen        (d_axi_arlen),
+        .d_axi_arsize       (d_axi_arsize),
+        .d_axi_arburst      (d_axi_arburst),
+        .d_axi_arvalid      (d_axi_arvalid),
+        .d_axi_arready      (d_axi_arready),
 
-        .d_axi_rid          (d_rid),
-        .d_axi_rdata        (d_rdata),
-        .d_axi_rresp        (d_rresp),
-        .d_axi_rlast        (d_rlast),
-        .d_axi_rvalid       (d_rvalid),
-        .d_axi_rready       (d_rready)
-    );
-
-    //==========================================================
-    // UART:
-    //==========================================================
-
-    // UART インスタンス
-    PSC_RV32IS_UART #(
-        .CLK_FREQ_MHz   (CLK_FREQ),
-`ifdef FST_UART_MODE
-        .BAUDRATE       (11520000*2),        // Simulation高速化のため200倍にする
-`else
-        .BAUDRATE       (115200),
-`endif
-        .UART_ADDR_TX   (UART_ADDRESS_TX),
-        .UART_ADDR_RX   (UART_ADDRESS_RX),
-        .UART_ADDR_ST   (UART_ADDRESS_ST),
-        .UART_ADDR_CT   (UART_ADDRESS_CT)
-    ) u_uart (
-        .clock          (clock_100MHz),
-        .reset_n        (reset_n),
-
-        .uart_rx        (UART_RXD),
-        .uart_tx        (UART_TXD),
-
-        .cpu_wvalid     (mmio_valid & mmio_rw),
-        .cpu_waddr      (mmio_addr),
-        .cpu_wdata      (mmio_wdata),
-        .cpu_wready     (mmio_wready_uart),
-
-        .cpu_rvalid     (mmio_valid & ~mmio_rw),
-        .cpu_raddr      (mmio_addr),
-        .cpu_rdata      (mmio_rdata_uart),
-        .cpu_rready     (mmio_rready_uart),
-
-        .irq_rx         ()
-    );
-
-    //==========================================================
-    // TIMER:
-    //==========================================================
-
-    // TIMER インスタンス
-    PSC_RV32IS_TIMER #(
-        .CLK_FREQ_MHz     (CLK_FREQ),
-        .FRAC             (4),
-        .TIMER_BITS       (16),
-        .ADDR_WIDTH       (32),
-        .TIMER_WRITE_ADDR (TIMER_WRITE_ADDR),
-        .TIMER_READ_ADDR  (TIMER_READ_ADDR),
-        .TIMER_ST_ADDR    (TIMER_ST_ADDR)
-    ) u_timer (
-        .clock            (clock_100MHz),
-        .reset_n          (reset_n),
-
-        // CPU write IF（1clkパルス）
-        .cpu_wvalid       (mmio_valid & mmio_rw),
-        .cpu_waddr        (mmio_addr),
-        .cpu_wdata        (mmio_wdata),
-        .cpu_wready       (mmio_wready_timer),
-
-        // CPU read IF（1clkパルス）
-        .cpu_rvalid       (mmio_valid & ~mmio_rw),
-        .cpu_raddr        (mmio_addr),
-        .cpu_rdata        (mmio_rdata_timer),
-        .cpu_rready       (mmio_rready_timer),
-
-        // 割り込み出力
-        .irq_tx           ()
+        .d_axi_rid          (d_axi_rid),
+        .d_axi_rdata        (d_axi_rdata),
+        .d_axi_rresp        (d_axi_rresp),
+        .d_axi_rlast        (d_axi_rlast),
+        .d_axi_rvalid       (d_axi_rvalid),
+        .d_axi_rready       (d_axi_rready)
     );
 
     //==========================================================
@@ -614,83 +553,83 @@ module PSC_ONE_Chip #(
 
         // ==== ch:0 (Program) ====
         // AXI4 Write Address
-        .s0_axi_awid        (p_awid),
-        .s0_axi_awaddr      (p_awaddr[23:0]),   // 下位24bitへスライス
-        .s0_axi_awlen       (p_awlen),
-        .s0_axi_awsize      (p_awsize),
-        .s0_axi_awburst     (p_awburst),
-        .s0_axi_awvalid     (p_awvalid),
-        .s0_axi_awready     (p_awready),
+        .s0_axi_awid        (p_axi_awid),
+        .s0_axi_awaddr      (p_axi_awaddr[23:0]),   // 下位24bitへスライス
+        .s0_axi_awlen       (p_axi_awlen),
+        .s0_axi_awsize      (p_axi_awsize),
+        .s0_axi_awburst     (p_axi_awburst),
+        .s0_axi_awvalid     (p_axi_awvalid),
+        .s0_axi_awready     (p_axi_awready),
 
         // AXI4 Write Data
-        .s0_axi_wdata       (p_wdata),
-        .s0_axi_wstrb       (p_wstrb),
-        .s0_axi_wlast       (p_wlast),
-        .s0_axi_wvalid      (p_wvalid),
-        .s0_axi_wready      (p_wready),
+        .s0_axi_wdata       (p_axi_wdata),
+        .s0_axi_wstrb       (p_axi_wstrb),
+        .s0_axi_wlast       (p_axi_wlast),
+        .s0_axi_wvalid      (p_axi_wvalid),
+        .s0_axi_wready      (p_axi_wready),
 
         // AXI4 Write Response
-        .s0_axi_bid         (p_bid),
-        .s0_axi_bresp       (p_bresp),
-        .s0_axi_bvalid      (p_bvalid),
-        .s0_axi_bready      (p_bready),
+        .s0_axi_bid         (p_axi_bid),
+        .s0_axi_bresp       (p_axi_bresp),
+        .s0_axi_bvalid      (p_axi_bvalid),
+        .s0_axi_bready      (p_axi_bready),
 
         // AXI4 Read Address
-        .s0_axi_arid        (p_arid),
-        .s0_axi_araddr      (p_araddr[23:0]),
-        .s0_axi_arlen       (p_arlen),
-        .s0_axi_arsize      (p_arsize),
-        .s0_axi_arburst     (p_arburst),
-        .s0_axi_arvalid     (p_arvalid),
-        .s0_axi_arready     (p_arready),
+        .s0_axi_arid        (p_axi_arid),
+        .s0_axi_araddr      (p_axi_araddr[23:0]),
+        .s0_axi_arlen       (p_axi_arlen),
+        .s0_axi_arsize      (p_axi_arsize),
+        .s0_axi_arburst     (p_axi_arburst),
+        .s0_axi_arvalid     (p_axi_arvalid),
+        .s0_axi_arready     (p_axi_arready),
 
         // AXI4 Read Data
-        .s0_axi_rid         (p_rid),
-        .s0_axi_rdata       (p_rdata),
-        .s0_axi_rresp       (p_rresp),
-        .s0_axi_rlast       (p_rlast),
-        .s0_axi_rvalid      (p_rvalid),
-        .s0_axi_rready      (p_rready),
+        .s0_axi_rid         (p_axi_rid),
+        .s0_axi_rdata       (p_axi_rdata),
+        .s0_axi_rresp       (p_axi_rresp),
+        .s0_axi_rlast       (p_axi_rlast),
+        .s0_axi_rvalid      (p_axi_rvalid),
+        .s0_axi_rready      (p_axi_rready),
 
         // ==== ch:0 (Data) ====
         // AXI4 Write Address
-        .s1_axi_awid        (d_awid),
-        .s1_axi_awaddr      (d_awaddr[23:0]),   // 下位24bitへスライス
-        .s1_axi_awlen       (d_awlen),
-        .s1_axi_awsize      (d_awsize),
-        .s1_axi_awburst     (d_awburst),
-        .s1_axi_awvalid     (d_awvalid),
-        .s1_axi_awready     (d_awready),
+        .s1_axi_awid        (d_axi_awid),
+        .s1_axi_awaddr      (d_axi_awaddr[23:0]),   // 下位24bitへスライス
+        .s1_axi_awlen       (d_axi_awlen),
+        .s1_axi_awsize      (d_axi_awsize),
+        .s1_axi_awburst     (d_axi_awburst),
+        .s1_axi_awvalid     (d_axi_awvalid),
+        .s1_axi_awready     (d_axi_awready),
 
         // AXI4 Write Data
-        .s1_axi_wdata       (d_wdata),
-        .s1_axi_wstrb       (d_wstrb),
-        .s1_axi_wlast       (d_wlast),
-        .s1_axi_wvalid      (d_wvalid),
-        .s1_axi_wready      (d_wready),
+        .s1_axi_wdata       (d_axi_wdata),
+        .s1_axi_wstrb       (d_axi_wstrb),
+        .s1_axi_wlast       (d_axi_wlast),
+        .s1_axi_wvalid      (d_axi_wvalid),
+        .s1_axi_wready      (d_axi_wready),
 
         // AXI4 Write Response
-        .s1_axi_bid         (d_bid),
-        .s1_axi_bresp       (d_bresp),
-        .s1_axi_bvalid      (d_bvalid),
-        .s1_axi_bready      (d_bready),
+        .s1_axi_bid         (d_axi_bid),
+        .s1_axi_bresp       (d_axi_bresp),
+        .s1_axi_bvalid      (d_axi_bvalid),
+        .s1_axi_bready      (d_axi_bready),
 
         // AXI4 Read Address
-        .s1_axi_arid        (d_arid),
-        .s1_axi_araddr      (d_araddr[23:0]),
-        .s1_axi_arlen       (d_arlen),
-        .s1_axi_arsize      (d_arsize),
-        .s1_axi_arburst     (d_arburst),
-        .s1_axi_arvalid     (d_arvalid),
-        .s1_axi_arready     (d_arready),
+        .s1_axi_arid        (d_axi_arid),
+        .s1_axi_araddr      (d_axi_araddr[23:0]),
+        .s1_axi_arlen       (d_axi_arlen),
+        .s1_axi_arsize      (d_axi_arsize),
+        .s1_axi_arburst     (d_axi_arburst),
+        .s1_axi_arvalid     (d_axi_arvalid),
+        .s1_axi_arready     (d_axi_arready),
 
         // AXI4 Read Data
-        .s1_axi_rid         (d_rid),
-        .s1_axi_rdata       (d_rdata),
-        .s1_axi_rresp       (d_rresp),
-        .s1_axi_rlast       (d_rlast),
-        .s1_axi_rvalid      (d_rvalid),
-        .s1_axi_rready      (d_rready),
+        .s1_axi_rid         (d_axi_rid),
+        .s1_axi_rdata       (d_axi_rdata),
+        .s1_axi_rresp       (d_axi_rresp),
+        .s1_axi_rlast       (d_axi_rlast),
+        .s1_axi_rvalid      (d_axi_rvalid),
+        .s1_axi_rready      (d_axi_rready),
 
         // ==== ch:2 (DMA) ====
         // AXI4 Write Address
@@ -840,6 +779,136 @@ module PSC_ONE_Chip #(
     );
 
     //==========================================================
+    // Boot
+    //==========================================================
+
+    PSC_ONE_DMA_axi #(
+        .ADDR_WIDTH         (32),
+        .ID_WIDTH           (1),
+        .DATA_WIDTH         (32)
+    ) u_dma (
+        .clock              (clock_100MHz),
+        .reset_n            (reset_n),
+
+        // DMA Control
+        .dma_start          (csr_DMA_CTRL[0]),
+        .dma_done           (dma_done),
+
+        // Transfer Mount & Address
+        .DMA_WORDS          (csr_DMA_WORDS),
+        .BASE_ADDR_READ     (csr_DMA_SRC),
+        .BASE_ADDR_WRITE    (csr_DMA_DST),
+
+        //================ Write Address =================
+        .dma_axi_awid       (dma_axi_awid),
+        .dma_axi_awaddr     (dma_axi_awaddr),
+        .dma_axi_awlen      (dma_axi_awlen),
+        .dma_axi_awsize     (dma_axi_awsize),
+        .dma_axi_awburst    (dma_axi_awburst),
+        .dma_axi_awvalid    (dma_axi_awvalid),
+        .dma_axi_awready    (dma_axi_awready),
+
+        //================ Write Data =================
+        .dma_axi_wdata      (dma_axi_wdata),
+        .dma_axi_wstrb      (dma_axi_wstrb),
+        .dma_axi_wlast      (dma_axi_wlast),
+        .dma_axi_wvalid     (dma_axi_wvalid),
+        .dma_axi_wready     (dma_axi_wready),
+
+        //================ Write Response =================
+        .dma_axi_bid        (dma_axi_bid),
+        .dma_axi_bresp      (dma_axi_bresp),
+        .dma_axi_bvalid     (dma_axi_bvalid),
+        .dma_axi_bready     (dma_axi_bready),
+
+        //================ Read Address =================
+        .dma_axi_arid       (dma_axi_arid),
+        .dma_axi_araddr     (dma_axi_araddr),
+        .dma_axi_arlen      (dma_axi_arlen),
+        .dma_axi_arsize     (dma_axi_arsize),
+        .dma_axi_arburst    (dma_axi_arburst),
+        .dma_axi_arvalid    (dma_axi_arvalid),
+        .dma_axi_arready    (dma_axi_arready),
+
+        //================ Read Data =================
+        .dma_axi_rid        (dma_axi_rid),
+        .dma_axi_rdata      (dma_axi_rdata),
+        .dma_axi_rresp      (dma_axi_rresp),
+        .dma_axi_rlast      (dma_axi_rlast),
+        .dma_axi_rvalid     (dma_axi_rvalid),
+        .dma_axi_rready     (dma_axi_rready)
+    );
+
+    //==========================================================
+    // UART:
+    //==========================================================
+
+    // UART インスタンス
+    PSC_RV32IS_UART #(
+        .CLK_FREQ_MHz   (CLK_FREQ),
+`ifdef FST_UART_MODE
+        .BAUDRATE       (11520000*2),        // Simulation高速化のため200倍にする
+`else
+        .BAUDRATE       (115200),
+`endif
+        .UART_ADDR_TX   (UART_ADDRESS_TX),
+        .UART_ADDR_RX   (UART_ADDRESS_RX),
+        .UART_ADDR_ST   (UART_ADDRESS_ST),
+        .UART_ADDR_CT   (UART_ADDRESS_CT)
+    ) u_uart (
+        .clock          (clock_100MHz),
+        .reset_n        (reset_n),
+
+        .uart_rx        (UART_RXD),
+        .uart_tx        (UART_TXD),
+
+        .cpu_wvalid     (mmio_valid & mmio_rw),
+        .cpu_waddr      (mmio_addr),
+        .cpu_wdata      (mmio_wdata),
+        .cpu_wready     (mmio_wready_uart),
+
+        .cpu_rvalid     (mmio_valid & ~mmio_rw),
+        .cpu_raddr      (mmio_addr),
+        .cpu_rdata      (mmio_rdata_uart),
+        .cpu_rready     (mmio_rready_uart),
+
+        .irq_rx         ()
+    );
+
+    //==========================================================
+    // TIMER:
+    //==========================================================
+
+    // TIMER インスタンス
+    PSC_RV32IS_TIMER #(
+        .CLK_FREQ_MHz     (CLK_FREQ),
+        .FRAC             (4),
+        .TIMER_BITS       (16),
+        .ADDR_WIDTH       (32),
+        .TIMER_WRITE_ADDR (TIMER_WRITE_ADDR),
+        .TIMER_READ_ADDR  (TIMER_READ_ADDR),
+        .TIMER_ST_ADDR    (TIMER_ST_ADDR)
+    ) u_timer (
+        .clock            (clock_100MHz),
+        .reset_n          (reset_n),
+
+        // CPU write IF（1clkパルス）
+        .cpu_wvalid       (mmio_valid & mmio_rw),
+        .cpu_waddr        (mmio_addr),
+        .cpu_wdata        (mmio_wdata),
+        .cpu_wready       (mmio_wready_timer),
+
+        // CPU read IF（1clkパルス）
+        .cpu_rvalid       (mmio_valid & ~mmio_rw),
+        .cpu_raddr        (mmio_addr),
+        .cpu_rdata        (mmio_rdata_timer),
+        .cpu_rready       (mmio_rready_timer),
+
+        // 割り込み出力
+        .irq_tx           ()
+    );
+
+    //==========================================================
     // LED x 8
     //==========================================================
 
@@ -852,6 +921,12 @@ module PSC_ONE_Chip #(
         .reset_n        (reset_n),
 
         .LED_out        (LED_external_out), // 実際の外部へ出力   : 8bit bus
+
+        // CPU BUS
+		.cpu_rvalid     (mmio_valid & ~mmio_rw),
+        .cpu_raddr      (mmio_addr),
+        .cpu_rdata      (mmio_rdata_led),
+        .cpu_rready     (mmio_rready_led),
 
         .cpu_wvalid     (mmio_valid & mmio_rw),
         .cpu_waddr      (mmio_addr),
@@ -968,7 +1043,11 @@ module PSC_ONE_Chip #(
         .reset_n        (reset_n),
 
         .PIO_out        (PIO_external_out), // 実際の外部へ出力   : 8bit bus
+        `ifdef COCOTB_SIM
         .PIO_in         (8'h03),            // pio_test1.cpp 対応
+        `else
+        .PIO_in         ({6'd0, PSCONE_SW2, PSCONE_SW1}),
+        `endif
 
         .cpu_wvalid     (mmio_valid & mmio_rw),
         .cpu_waddr      (mmio_addr),

@@ -207,9 +207,21 @@ void call_mic_api(unsigned count)
 
 // -------------------------------------------------------
 // SD IF READ関数
-void call_sd_api(unsigned sector)
+void call_sd_read_api(unsigned sector)
 {
     // API呼び出し
+    sd_api(
+        SYS_SD_READ,
+        (uint32_t)sector
+    );
+}
+
+// -------------------------------------------------------
+// SD IF WRITE関数
+void call_sd_write_api(unsigned sector)
+{
+    // API呼び出し
+    // 未実装。とりあえずREADの関数を使用
     sd_api(
         SYS_SD_READ,
         (uint32_t)sector
@@ -442,6 +454,20 @@ int getchar(void)
     return ch;
 }
 
+int getchar_timeout(void)
+{
+    int ch;
+    __asm__ __volatile__ (
+        "li a3, %1\n"    // syscall番号
+        "ecall\n"
+        "mv %0, a0\n"    // 戻り値
+        : "=r"(ch)
+        : "i"(SYS_GETCHAR_TIMEOUT)
+        : "a0", "a3"
+    );
+    return ch;
+}
+
 void print_int(int v)
 {
     __asm__ __volatile__ (
@@ -545,6 +571,22 @@ static inline void dump_api(uint32_t sysno,
           "r"(a3)
         : "memory"
     );
+}
+
+// -------------------------------------------------------
+uint32_t poll_switch_api(void)
+{
+    register uint32_t a0 __asm__("a0");
+    register uint32_t a3 __asm__("a3") = SYS_SW_READ;
+
+    __asm__ __volatile__(
+        "ecall"
+        : "=r"(a0)
+        : "r"(a3)
+        : "memory"
+    );
+
+    return a0;
 }
 
 /* ===== エントリ ===== */

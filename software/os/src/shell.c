@@ -17,7 +17,10 @@ void main(void) {
 
     //exit();
 
+    uint32_t prev_sw = 0;
+
     for (;;) {
+
 prompt:
         //printf("main(void) start.\n");
         //printf("SP=%x\n", __builtin_frame_address(0));
@@ -43,9 +46,32 @@ prompt:
            - Backspace(0x08) / DEL(0x7F) で1文字削除
            - 制御文字は基本スキップ（tabは許容） */
         for (;;) {
-            
-            int ch = getchar();
 
+#if 1
+            /* ===== SW1, SW2 ポーリング ===== */
+            uint32_t sw = poll_switch_api() & 0x03;
+
+            bool sw1_pressed = ((prev_sw & 0x01) != 0) && ((sw & 0x01) == 0);
+            bool sw2_pressed = ((prev_sw & 0x02) != 0) && ((sw & 0x02) == 0);
+
+            if (sw1_pressed) {
+                printf("SW1 pressed\n");
+                break;
+            }
+
+            if (sw2_pressed) {
+                printf("SW2 pressed\n");
+                break;
+            }
+
+            prev_sw = sw;
+#endif
+            int ch = getchar_timeout();
+
+            if (ch < 0) {
+                continue;   // SWポーリングへ戻る
+            }
+                        
             // CRLF 後の “余り LF” を無視（空バッファで LF が来たらスキップ）
             if (ch == '\n' && len == 0) {
                 continue;
@@ -156,6 +182,11 @@ prompt:
             }
             cmd_primes(max);
 
+        // ---- セルフテスト ----
+        } else if (strcmp(argv[0], "self_test") == 0) {
+            //TBD
+            //cmd_primes(max);
+
         // ---- SynapEngine ----
         } else if (strcmp(argv[0], "sa_start") == 0) {
             uint32_t matrix_max = 4;
@@ -187,7 +218,21 @@ prompt:
             }
 
             unsigned sd_sector = parse_u32(argv[1]);
-            call_sd_api(sd_sector);
+            call_sd_read_api(sd_sector);
+
+        // ---- SDカードWRITE ----
+        } else if (strcmp(argv[0], "sd_write") == 0) {
+            if (argc < 2) {
+                printf("usage: sd_write <sector>\n");
+                goto prompt;
+            }
+
+            unsigned sd_sector = parse_u32(argv[1]);
+            if (sd_sector < 5000) {
+                printf("sd_sector write sector < 5000\n");
+                goto prompt;
+            }
+            call_sd_write_api(sd_sector);
 
         // ---- FAT32 Info ----
         } else if (strcmp(argv[0], "fat32_info") == 0) {

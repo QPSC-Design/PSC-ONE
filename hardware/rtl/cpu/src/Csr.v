@@ -51,6 +51,14 @@ module Csr (
     output reg [31:0]       out_stval,
     output reg [31:0]       out_satp,
 
+    // to DMA
+    output reg [31:0]       out_DMA_CTRL,
+    output reg [31:0]       out_DMA_WORDS,
+    output reg [31:0]       out_DMA_SRC,
+    output reg [31:0]       out_DMA_DST,
+    input wire [31:0]       in_DMA_STATUS,
+
+    // to SynapEngine
     output reg [31:0]       out_SA_CTRL,
     output reg [31:0]       out_SA_MODE,
     input wire [31:0]       in_SA_STATUS,
@@ -91,6 +99,13 @@ module Csr (
     reg  [31:0] csr_satp;
 
     reg [1:0]   csr_priv_mode;
+
+    // ---------------- DMA CSRs ----------------
+    reg  [31:0] csr_DMA_CTRL;
+    reg  [31:0] csr_DMA_WORDS;
+    reg  [31:0] csr_DMA_SRC;
+    reg  [31:0] csr_DMA_DST;
+    reg  [31:0] csr_DMA_STATUS;
 
     // ---------------- SynapEngine CSRs ----------------
     reg  [31:0] csr_SA_CTRL;
@@ -195,12 +210,18 @@ module Csr (
 
             priv_mode   <= 2'b0;
 
+            out_DMA_CTRL  <= 32'd0;
+            out_DMA_WORDS <= 32'd0;
+            out_DMA_SRC   <= 32'd0;
+            out_DMA_DST   <= 32'd0;
+
             out_SA_CTRL   <= 32'd0;
             out_SA_ADDR_A <= 32'd0;
             out_SA_ADDR_B <= 32'd0;
             out_SA_ADDR_C <= 32'd0;
             
-            csr_SA_STATUS <= 32'd0;
+            csr_DMA_STATUS <= 32'd0;
+            csr_SA_STATUS  <= 32'd0;
         end else begin
             if(csr_valid) begin
                 out_mstatus <= csr_mstatus;
@@ -218,6 +239,11 @@ module Csr (
                 out_stval   <= csr_stval;
                 out_satp    <= csr_satp;
 
+                out_DMA_CTRL  <= csr_DMA_CTRL;
+                out_DMA_WORDS <= csr_DMA_WORDS;
+                out_DMA_SRC   <= csr_DMA_SRC;
+                out_DMA_DST   <= csr_DMA_DST;
+
                 out_SA_CTRL   <= csr_SA_CTRL;
                 out_SA_MODE   <= csr_SA_MODE;
                 out_SA_ADDR_A <= csr_SA_ADDR_A;
@@ -225,7 +251,8 @@ module Csr (
                 out_SA_ADDR_C <= csr_SA_ADDR_C;
 
                 priv_mode     <= csr_priv_mode;
-                csr_SA_STATUS <= in_SA_STATUS;
+                csr_DMA_STATUS <= in_DMA_STATUS;
+                csr_SA_STATUS  <= in_SA_STATUS;
             end
         end
     end
@@ -254,6 +281,8 @@ module Csr (
                 12'h341: csr_read_mux = csr_mepc;
                 12'h342: csr_read_mux = csr_mcause;
                 12'h344: csr_read_mux = (csr_mip & MIRQ_MASK);
+                // DMA
+                12'h7F0: csr_read_mux = csr_DMA_STATUS;
                 // SynapEngine
                 12'h7C8: csr_read_mux = csr_SA_STATUS;
                 default: csr_read_mux = 32'b0;
@@ -301,6 +330,11 @@ module Csr (
             csr_scause    <= 32'b0;
             csr_stval     <= 32'b0;
             csr_satp      <= 32'b0;
+            // DMA
+            csr_DMA_CTRL  <= 32'b0; 
+            csr_DMA_WORDS <= 32'b0; 
+            csr_DMA_SRC   <= 32'b0; 
+            csr_DMA_DST   <= 32'b0; 
             // SA
             csr_SA_CTRL   <= 32'b0; 
             csr_SA_MODE   <= 32'b0; 
@@ -339,6 +373,12 @@ module Csr (
                     12'h341: csr_mepc     <= pack_epc(newv);
                     12'h342: csr_mcause   <= newv;
                     12'h344: csr_mip      <= (newv & MIRQ_MASK);
+
+                    // ===== DMA =====
+                    12'h7E0: csr_DMA_CTRL   <= newv;
+                    12'h7E4: csr_DMA_WORDS  <= newv;
+                    12'h7E8: csr_DMA_SRC    <= newv;
+                    12'h7EC: csr_DMA_DST    <= newv;
 
                     // ===== SynapEngine =====
                     12'h7C0: csr_SA_CTRL    <= newv;

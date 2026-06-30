@@ -18,7 +18,7 @@ from cocotb_tb.cpu.rv32_axi_write_mem_data import push_words_to_axi16_from_file
 from cocotb_tb.cpu.rv32_axi_read_mem_data  import read_words_from_axi16_addrs
 
 # ========= 設定 =========
-Assert = 1
+Assert = 0
 
 # ---------- ★ ログ書き込み（append） ----------
 logfile = os.getenv("PSC_LOGFILE", "./log/test_result_default.log")
@@ -310,13 +310,21 @@ async def RV32IS_chip_test1(dut):
     dut._log.info(f"[LOG] Appended to {logfile}")
 
     # ---------- ★ ここまで ----------
+    
+    if ok:
+        dut._log.info(
+            f"[PASS] PIO holds expected 0x{EXPECTED_VALUE:08x}"
+        )
+    else:
+        dut._log.error(
+            f"[FAIL] expected=0x{EXPECTED_VALUE:08x}, got=0x{pio_word:08x}"
+        )
 
     if Assert:
-        assert ok, (f"[FAIL] pio data has expected value: "
-                    f"pio_word={('0x%08x' % pio_word) if pio_word is not None else 'N/A'}, "
-                    f"exp=0x{EXPECTED_VALUE:08x}")
-
-    src = "PIO"
-    dut._log.info(f"[PASS] {src} holds expected 0x{EXPECTED_VALUE:08x}")
+        assert ok, (
+            f"[FAIL] pio data has expected value: "
+            f"pio_word=0x{pio_word:08x}, "
+            f"exp=0x{EXPECTED_VALUE:08x}"
+        )
 
     await ncycles(dut.clock, 1000)

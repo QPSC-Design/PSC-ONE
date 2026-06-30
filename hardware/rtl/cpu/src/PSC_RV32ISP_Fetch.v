@@ -1,6 +1,4 @@
 // NISHIHARU
-//`define FIFO_PIPELINE_OFF;
-
 module PSC_RV32ISP_Fetch #(
     // Parameter
     parameter integer   FIFO_DEPTH   = 4
@@ -34,6 +32,7 @@ module PSC_RV32ISP_Fetch #(
     input wire          program_mem_read_ready,
     output wire [31:0]  program_mem_read_address,
     input wire [31:0]   program_mem_read_data,
+    input wire          program_mem_req_ready,
     // MMU
     output wire         data_mem_read_valid,
     input wire          data_mem_read_ready,
@@ -82,12 +81,12 @@ module PSC_RV32ISP_Fetch #(
             fetch_ready       <= 0;
             fetch_fifo_flush  <= 0;
         end else if(cpu_stop) begin
-            fetch_state <= IDLE;
+            fetch_state       <= IDLE;
         end else begin
-            fetch_state      <= next_state;
-            fetch_pc         <= next_pc;
-            fetch_ready      <= next_ready;
-            fetch_fifo_flush <= next_flush;
+            fetch_state       <= next_state;
+            fetch_pc          <= next_pc;
+            fetch_ready       <= next_ready;
+            fetch_fifo_flush  <= next_flush;
         end
     end
 
@@ -97,111 +96,150 @@ module PSC_RV32ISP_Fetch #(
     // =====================================================
     always @(*) begin
 
+        // =====================================================
         // デフォルト値（超重要）
         next_state = fetch_state;
         next_pc    = fetch_pc;
         next_ready = 1'b0;
         next_flush = 1'b0;
 
-        case(fetch_state)
+        // fifo_flushの処理
+        if (fifo_flush) begin
 
-            // =====================
-            IDLE: begin
-                if(fetch_valid)
-                    next_state = FETCH_PC;
-            end
-
-            // =====================
-            FETCH_PC: begin
-                if(fifo_flush)
+            case (fetch_state)
+                // =====================
+                FETCH_PC: begin
                     next_state = FIFO_FLUSH;
-
-                else if(empty) begin
-                    next_pc = pc;
-                    next_state = FETCH_MMU;
                 end
-
-                else if(!full) begin
-                    next_pc = fetch_pc + 4;
-                    next_state = FETCH_MMU;
+                FETCH_MMU: begin
+                    next_state = FIFO_FLUSH_MMU_W;
                 end
-            end
-
-            // =====================
-            FETCH_MMU: begin
-                next_state = fifo_flush ? FIFO_FLUSH_MMU_W : FETCH_MMU_W;
-            end
-
-            // =====================
-            FETCH_MMU_W: begin
-                if(fifo_flush)
+                FETCH_MMU_W: begin
                     next_state = i_mmu_done ? FIFO_FLUSH : FIFO_FLUSH_MMU_W;
-                else if(i_mmu_done)
-                    next_state = FETCH;
-            end
-
-            // =====================
-            FETCH: begin
-                if(fifo_flush)
-                    next_state = FIFO_FLUSH;
-                else if(program_mem_read_valid)
-                    next_state = FETCH_W;
-            end
-
-            // =====================
-            FETCH_W: begin
-                if(fifo_flush) begin
-                    next_state = program_mem_read_ready ? EXECUTE_W : FIFO_FLUSH_W;
-                end else if(program_mem_read_ready) begin
-                    next_ready = 1'b1;
-        `ifdef FIFO_PIPELINE_OFF
-                    next_state = EXECUTE_W;
-        `else
-                    next_state = FETCH_PC;
-        `endif
                 end
-            end
-            
-            // =====================
-            EXECUTE_W: begin
-                next_pc = pc;
-
-                if(fifo_flush)
+                FETCH: begin
                     next_state = FIFO_FLUSH;
-                else if(execute_ready)
-                    next_state = IDLE;
-            end
-
-            // =====================
-            FIFO_FLUSH: begin
-                next_pc    = pc;
-                next_state = IDLE;
-            end
-
-            // =====================
-            FIFO_FLUSH_MMU_W: begin
-                next_pc = pc;
-                if(i_mmu_done)
-                    next_state = IDLE;
-            end
-
-            // =====================
-            FIFO_FLUSH_W: begin
-                next_pc = pc;
-                if(program_mem_read_ready) begin
-                    next_state = IDLE;
-                    next_flush = 1'b1;
                 end
-            end
+                FETCH_W: begin
+                    if (program_mem_read_ready)
+                        next_state = EXECUTE_W;
+                    else
+                        next_state = FIFO_FLUSH_W;
+                end
+                EXECUTE_W: begin
+                    next_state = FIFO_FLUSH;
+                end
+                // =====================
+                default: begin
+                    // NOP
+                end
+            endcase
+        
+        // =====================================================
+        // default処理
+        end else begin
 
-            // =====================
-            // 不正状態から復帰（止まらないFSM）
-            default: begin
-                next_state = IDLE;
-                next_pc    = pc;
-            end
-            
-        endcase
+            case (fetch_state)
+
+                // ================================
+                // 通常時のステート
+                // ================================
+                // =====================
+                // state = 0
+                IDLE: begin
+                    if (fetch_valid)
+                        next_state = FETCH_PC;
+                end
+
+                // =====================
+                // state = 1
+                FETCH_PC: begin
+                    if (empty) begin
+                        next_pc = pc;
+                        next_state = FETCH_MMU;
+                    end
+
+                    else if (!full) begin
+                        next_pc = fetch_pc + 4;
+                        next_state = FETCH_MMU;
+                    end
+                end
+
+                // =====================
+                // state = 2
+                FETCH_MMU: begin
+                   next_state = FETCH_MMU_W;
+                end
+
+                // =====================
+                // state = 3
+                FETCH_MMU_W: begin
+                    if (i_mmu_done)
+                        next_state = FETCH;
+                end
+
+                // =====================
+                // state = 4
+                FETCH: begin
+                    if (program_mem_read_valid)
+                        next_state = FETCH_W;
+                end
+
+                // =====================
+                // state = 5
+                FETCH_W: begin
+                    if (program_mem_read_ready) begin
+                        next_ready = 1'b1;
+                        next_state = FETCH_PC;
+                    end
+                end
+                
+                // =====================
+                // state = 6
+                EXECUTE_W: begin
+                    next_pc = pc;
+                    if (execute_ready)
+                        next_state = IDLE;
+                end
+
+                // ================================
+                // fifo flush時のステート
+                // ================================
+                // =====================
+                // state = 7
+                FIFO_FLUSH: begin
+                    next_pc    = pc;
+                    next_state = IDLE;
+                end
+
+                // =====================
+                // state = 8
+                FIFO_FLUSH_MMU_W: begin
+                    next_pc = pc;
+                    if (i_mmu_done)
+                        next_state = IDLE;
+                end
+
+                // =====================
+                // state = 9
+                FIFO_FLUSH_W: begin
+                    next_pc = pc;
+                    if (program_mem_read_ready | execute_ready) begin       // TBD
+                        next_state = IDLE;
+                        next_flush = 1'b1;
+                    end
+                end
+
+                // =====================
+                // 不正状態から復帰（止まらないFSM）
+                default: begin
+                    next_state = IDLE;
+                    next_pc    = pc;
+                end
+                
+            endcase
+
+        end
     end
 
 
@@ -222,27 +260,27 @@ module PSC_RV32ISP_Fetch #(
     // I-side MMU: pc を翻訳（実行属性）
 
     MMU u_mmu_i (
-        .clk            (clock),
-        .reset_n        (reset_n),
-        .MMU_enb        (i_MMU_enb),
-        .vaddr          (fetch_pc),        // vaddr
-        .satp           (csr_satp),        // Csr から出した satp
-        .priv_mode      (priv_mode),
-        .access_r       (1'b0),
-        .access_w       (1'b0),
-        .access_x       (1'b1),
-        .mem_req_ready  (data_mem_read_req_ready),  // cache_io read可能.
-        .mem_rdata      (data_mem_read_data),
-        .mem_addr       (data_mem_read_address),
-        .mem_valid      (data_mem_read_valid),
-        .mem_ready      (data_mem_read_ready),
-        .cpu_state_done (fetch_state==FETCH_W),
-        .sfence_vma     (fifo_flush & is_sfence_vma),
+        .clk                (clock),
+        .reset_n            (reset_n),
+        .MMU_enb            (i_MMU_enb),
+        .vaddr              (fetch_pc),        // vaddr
+        .satp               (csr_satp),        // Csr から出した satp
+        .priv_mode          (priv_mode),
+        .access_r           (1'b0),
+        .access_w           (1'b0),
+        .access_x           (1'b1),
+        .mem_req_ready      (data_mem_read_req_ready),  // cache_io read可能.
+        .mem_rdata          (data_mem_read_data),
+        .mem_addr           (data_mem_read_address),
+        .mem_valid          (data_mem_read_valid),
+        .mem_ready          (data_mem_read_ready),
+        .cpu_state_done     (fetch_state==FETCH_W),
+        .sfence_vma         (fifo_flush & is_sfence_vma),
         
-        .paddr          (i_paddr),
-        .page_fault     (i_pf),
-        .mode_sv32      (i_mode_sv32),      // 0: 仮想メモリモードOFF.
-        .mmu_done       (i_mmu_done)
+        .paddr              (i_paddr),
+        .page_fault         (i_pf),
+        .mode_sv32          (i_mode_sv32),      // 0: 仮想メモリモードOFF.
+        .mmu_done           (i_mmu_done)
     );
 
     // =====================================
@@ -252,10 +290,12 @@ module PSC_RV32ISP_Fetch #(
     wire [31:0] f_program_mem_read_data;
     wire f_program_mem_read_valid;
     wire f_program_mem_read_ready;
+    wire f_program_mem_req_ready;
 
     assign  program_mem_read_valid = ((fetch_state==FETCH) ? f_program_mem_read_valid : 1'b0);
     assign  f_program_mem_read_ready = program_mem_read_ready;
     assign  f_program_mem_read_data  = program_mem_read_data;
+    assign  f_program_mem_req_ready  = program_mem_req_ready;
 
     wire opcode_read_valid;
     wire [31:0] opcode_read_data;
@@ -263,10 +303,12 @@ module PSC_RV32ISP_Fetch #(
     Fetch u_fetch (
         .clock                  (clock),                        // クロック
         .reset_n                (reset_n),                      // リセット（負論理）
-        .fetch_enb              (fetch_state==FETCH),                 // フェッチ有効信号
+        .fetch_enb              (fetch_state==FETCH),           // フェッチ有効信号
         .mem_read_data          (f_program_mem_read_data),
         .program_mem_read_valid (f_program_mem_read_valid),     // プログラムメモリ読出し有効
         .program_mem_read_ready (f_program_mem_read_ready), 
+        .program_mem_req_ready  (f_program_mem_req_ready),
+
         .opcode_read_valid      (opcode_read_valid),            // Threw sig.
         .opcode_read_data       (opcode_read_data),             // Threw sig.
         .opcode                 (opcode)                        // フェッチした命令コード
@@ -280,27 +322,27 @@ module PSC_RV32ISP_Fetch #(
     wire [31:0] out_fetch_pc;
 
     Fetch_Fifo #(
-        .WIDTH          (32),
-        .DEPTH          (FIFO_DEPTH)
+        .WIDTH              (32),
+        .DEPTH              (FIFO_DEPTH)
     ) u_fetch_fifo (
-        .clock          (clock),
-        .reset_n        (reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
 
-        .in_valid       ((fetch_state==FETCH_W) & opcode_read_valid),
-        .in_data        (opcode_read_data),
-        .in_pc_data     (fetch_pc),     // Debug
-        .in_ready       (in_ready),
+        .in_valid           ((fetch_state==FETCH_W) & opcode_read_valid),
+        .in_data            (opcode_read_data),
+        .in_pc_data         (fetch_pc),     // Debug
+        .in_ready           (in_ready),
 
-        .out_req_ready  (fifo_ready),
-        .out_valid      (fifo_read_valid),
-        .out_ready      (fifo_read_ready),
-        .out_data       (fifo_opcode_data),
-        .out_pc_data    (out_fetch_pc), // Debug
+        .out_req_ready      (fifo_ready),
+        .out_valid          (fifo_read_valid),
+        .out_ready          (fifo_read_ready),
+        .out_data           (fifo_opcode_data),
+        .out_pc_data        (out_fetch_pc), // Debug
 
-        .full           (full),
-        .empty          (empty),
+        .full               (full),
+        .empty              (empty),
 
-        .flush          (fifo_flush | fetch_fifo_flush)
+        .flush              (fifo_flush | fetch_fifo_flush)
     );
 
 endmodule

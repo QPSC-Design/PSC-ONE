@@ -105,6 +105,7 @@ CPU_FILES = \
 AXI_DIR			= ../rtl/axi
 SDRAM_CNT_DIR	= ../rtl/sdram_controller
 BOOT_SRC_DIR	= ../rtl/boot
+DMA_SRC_DIR		= ../rtl/dma
 
 SDRAM_32bit_AXI_FILES = \
 	$(CPU_SRC_DIR)/PSC_ONE_RV32ISP_core.v \
@@ -114,6 +115,8 @@ SDRAM_32bit_AXI_FILES = \
 	$(GW2AR_SDRAM_MODEL)
 
 PSC_ONE_BOOT_FILE = $(BOOT_SRC_DIR)/PSC_ONE_Boot_axi.v
+
+PSC_ONE_DMA_FILE =  $(DMA_SRC_DIR)/PSC_ONE_DMA_axi.v
 
 # Systolic Array (not use)
 SA_DIR   = ../rtl/ai/src
@@ -149,7 +152,8 @@ I2S_MIC_MODEL = ../rtl/I2S_MIC_MODEL/PSC_I2S_MIC_MODEL.v
 LCD_ILI9488_MODEL = ../rtl/LCD_model/PSC_LCD_ILI9488_MODEL.v 
 
 INPUT_32bit_FILE = \
-	$(PSCONE_SIM_TOP_FILE) $(PSCONE_TOP_FILE) $(CPU_FILES) $(SDRAM_32bit_AXI_FILES) $(PSC_ONE_BOOT_FILE) \
+	$(PSCONE_SIM_TOP_FILE) $(PSCONE_TOP_FILE) $(CPU_FILES) $(SDRAM_32bit_AXI_FILES) \
+	$(PSC_ONE_BOOT_FILE) $(PSC_ONE_DMA_FILE) \
 	$(SA_FILE) $(PSCONELCD_FILE) $(SD_READER_FILE) $(TIMER_FILE) \
 	$(I2S_RX_FILE) $(I2S_MIC_MODEL) $(LCD_ILI9488_MODEL) \
 	$(SDCARD_MODEL)
@@ -169,17 +173,18 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 # tang 20k 
 PSCONE_TEST = \
-	memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521
+	mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
+	#fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678
+	#mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
+	#fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678
+	#dma_test1:RV32ISP_chip_test:./mem/dma_test1.mem:0x00000000
+	#add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b
+	#pio_uart_test1:RV32ISP_chip_test:./mem/pio_uart_test1.mem:0x00001212
+	#led_test1:RV32ISP_chip_test:./mem/led_test1.mem:0x00000022
+	#pio_test1:RV32ISP_chip_test:./mem/pio_test1.mem:0x00000022
+	#memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521
 	#sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff
 	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x008034aa
-	#fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef
-	#q15_fft_test1:RV32ISP_chip_test:./mem/q15_fft_test1.mem:0x0000beef
-	#fft_test1:RV32ISP_chip_test:./mem/fft_test1.mem:0x0000beef
-	#montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef
-	#alu_mul_test1:RV32ISP_chip_test:./mem/alu_mul_test1.mem:0x00000000
-	#divmod_test1:RV32ISP_chip_test:./mem/divmod_test1.mem:0x00000e02
-	#montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef
-	#lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
 
 # run test
 .PHONY: simulate_PSC_ONE
@@ -239,6 +244,7 @@ PSCONE_TESTS = \
 	fetch_test1:RV32ISP_chip_test:./mem/fetch_test1.mem:0xcd1023bb \
 	csr_test1:RV32ISP_chip_test:./mem/csr_test1.mem:0x00000022 \
 	cache_RW_test1:RV32ISP_chip_test:./mem/cache_RW_test1.mem:0x600DCAFE \
+	fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678 \
 	pio_test1:RV32ISP_chip_test:./mem/pio_test1.mem:0x00000022 \
 	uart_test1:RV32ISP_chip_test:./mem/uart_test1.mem:0x00000077 \
 	sp_test1:RV32ISP_chip_test:./mem/sp_test1.mem:0x00005AA5 \
@@ -263,6 +269,7 @@ PSCONE_TESTS = \
 	audipc_test1:RV32ISP_chip_test:./mem/audipc_test1.mem:0xFFFFFFF8 \
 	jalr_test1:RV32ISP_chip_test:./mem/jalr_test1.mem:0x00000044 \
 	ecall_test1:RV32ISP_chip_test:./mem/ecall_test1.mem:0x00000321 \
+	dma_test1:RV32ISP_chip_test:./mem/dma_test1.mem:0x00000000 \
 	pagefault_test1:RV32ISP_chip_test:./mem/pagefault_test1.mem:0x0000EF99 \
 	lui_test1:RV32ISP_chip_test:./mem/lui_test1.mem:0x12345000 \
 	prime_test1:RV32ISP_chip_test:./mem/prime_test1.mem:0x00000061 \
@@ -272,7 +279,9 @@ PSCONE_TESTS = \
 	sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff \
 	boot_test1:RV32ISP_chip_test:./mem/boot_test1.mem:0x00001321 \
 	boot_test2:RV32ISP_chip_test:./mem/boot_test2.mem:0x00002321 \
-	lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012
+	lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012 \
+	pio_uart_test1:RV32ISP_chip_test:./mem/pio_uart_test1.mem:0x00001212 \
+	led_test1:RV32ISP_chip_test:./mem/led_test1.mem:0x00000022
 
 # Sub List
 #lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000007

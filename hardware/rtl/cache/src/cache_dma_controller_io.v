@@ -42,8 +42,8 @@ module cache_dma_controller_io #(
     parameter [ADDR_WIDTH-1:0]  PSC_I2S_ADDR_RX     = {ADDR_WIDTH{1'b0}},
     parameter [ADDR_WIDTH-1:0]  PSC_I2S_ADDR_ST     = {ADDR_WIDTH{1'b0}}
 )(
-    input  wire                           clk,
-    input  wire                           rst,
+    input  wire                           clock,
+    input  wire                           reset_n,
 
     // --------- CPU リクエスト/レスポンス ---------
     input  wire                           cpu_valid,
@@ -294,8 +294,8 @@ module cache_dma_controller_io #(
     wire [CACHE_DATA_WIDTH-1:0] ZERO_LINE = {CACHE_DATA_WIDTH{1'b0}};
 
     // ------------------------ FSM 本体 ------------------------
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
+    always @(posedge clock or negedge reset_n) begin
+        if (~reset_n) begin
             // 出力/制御初期化
             state         <= S_INIT;        // ★まず初期化へ
             init_idx      <= {INDEX_WIDTH_BA{1'b0}};
@@ -740,7 +740,7 @@ module cache_dma_controller_io #(
         .TAG_WIDTH  (TAG_ENTRY_WIDTH),      // ★パック幅を指定
         .INDEX_WIDTH(INDEX_WIDTH_BA)
     ) u_tag (
-        .clk       (clk),
+        .clk       (clock),
         .we        (tag_we),
         .index     (cur_index_r),
         .tag_write (tag_write),
@@ -752,7 +752,7 @@ module cache_dma_controller_io #(
         .DATA_WIDTH (CACHE_DATA_WIDTH),
         .INDEX_WIDTH(INDEX_WIDTH_BA)
     ) u_data (
-        .clk        (clk),
+        .clk        (clock),
         .we         (data_we),
         .index      (cur_index_r),
         .data_write (data_write),

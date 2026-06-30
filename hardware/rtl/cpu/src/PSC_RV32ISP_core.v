@@ -18,6 +18,7 @@ module PSC_RV32ISP_core #(
     input wire              program_mem_read_ready,
     output wire [31:0]      program_mem_read_address,
     input  wire [31:0]      program_mem_read_data,
+    input wire              program_mem_req_ready,
     // Data
     output wire             data_mem_read_valid,
     input wire              data_mem_read_ready,
@@ -35,6 +36,14 @@ module PSC_RV32ISP_core #(
     output wire [31:0]      mmu_data_mem_read_address,
     input  wire [31:0]      mmu_data_mem_read_data,
     input  wire             mmu_data_req_ready,
+    // Cashe 
+    output wire             is_fence_i,
+    // DMA
+    output wire [31:0]      csr_DMA_CTRL,
+    output wire [31:0]      csr_DMA_WORDS,
+    output wire [31:0]      csr_DMA_SRC,
+    output wire [31:0]      csr_DMA_DST,
+    input  wire [31:0]      csr_DMA_STATUS,
     // SynapEngine
     output wire [31:0]      csr_SA_CTRL,
     output wire [31:0]      csr_SA_MODE,
@@ -227,6 +236,13 @@ module PSC_RV32ISP_core #(
         .out_stval          (csr_stval),
         .out_satp           (csr_satp),
 
+        // DMA
+        .out_DMA_CTRL       (csr_DMA_CTRL),
+        .out_DMA_WORDS      (csr_DMA_WORDS),
+        .out_DMA_SRC        (csr_DMA_SRC),
+        .out_DMA_DST        (csr_DMA_DST),
+        .in_DMA_STATUS      (csr_DMA_STATUS),
+
         // SynapEngine
         .out_SA_CTRL        (csr_SA_CTRL),
         .out_SA_MODE        (csr_SA_MODE),
@@ -287,6 +303,7 @@ module PSC_RV32ISP_core #(
         .program_mem_read_ready     (program_mem_read_ready),
         .program_mem_read_address   (program_mem_read_address),
         .program_mem_read_data      (program_mem_read_data),
+        .program_mem_req_ready      (program_mem_req_ready),
         // MMU port
         .data_mem_read_valid        (mmu_data_mem_read_valid), 
         .data_mem_read_ready        (mmu_data_mem_read_ready),
@@ -353,6 +370,8 @@ module PSC_RV32ISP_core #(
         .csr_zimm                   (csr_zimm),
         .csr_rdata                  (csr_rdata),
         .csr_reg_data_1             (csr_reg_data_1),
+        // cache sig.
+        .is_fence_i                 (is_fence_i),
         // MMU fault sig.
         .d_pf                       (d_pf),
         .illegal_instruction        (illegal_instruction),
@@ -424,8 +443,5 @@ module PSC_RV32ISP_core #(
             end
         end
     end
-
-    // debug code
-    //`include "./src/debug_RV32ISP_core.v"
 
 endmodule
