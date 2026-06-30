@@ -77,7 +77,7 @@ Unlike loosely coupled accelerator designs that rely on DMA transfers, this appr
   
 This tightly coupled architecture improves overall efficiency by reducing memory access overhead and is particularly effective for data-intensive workloads such as matrix operations and neural network inference.  
 
-![PSC_RV32ISP Block Diagram](docs/images/PSC_ONE_CPU_Block.jpg)
+![PSC_RV32ISP Block Diagram](docs/images/PSC_ONE_DMA_Block.jpg)
 
 ---
 
@@ -248,7 +248,7 @@ If an error is detected, the system automatically retries the read operation, en
 - [x] AXI4 Memory Interface
 - [x] Cache Controller
 - [x] Virtual Memory Support
-- [ ] DMA Engine Optimization
+- [x] DMA Engine
 
 ### AI Accelerator
 - [x] SynapEngine Architecture
@@ -262,7 +262,8 @@ If an error is detected, the system automatically retries the read operation, en
 - [x] UART
 - [x] LED Controller
 - [x] Timer
-- [x] SD Card (SPI Mode)
+- [x] SD Card (SPI Mode, Read)
+- [ ] SD Card (SPI Mode, Write)
 - [x] LCD Controller
 - [ ] Ethernet
 - [ ] USB
@@ -298,6 +299,7 @@ If an error is detected, the system automatically retries the read operation, en
 - [x] SDRAM Test
 - [x] SD Card Test
 - [x] FAT32 File Browser (`ls`, `cat`)
+- [ ] FAT32 File Write
 - [ ] AI Inference Demo
 - [ ] Audio Processing Demo
 - [ ] Speech Recognition Demo
