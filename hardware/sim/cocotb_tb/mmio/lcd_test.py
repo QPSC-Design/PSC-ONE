@@ -141,8 +141,8 @@ async def lcd_cpu_write_test(dut):
     try:
         #mem_value = int(dut.u_data.mem[test_addr].value)
         #dut._log.info(f"u_data.mem[0x{test_addr:x}] = 0b{mem_value:03b}")
-        mem_value = int(dut.u_data.mem[0].value)
-        dut._log.info(f"u_data.mem[0x{0:x}] = 0b{mem_value:03b}")
+        mem_value = int(dut.u_lcd.u_data.mem[0].value)
+        dut._log.info(f"u_lcd.u_data.mem[0x{0:x}] = 0b{mem_value:03b}")
 
         assert mem_value == test_data, \
             f"RAM mismatch: got=0b{mem_value:03b}, exp=0b{test_data:03b}"

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module PSC_SDReader_SPI #(
+module PSC_SDCard_SPI #(
     parameter INIT_SCK_DIV = 125,
     parameter FAST_SCK_DIV = 12
 )(

@@ -34,6 +34,8 @@ module sim_cache_dma_controller #(
     input                   program_mem_read_valid,
     output [31:0]           program_mem_read_data,
     output                  program_mem_read_ready,
+    output wire             cpu_req_ready,
+    input  wire             cpu_cache_clear, 
     // Data
     input  wire             data_mem_read_valid,
     output wire             data_mem_read_ready,
@@ -89,14 +91,16 @@ module sim_cache_dma_controller #(
         .TAGMSB              (31),
         .TAGLSB              (14)
     ) u_program_dma_ctrl (
-        .clk                (clock),
-        .rst                (~reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
         .cpu_valid          (program_mem_read_valid),
         .cpu_rw             (1'b0),
         .cpu_addr           (program_mem_read_address),
         .cpu_data           (32'd0),            // 未使用
         .cpu_ready          (program_mem_read_ready),
         .cpu_data_out       (program_mem_read_data),
+        .cpu_req_ready      (cpu_req_ready),
+        .cpu_cache_clear    (cpu_cache_clear),
         // 128b 側
         .mem_req_ready      (1'b1),             // 1'b1 fix
         .mem_valid          (p_mem_valid128),
@@ -134,54 +138,54 @@ module sim_cache_dma_controller #(
         .ID_WIDTH           (AXI_ID_WIDTH),
         .DATA_WIDTH         (AXI_DATA_WIDTH)
     ) p_axi_bridge (
-        .clock          (clock),
-        .reset_n        (reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
 
         // Cache side (128b)
-        .read_valid     (p_cache_rd_valid),
-        .read_ready     (p_cache_rd_ready),
-        .read_addr      (p_cache_rd_addr),
-        .read_data      (p_cache_rd_data),
+        .read_valid         (p_cache_rd_valid),
+        .read_ready         (p_cache_rd_ready),
+        .read_addr          (p_cache_rd_addr),
+        .read_data          (p_cache_rd_data),
 
-        .write_valid    (p_cache_wr_valid),
-        .write_ready    (p_cache_wr_ready),
-        .write_addr     (p_cache_wr_addr),
-        .write_data     (p_cache_wr_data),
+        .write_valid        (p_cache_wr_valid),
+        .write_ready        (p_cache_wr_ready),
+        .write_addr         (p_cache_wr_addr),
+        .write_data         (p_cache_wr_data),
 
         // AXI4 Master (to SDRAM AXI-S)
-        .m_axi_awid     (p_axi_awid),
-        .m_axi_awaddr   (p_axi_awaddr),
-        .m_axi_awlen    (p_axi_awlen),
-        .m_axi_awsize   (p_axi_awsize),
-        .m_axi_awburst  (p_axi_awburst),
-        .m_axi_awvalid  (p_axi_awvalid),
-        .m_axi_awready  (p_axi_awready),
+        .m_axi_awid         (p_axi_awid),
+        .m_axi_awaddr       (p_axi_awaddr),
+        .m_axi_awlen        (p_axi_awlen),
+        .m_axi_awsize       (p_axi_awsize),
+        .m_axi_awburst      (p_axi_awburst),
+        .m_axi_awvalid      (p_axi_awvalid),
+        .m_axi_awready      (p_axi_awready),
 
-        .m_axi_wdata    (p_axi_wdata),
-        .m_axi_wstrb    (p_axi_wstrb),
-        .m_axi_wlast    (p_axi_wlast),
-        .m_axi_wvalid   (p_axi_wvalid),
-        .m_axi_wready   (p_axi_wready),
+        .m_axi_wdata        (p_axi_wdata),
+        .m_axi_wstrb        (p_axi_wstrb),
+        .m_axi_wlast        (p_axi_wlast),
+        .m_axi_wvalid       (p_axi_wvalid),
+        .m_axi_wready       (p_axi_wready),
 
-        .m_axi_bid      (p_axi_bid),
-        .m_axi_bresp    (p_axi_bresp),
-        .m_axi_bvalid   (p_axi_bvalid),
-        .m_axi_bready   (p_axi_bready),
+        .m_axi_bid          (p_axi_bid),
+        .m_axi_bresp        (p_axi_bresp),
+        .m_axi_bvalid       (p_axi_bvalid),
+        .m_axi_bready       (p_axi_bready),
 
-        .m_axi_arid     (p_axi_arid),
-        .m_axi_araddr   (p_axi_araddr),
-        .m_axi_arlen    (p_axi_arlen),
-        .m_axi_arsize   (p_axi_arsize),
-        .m_axi_arburst  (p_axi_arburst),
-        .m_axi_arvalid  (p_axi_arvalid),
-        .m_axi_arready  (p_axi_arready),
+        .m_axi_arid         (p_axi_arid),
+        .m_axi_araddr       (p_axi_araddr),
+        .m_axi_arlen        (p_axi_arlen),
+        .m_axi_arsize       (p_axi_arsize),
+        .m_axi_arburst      (p_axi_arburst),
+        .m_axi_arvalid      (p_axi_arvalid),
+        .m_axi_arready      (p_axi_arready),
 
-        .m_axi_rid      (p_axi_rid),
-        .m_axi_rdata    (p_axi_rdata),
-        .m_axi_rresp    (p_axi_rresp),
-        .m_axi_rlast    (p_axi_rlast),
-        .m_axi_rvalid   (p_axi_rvalid),
-        .m_axi_rready   (p_axi_rready)
+        .m_axi_rid          (p_axi_rid),
+        .m_axi_rdata        (p_axi_rdata),
+        .m_axi_rresp        (p_axi_rresp),
+        .m_axi_rlast        (p_axi_rlast),
+        .m_axi_rvalid       (p_axi_rvalid),
+        .m_axi_rready       (p_axi_rready)
     );    
     
 
@@ -236,8 +240,8 @@ module sim_cache_dma_controller #(
         .PSC_I2S_ADDR_RX     (PSC_I2S_ADDR_RX),
         .PSC_I2S_ADDR_ST     (PSC_I2S_ADDR_ST)
     ) u_data_dma_ctrl (
-        .clk                (clock),
-        .rst                (~reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
         // CPU Data
         .cpu_valid          (data_mem_read_valid | data_mem_write_valid),
         .cpu_rw             (data_mem_write_valid),
@@ -302,54 +306,54 @@ module sim_cache_dma_controller #(
         .ID_WIDTH           (AXI_ID_WIDTH),
         .DATA_WIDTH         (32)
     ) d_axi_bridge (
-        .clock          (clock),
-        .reset_n        (reset_n),
+        .clock              (clock),
+        .reset_n            (reset_n),
 
         // Cache side (128b)
-        .read_valid     (d_cache_rd_valid),
-        .read_ready     (d_cache_rd_ready),
-        .read_addr      (d_cache_rd_addr),
-        .read_data      (d_cache_rd_data),
+        .read_valid         (d_cache_rd_valid),
+        .read_ready         (d_cache_rd_ready),
+        .read_addr          (d_cache_rd_addr),
+        .read_data          (d_cache_rd_data),
 
-        .write_valid    (d_cache_wr_valid),
-        .write_ready    (d_cache_wr_ready),
-        .write_addr     (d_cache_wr_addr),
-        .write_data     (d_cache_wr_data),
+        .write_valid        (d_cache_wr_valid),
+        .write_ready        (d_cache_wr_ready),
+        .write_addr         (d_cache_wr_addr),
+        .write_data         (d_cache_wr_data),
 
         // AXI4 Master (to SDRAM AXI-S)
-        .m_axi_awid     (d_axi_awid),
-        .m_axi_awaddr   (d_axi_awaddr),
-        .m_axi_awlen    (d_axi_awlen),
-        .m_axi_awsize   (d_axi_awsize),
-        .m_axi_awburst  (d_axi_awburst),
-        .m_axi_awvalid  (d_axi_awvalid),
-        .m_axi_awready  (d_axi_awready),
+        .m_axi_awid         (d_axi_awid),
+        .m_axi_awaddr       (d_axi_awaddr),
+        .m_axi_awlen        (d_axi_awlen),
+        .m_axi_awsize       (d_axi_awsize),
+        .m_axi_awburst      (d_axi_awburst),
+        .m_axi_awvalid      (d_axi_awvalid),
+        .m_axi_awready      (d_axi_awready),
 
-        .m_axi_wdata    (d_axi_wdata),
-        .m_axi_wstrb    (d_axi_wstrb),
-        .m_axi_wlast    (d_axi_wlast),
-        .m_axi_wvalid   (d_axi_wvalid),
-        .m_axi_wready   (d_axi_wready),
+        .m_axi_wdata        (d_axi_wdata),
+        .m_axi_wstrb        (d_axi_wstrb),
+        .m_axi_wlast        (d_axi_wlast),
+        .m_axi_wvalid       (d_axi_wvalid),
+        .m_axi_wready       (d_axi_wready),
 
-        .m_axi_bid      (d_axi_bid),
-        .m_axi_bresp    (d_axi_bresp),
-        .m_axi_bvalid   (d_axi_bvalid),
-        .m_axi_bready   (d_axi_bready),
+        .m_axi_bid          (d_axi_bid),
+        .m_axi_bresp        (d_axi_bresp),
+        .m_axi_bvalid       (d_axi_bvalid),
+        .m_axi_bready       (d_axi_bready),
 
-        .m_axi_arid     (d_axi_arid),
-        .m_axi_araddr   (d_axi_araddr),
-        .m_axi_arlen    (d_axi_arlen),
-        .m_axi_arsize   (d_axi_arsize),
-        .m_axi_arburst  (d_axi_arburst),
-        .m_axi_arvalid  (d_axi_arvalid),
-        .m_axi_arready  (d_axi_arready),
+        .m_axi_arid         (d_axi_arid),
+        .m_axi_araddr       (d_axi_araddr),
+        .m_axi_arlen        (d_axi_arlen),
+        .m_axi_arsize       (d_axi_arsize),
+        .m_axi_arburst      (d_axi_arburst),
+        .m_axi_arvalid      (d_axi_arvalid),
+        .m_axi_arready      (d_axi_arready),
 
-        .m_axi_rid      (d_axi_rid),
-        .m_axi_rdata    (d_axi_rdata),
-        .m_axi_rresp    (d_axi_rresp),
-        .m_axi_rlast    (d_axi_rlast),
-        .m_axi_rvalid   (d_axi_rvalid),
-        .m_axi_rready   (d_axi_rready)
+        .m_axi_rid          (d_axi_rid),
+        .m_axi_rdata        (d_axi_rdata),
+        .m_axi_rresp        (d_axi_rresp),
+        .m_axi_rlast        (d_axi_rlast),
+        .m_axi_rvalid       (d_axi_rvalid),
+        .m_axi_rready       (d_axi_rready)
     );
     
     // =========================================================

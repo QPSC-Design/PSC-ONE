@@ -21,8 +21,8 @@ async def axi_test1(dut):
 
     dut._log.info("==== cache_dma_controller test start ====")
 
-    dut.program_mem_read_valid.value    = 0
-    dut.cpu_program_addr.value          = 0
+    dut.program_mem_read_valid.value        = 0
+    dut.program_mem_read_address.value      = 0
 
     cocotb.start_soon(gen_clock(dut))
 

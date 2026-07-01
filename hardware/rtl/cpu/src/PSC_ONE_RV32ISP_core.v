@@ -3,7 +3,11 @@
 //  外部I/F：32bit SDRAM 単発アクセス
 // ===============================================================
 `timescale 1ns/1ps
-`define DCache_SUB
+
+// default cache word = 1024
+`define ICache_W256
+//`define DCache_W256
+`define DCache_W64
 
 module PSC_ONE_RV32ISP_core #(
     // Mode 
@@ -338,7 +342,11 @@ module PSC_ONE_RV32ISP_core #(
         .CACHE_DATA_WIDTH    (128),
         .MAIN_MEM_DATA_WIDTH (128),
         .TAGMSB              (31),
+        `ifdef ICache_W256
+        .TAGLSB              (12)
+        `else
         .TAGLSB              (14)
+        `endif
     ) u_program_dma_ctrl (
         .clock              (clock),
         .reset_n            (reset_n),
@@ -463,8 +471,10 @@ module PSC_ONE_RV32ISP_core #(
         .CACHE_DATA_WIDTH    (128),
         .MAIN_MEM_DATA_WIDTH (128),
         .TAGMSB              (31),
-        `ifdef DCache_SUB
+        `ifdef DCache_W256
         .TAGLSB              (12),
+        `elsif DCache_W64
+        .TAGLSB              (10),
         `else
         .TAGLSB              (14),
         `endif

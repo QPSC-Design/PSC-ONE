@@ -10,8 +10,8 @@
 #  MODE で一括切り替え（verilator / icarus）
 # ============================================================
 # デフォルトはicarus
-#MODE = verilator
-MODE = icarus
+MODE = verilator
+#MODE = icarus
 
 # ============================================================
 #  シミュレーションモードに応じた設定
@@ -137,8 +137,8 @@ PSCONELCD_FILE = \
 
 # SD Card Reader
 SD_READER_FILE = \
-	$(MMIO_BASE_DIR)/psc_sd_reader/src/PSC_SDReader.v \
-	$(MMIO_BASE_DIR)/psc_sd_reader/src/PSC_SDReader_SPI.v 
+	$(MMIO_BASE_DIR)/PSC_SDCARD/src/PSC_SDCard.v \
+	$(MMIO_BASE_DIR)/PSC_SDCARD/src/PSC_SDCard_SPI.v 
 
 # Timer
 TIMER_FILE = $(MMIO_BASE_DIR)/TIMER/PSC_RV32IS_TIMER.v
@@ -173,17 +173,18 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 # tang 20k 
 PSCONE_TEST = \
-	mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
+	sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff
+	#dma_test1:RV32ISP_chip_test:./mem/dma_test1.mem:0x00000000
+	#add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b
+	#mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
 	#fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678
 	#mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
 	#fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678
-	#dma_test1:RV32ISP_chip_test:./mem/dma_test1.mem:0x00000000
 	#add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b
 	#pio_uart_test1:RV32ISP_chip_test:./mem/pio_uart_test1.mem:0x00001212
 	#led_test1:RV32ISP_chip_test:./mem/led_test1.mem:0x00000022
 	#pio_test1:RV32ISP_chip_test:./mem/pio_test1.mem:0x00000022
 	#memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521
-	#sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff
 	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x008034aa
 
 # run test

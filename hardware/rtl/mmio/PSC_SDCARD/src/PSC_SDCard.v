@@ -1,14 +1,17 @@
 `timescale 1ns/1ps
-//`define fast_sck
+`ifdef COCOTB_SIM
+    `define fast_sck
+`endif
 
-module PSC_SDReader #(
-    parameter ADDR_WIDTH    = 32,
-    parameter CLK_FREQ_MHz  = 80,
-    parameter INIT_80CLK    = 80,             // 
-    parameter SD_IF_DATA    = 32'h1000_6000,  // READ: FIFO pop (byte)
-    parameter SD_IF_SECTOR  = 32'h1000_6004,  // WRITE: LBA
-    parameter SD_IF_CTRL    = 32'h1000_6008,  // RW: start/status
-    parameter FIFO_DEPTH    = 512             // 512推奨（将来64/128でも可）
+module PSC_SDCard #(
+    parameter ADDR_WIDTH        = 32,
+    parameter CLK_FREQ_MHz      = 80,
+    parameter INIT_80CLK        = 80,
+    parameter PROTECT_ADDRESS   = 32'h0000_1000,
+    parameter SD_IF_DATA        = 32'h1000_6000,  // READ: FIFO pop (byte)
+    parameter SD_IF_SECTOR      = 32'h1000_6004,  // WRITE: LBA
+    parameter SD_IF_CTRL        = 32'h1000_6008,  // RW: start/status
+    parameter FIFO_DEPTH        = 512             // 512推奨（将来64/128でも可）
 )(
     input  wire        clock,
     input  wire        reset_n,
@@ -38,7 +41,7 @@ module PSC_SDReader #(
             (CLK_FREQ_MHz * 1_000_000) / (2 * 400_000);         // 400kHz
 
     localparam FAST_SCK_DIV_TMP =
-            `ifdef COCOTB_SIM
+            `ifdef fast_sck
             (CLK_FREQ_MHz * 1_000_000) / (2 * 12_500_000);      // 12.5MHz
             `else
             (CLK_FREQ_MHz * 1_000_000) / (2 *  5_000_000);      //  5.0MHz
@@ -70,7 +73,7 @@ module PSC_SDReader #(
     end
 
     // SPI module instance
-    PSC_SDReader_SPI #(
+    PSC_SDCard_SPI #(
         .INIT_SCK_DIV   (INIT_SCK_DIV),
         .FAST_SCK_DIV   (FAST_SCK_DIV)
     ) u_spi (
@@ -101,6 +104,7 @@ module PSC_SDReader #(
     reg        fifo_flush;
     reg        fifo_pop;
     reg        soft_reset;
+    reg        write_start;
     reg        error;
 
     // ============================================================
@@ -156,6 +160,8 @@ module PSC_SDReader #(
             read_start   <= 1'b0; 
             fifo_flush   <= 1'b0;
             soft_reset   <= 1'b0;
+
+            write_start   <= 1'b0; 
             error        <= 1'b0;
             
             fifo_wr_ptr <= {FIFO_AW{1'b0}};
@@ -175,8 +181,13 @@ module PSC_SDReader #(
             fifo_pop         <= 1'b0;
 
             // read_startをリセット
-            if (state == ST_DONE)
-                read_start <= 1'b0;
+            // write_startをリセット
+            if (state == ST_DONE) begin
+                read_start  <= 1'b0;
+            end
+            if (state == ST_WRITE_DONE) begin
+                write_start <= 1'b0;
+            end
 
             // ------------ CPU Bus ----------------
             // READ: DATA FIFO
@@ -243,9 +254,13 @@ module PSC_SDReader #(
                         else if (cpu_wdata[3]) begin
                             soft_reset <= 1'b1;
                         end
-                        // bit4= TBD
-                        // bit4=1 でエラークリア(任意)
+                        // bit4= writeスタート
                         else if (cpu_wdata[4]) begin
+                            write_start <= 1'b1;
+                        end
+                        // bit7= TBD
+                        // bit7=1 でエラークリア(任意)
+                        else if (cpu_wdata[7]) begin
                             error <= 1'b0;
                         end
                     end
@@ -417,7 +432,7 @@ module PSC_SDReader #(
                         // start init sequence
                         spi_tx_start    <= 1'b1;
                         state <= ST_INIT_CLK;
-                    end
+                    end 
                 end
 
                 // -------------------------------------------------
@@ -574,6 +589,7 @@ module PSC_SDReader #(
                             if (sd_card_ready) begin
                                 sd_card_ready  <= 1'b0;
                                 case (next_state)
+                                    // READ
                                     ST_CMD8_SEND    : if (rx_cmd_sd_card == 8'h01) state <= next_state;
                                     ST_CMD55_SEND   : if (rx_cmd_sd_card == 8'h01) state <= next_state;
                                     ST_ACMD41_SEND  : if (rx_cmd_sd_card == 8'h01) state <= next_state;
@@ -585,6 +601,8 @@ module PSC_SDReader #(
                                     end
                                     ST_READY        : if (rx_cmd_sd_card == 8'h00) state <= next_state;
                                     ST_WAIT_TOKEN   : if (rx_cmd_sd_card == 8'h00) state <= next_state;
+                                    // WRITE
+                                    ST_WRITE_TOKEN  : if (rx_cmd_sd_card == 8'h01) state <= next_state;
                                     default:          state <= next_state;
                                 endcase
                             end
@@ -617,6 +635,9 @@ module PSC_SDReader #(
                                 end else begin
                                     state <= ST_CMD17_SEND;
                                 end
+                            end
+                            if (write_start && !error) begin
+                                state <= ST_CMD24_SEND;
                             end
                         end
                     end
@@ -741,25 +762,29 @@ module PSC_SDReader #(
                 // -------------------------------------------------
                 // state = 15
                 ST_CMD24_SEND: begin
-                if (spi_tx_start_d) begin
-                    case (cmd_i)
-                        3'd0: spi_send(8'h58);              // CMD24
-                        3'd1: spi_send(sector_reg[31:24]);
-                        3'd2: spi_send(sector_reg[23:16]);
-                        3'd3: spi_send(sector_reg[15:8]);
-                        3'd4: spi_send(sector_reg[7:0]);
-                        3'd5: spi_send(8'hFF);              // Dummy CRC
-                        default: spi_send(8'hFF);
-                    endcase
-                end
-
-                if (spi_tx_start) begin
-                    if (cmd_i == 3'd5) begin
-                        cmd_i      <= 3'd0;
-                        next_state <= ST_WRITE_TOKEN;
-                        state      <= ST_WAIT_R1;
+                    if (spi_tx_start_d) begin
+                        if (sector_reg > PROTECT_ADDRESS) begin     // SDカード破損防止
+                            case (cmd_i)
+                                3'd0: spi_send(8'h58);              // CMD24
+                                3'd1: spi_send(sector_reg[31:24]);
+                                3'd2: spi_send(sector_reg[23:16]);
+                                3'd3: spi_send(sector_reg[15:8]);
+                                3'd4: spi_send(sector_reg[7:0]);
+                                3'd5: spi_send(8'hFF);              // Dummy CRC
+                                default: spi_send(8'hFF);
+                            endcase
+                        end else begin
+                            state      <= ST_ERROR;;
+                        end
                     end
-                end
+
+                    if (spi_tx_start) begin
+                        if (cmd_i == 3'd5) begin
+                            cmd_i      <= 3'd0;
+                            next_state <= ST_WRITE_TOKEN;
+                            state      <= ST_WAIT_R1;
+                        end
+                    end
                 end
 
                 // -------------------------------------------------
@@ -770,8 +795,11 @@ module PSC_SDReader #(
                     end
 
                     if (spi_tx_start) begin
-                        byte_cnt <= 10'd0;
-                        state    <= ST_WRITE_DATA;
+                        if (cmd_i == 3'd5) begin
+                            cmd_i      <= 3'd0;
+                            byte_cnt   <= 10'd0;
+                            state      <= ST_WRITE_DATA;
+                        end
                     end
                 end
 
@@ -781,6 +809,15 @@ module PSC_SDReader #(
                     if (spi_tx_start_d) begin
                         spi_send(8'hFF);
                     end
+
+                    if (spi_tx_start) begin
+                        if (byte_cnt == 10'd512) begin
+                            state <= ST_WRITE_CRC1;
+                        end else begin
+                            byte_cnt <= byte_cnt + 10'd1;
+                            spi_send(byte_cnt[7:0]);
+                        end
+                    end
                 end
 
                 // -------------------------------------------------
@@ -788,6 +825,9 @@ module PSC_SDReader #(
                 ST_WRITE_CRC1: begin
                     if (spi_tx_start_d) begin
                         spi_send(8'hFF);
+                    end
+                    if (spi_tx_start) begin
+                        state    <= ST_WRITE_CRC2;
                     end
                 end
 
@@ -797,6 +837,9 @@ module PSC_SDReader #(
                     if (spi_tx_start_d) begin
                         spi_send(8'hFF);
                     end
+                    if (spi_tx_start) begin
+                        state    <= ST_WAIT_DATA_RESP;
+                    end
                 end
 
                 // -------------------------------------------------
@@ -804,6 +847,9 @@ module PSC_SDReader #(
                 ST_WAIT_DATA_RESP: begin
                     if (spi_tx_start_d) begin
                         spi_send(8'hFF);
+                    end
+                    if (spi_tx_start) begin
+                        state    <= ST_WAIT_BUSY;
                     end
                 end
                 // -------------------------------------------------
@@ -814,7 +860,7 @@ module PSC_SDReader #(
 
                     if (spi_tx_start) begin
                         if (spi_rx_data == 8'hFF) begin
-                            state <= ST_READY;
+                            state <= ST_WRITE_DONE;
                             cmd_i <= 0;
                         end
                     end
@@ -828,6 +874,10 @@ module PSC_SDReader #(
                         cmd_i <= 3'd0;
                     end
                 end
+
+                // -------------------------------------------------
+                // SD other Sequence
+                // -------------------------------------------------
 
                 // -------------------------------------------------
                 // state = 30

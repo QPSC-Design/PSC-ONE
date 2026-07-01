@@ -9,8 +9,8 @@
 # ============================================================
 #  SIMULATOR 切り替え (MODE=icarus / verilator)
 # ============================================================
-MODE  = icarus
-#MODE  = verilator
+#MODE  = icarus
+MODE  = verilator
 SIM  := $(MODE)
 
 # ------------------------------------------------------------
@@ -45,12 +45,12 @@ COCOTB_MAKEFILE  := $(shell cocotb-config --makefiles)/Makefile.sim
 #  ソース一覧
 # ============================================================
 SDCARD_MODEL = ../rtl/SDCARD_model/sdcard_spi_model.v 
-MMIO_DIR = ../rtl/mmio/psc_sd_reader
+MMIO_DIR = ../rtl/mmio/PSC_SDCARD
 
-SRC_MIC = \
-	$(MMIO_DIR)/src/sim_PSC_SDReader.v \
-	$(MMIO_DIR)/src/PSC_SDReader.v \
-	$(MMIO_DIR)/src/PSC_SDReader_SPI.v \
+SRC_SD = \
+	$(MMIO_DIR)/src/sim_PSC_SDCard.v \
+	$(MMIO_DIR)/src/PSC_SDCard.v \
+	$(MMIO_DIR)/src/PSC_SDCard_SPI.v \
 	$(SDCARD_MODEL)
 	
 # ============================================================
@@ -62,9 +62,9 @@ simulate_PSC_SD:
 	$(MAKE) clean
 	@mkdir -p ./wave
 	COCOTB_TEST_MODULES=cocotb_tb.mmio.sd_test \
-	TOPLEVEL=sim_PSC_SDReader TOPLEVEL_LANG=verilog \
+	TOPLEVEL=sim_PSC_SDCard TOPLEVEL_LANG=verilog \
 	SIM=$(SIM) \
-	VERILOG_SOURCES="$(SRC_MIC)" \
+	VERILOG_SOURCES="$(SRC_SD)" \
 	COMPILE_ARGS="-DCOCOTB_SIM $(VCD_COMPILE_ARGS)" \
 	VLOG_ARGS="$(VLOG_ARGS)" \
 	EXTRA_ARGS="$(EXTRA_ARGS)" \

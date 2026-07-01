@@ -1,23 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Tue Jun 30 01:01:19 2026
+[*] Wed Jul  1 02:16:24 2026
 [*]
 [dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_ONE_Chip_test.fst"
-[dumpfile_mtime] "Tue Jun 30 00:59:44 2026"
-[dumpfile_size] 721063
+[dumpfile_mtime] "Wed Jul  1 02:15:26 2026"
+[dumpfile_size] 604463
 [savefile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/cpu.dma.gtkw"
-[timestart] 481270000
-[size] 2402 1160
+[timestart] 0
+[size] 2778 1275
 [pos] -1 -1
-*-22.571007 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-27.817293 547935000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] PSC_ONE_Chip_sim.
 [treeopen] PSC_ONE_Chip_sim.u_chip.
 [treeopen] PSC_ONE_Chip_sim.u_chip.u_core_axi.
 [treeopen] PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.
-[sst_width] 278
+[sst_width] 279
 [signals_width] 198
 [sst_expanded] 1
-[sst_vpaned_height] 764
+[sst_vpaned_height] 850
 @22
 PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.u_csr.out_DMA_CTRL[31:0]
 PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.u_csr.out_DMA_DST[31:0]
@@ -25,6 +25,14 @@ PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.u_csr.out_DMA_SRC[31:0]
 PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.u_csr.out_DMA_WORDS[31:0]
 PSC_ONE_Chip_sim.u_chip.u_dma.BASE_ADDR_READ[31:0]
 PSC_ONE_Chip_sim.u_chip.u_dma.BASE_ADDR_WRITE[31:0]
+@28
+PSC_ONE_Chip_sim.u_chip.u_core_axi.u_data_dma_ctrl.cpu_req_ready
+@22
+PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.opcode[31:0]
+@23
+PSC_ONE_Chip_sim.u_chip.u_core_axi.u_core.u_csr.csr_rdata[31:0]
+@22
+PSC_ONE_Chip_sim.u_chip.u_dma.st[3:0]
 @420
 PSC_ONE_Chip_sim.u_chip.u_dma.DATA_WIDTH
 PSC_ONE_Chip_sim.u_chip.u_dma.ID_WIDTH
@@ -44,6 +52,7 @@ PSC_ONE_Chip_sim.u_chip.u_dma.clock
 PSC_ONE_Chip_sim.u_chip.u_dma.st[3:0]
 @28
 PSC_ONE_Chip_sim.u_chip.u_dma.dma_start
+PSC_ONE_Chip_sim.u_chip.u_dma.dma_busy
 PSC_ONE_Chip_sim.u_chip.u_dma.dma_done
 @22
 PSC_ONE_Chip_sim.u_chip.u_dma.dma_axi_araddr[31:0]

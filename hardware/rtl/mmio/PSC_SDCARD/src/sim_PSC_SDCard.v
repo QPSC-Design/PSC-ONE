@@ -1,7 +1,6 @@
 `timescale 1ns/1ps
-`define fast_sck
 
-module sim_PSC_SDReader #(
+module sim_PSC_SDCard #(
     parameter SD_IF_DATA    = 32'h1000_6000,  // READ: FIFO pop (byte)
     parameter SD_IF_SECTOR  = 32'h1000_6004,  // WRITE: LBA
     parameter SD_IF_CTRL    = 32'h1000_6008   // RW: start/status
@@ -45,7 +44,7 @@ module sim_PSC_SDReader #(
     wire    SD_MOSI;
     wire    SD_MISO;
 
-    PSC_SDReader u_sd (
+    PSC_SDCard u_sd (
         .clock          (clock),
         .reset_n        (reset_n),
 

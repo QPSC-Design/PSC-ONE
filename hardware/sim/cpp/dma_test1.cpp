@@ -72,7 +72,8 @@ extern "C" void run()
         csr_write(CSR_DMA_CTRL, 0);
 
         // 完了待ち
-        while (csr_read_dma_status() == 0) {
+        // dma_busy = H
+        while ((csr_read_dma_status() & 0x02) == 0x02) {
             asm volatile("nop");
         }
 #if 1

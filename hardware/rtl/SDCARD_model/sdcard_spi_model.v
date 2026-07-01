@@ -181,6 +181,15 @@ module sdcard_spi_model #(
                             resp_push(8'h01);
                             resp_push(8'hAA);
                         end
+                        
+                        8'h58: begin // CMD24
+                            debug_num <= 8'd0;
+                            ready <= 1'b0;
+                            app_cmd_seen <= 1'b0;
+                            tx_sector_data <= 1'b0;
+                            resp_push(INIT_R1_IDLE);
+                        end
+                        
 
                         8'h77: begin // CMD55
                             debug_num <= 8'd55;
@@ -334,5 +343,10 @@ module sdcard_spi_model #(
     wire [7:0] debug_mem_4 = resp_mem[4];
     wire [7:0] debug_mem_5 = resp_mem[5];
     wire [7:0] debug_mem_6 = resp_mem[6];
+    // debug 
+    wire [7:0] debug_sec_0 = sector_data[0];
+    wire [7:0] debug_sec_1 = sector_data[1];
+    wire [7:0] debug_sec_2 = sector_data[2];
+    wire [7:0] debug_sec_3 = sector_data[3];
 
 endmodule

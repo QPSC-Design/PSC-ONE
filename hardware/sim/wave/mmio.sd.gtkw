@@ -1,25 +1,29 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Sat Jun 27 16:19:57 2026
+[*] Wed Jul  1 03:38:23 2026
 [*]
-[dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_SD_test.vcd"
-[dumpfile_mtime] "Sat Jun 27 16:19:29 2026"
-[dumpfile_size] 299210
+[dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_SD_test.fst"
+[dumpfile_mtime] "Wed Jul  1 03:38:14 2026"
+[dumpfile_size] 59676
 [savefile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/mmio.sd.gtkw"
 [timestart] 0
-[size] 2620 1211
+[size] 2799 1283
 [pos] -1 -1
-*-24.664078 100195000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-31.048491 8743715002 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] sim_PSC_SDReader.
+[treeopen] sim_PSC_SDReader.u_sd_model.
 [sst_width] 278
-[signals_width] 182
+[signals_width] 297
 [sst_expanded] 1
-[sst_vpaned_height] 370
+[sst_vpaned_height] 857
+@28
+sim_PSC_SDReader.u_sd.reset_n
 @420
 sim_PSC_SDReader.u_sd.ST_WAIT_TOKEN
 @28
 sim_PSC_SDReader.u_sd.busy
-@22
+@24
+sim_PSC_SDReader.u_sd.state[4:0]
 sim_PSC_SDReader.u_sd.byte_cnt[9:0]
 @28
 sim_PSC_SDReader.u_sd.clock
@@ -39,6 +43,11 @@ sim_PSC_SDReader.u_sd.cpu_wdata[31:0]
 sim_PSC_SDReader.u_sd.cpu_wready
 sim_PSC_SDReader.u_sd.cpu_wvalid
 sim_PSC_SDReader.u_sd.cpu_wvalid_latch
+sim_PSC_SDReader.u_sd.start_pulse
+sim_PSC_SDReader.u_sd.read_ready
+[color] 1
+sim_PSC_SDReader.u_sd.write_start
+sim_PSC_SDReader.u_sd.read_start
 @22
 sim_PSC_SDReader.u_sd.crc_data1[7:0]
 sim_PSC_SDReader.u_sd.crc_data2[7:0]
@@ -49,14 +58,30 @@ sim_PSC_SDReader.u_sd.crc_write2
 sim_PSC_SDReader.u_sd.error
 @22
 sim_PSC_SDReader.u_sd.fifo_count[9:0]
-sim_PSC_SDReader.u_sd.fifo_d0[7:0]
-sim_PSC_SDReader.u_sd.fifo_d1[7:0]
-sim_PSC_SDReader.u_sd.fifo_d2[7:0]
-sim_PSC_SDReader.u_sd.fifo_d3[7:0]
 @28
 sim_PSC_SDReader.u_sd.fifo_empty
 sim_PSC_SDReader.u_sd.fifo_flush
+@22
+sim_PSC_SDReader.u_sd.fifo_count[9:0]
+@28
 sim_PSC_SDReader.u_sd.fifo_full
+sim_PSC_SDReader.u_sd.fifo_pop
+@24
+sim_PSC_SDReader.u_sd.fifo_rd_ptr[8:0]
+sim_PSC_SDReader.u_sd.fifo_wr_ptr[8:0]
+@22
+sim_PSC_SDReader.u_sd_model.unnamedblk1.rx_byte[7:0]
+sim_PSC_SDReader.u_sd.cpu_wdata[31:0]
+@23
+[color] 2
+sim_PSC_SDReader.u_sd.sector_reg[31:0]
+@28
+[color] 1
+sim_PSC_SDReader.u_sd.start_pulse
+[color] 1
+sim_PSC_SDReader.u_sd.read_ready
+[color] 1
+sim_PSC_SDReader.u_sd.busy
 sim_PSC_SDReader.u_sd.fifo_pop
 sim_PSC_SDReader.u_sd.fifo_push
 @22
@@ -67,11 +92,39 @@ sim_PSC_SDReader.u_sd.next_state[4:0]
 @28
 sim_PSC_SDReader.u_sd.read_ready
 sim_PSC_SDReader.u_sd.read_start
-sim_PSC_SDReader.u_sd.reset_n
 @22
 sim_PSC_SDReader.u_sd.rx_cmd_sd_card[7:0]
 @28
 sim_PSC_SDReader.u_sd.sck_fast_mode
 sim_PSC_SDReader.u_sd.sd_card_ready
+@22
+sim_PSC_SDReader.u_sd_model.cmd0[7:0]
+@28
+[color] 2
+sim_PSC_SDReader.SD_CS_N
+[color] 2
+sim_PSC_SDReader.SD_MISO
+[color] 2
+sim_PSC_SDReader.SD_MOSI
+[color] 2
+sim_PSC_SDReader.SD_SCK
+@22
+sim_PSC_SDReader.u_sd.fifo_push_data[7:0]
+sim_PSC_SDReader.u_sd_model.cmd0[7:0]
+@420
+sim_PSC_SDReader.u_sd_model.resp_wp
+sim_PSC_SDReader.u_sd_model.resp_rp
+@22
+sim_PSC_SDReader.u_sd_model.debug_sec_0[7:0]
+sim_PSC_SDReader.u_sd_model.debug_sec_1[7:0]
+sim_PSC_SDReader.u_sd_model.debug_sec_2[7:0]
+sim_PSC_SDReader.u_sd_model.debug_sec_3[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_0[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_1[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_2[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_3[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_4[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_5[7:0]
+sim_PSC_SDReader.u_sd_model.debug_mem_6[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

@@ -180,7 +180,7 @@ module PSC_ONE_Chip #(
     wire [31:0] mmio_rdata_pio;
     wire [31:0] mmio_rdata_uart;
     wire [31:0] mmio_rdata_timer;
-    wire [31:0] mmio_rdata_led = 32'h0;     // not used
+    wire [31:0] mmio_rdata_led;     // not used
     wire [31:0] mmio_rdata_lcd;
     wire [31:0] mmio_rdata_sd;
     wire [31:0] mmio_rdata_i2s;
@@ -410,8 +410,9 @@ module PSC_ONE_Chip #(
     wire [31:0] csr_DMA_SRC;
     wire [31:0] csr_DMA_DST;
 
+    wire        dma_busy;
     wire        dma_done;
-    wire [31:0] csr_DMA_STATUS = {31'd0, dma_done};
+    wire [31:0] csr_DMA_STATUS = {30'd0, dma_busy, dma_done};
 
     PSC_ONE_RV32ISP_core #(
         .ADDR_WIDTH         (ADDR_W),
@@ -792,6 +793,7 @@ module PSC_ONE_Chip #(
 
         // DMA Control
         .dma_start          (csr_DMA_CTRL[0]),
+        .dma_busy           (dma_busy),
         .dma_done           (dma_done),
 
         // Transfer Mount & Address
@@ -967,7 +969,7 @@ module PSC_ONE_Chip #(
     //==========================================================
     // SD Card I/F
     //==========================================================
-    PSC_SDReader #(
+    PSC_SDCard #(
         .CLK_FREQ_MHz   (CLK_FREQ),
         .ADDR_WIDTH     (32),
         .INIT_80CLK     (80),
@@ -975,7 +977,7 @@ module PSC_ONE_Chip #(
         .SD_IF_SECTOR   (PSC_SD_IF_SECTOR),
 		.SD_IF_CTRL     (PSC_SD_IF_CTRL),
         .FIFO_DEPTH     (512)     // max: 512
-    ) u_sd_reader (
+    ) u_sd_if (
         .clock          (clock_100MHz),
         .reset_n        (reset_n),
 

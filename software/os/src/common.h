@@ -35,6 +35,7 @@ static inline uint32_t mmio_r32(uint32_t addr) {
 
 void *memset(void *buf, char c, size_t n);
 void *memcpy(void *dst, const void *src, size_t n);
+void *dma_memcpy(void *dst, const void *src, size_t n);
 void s_print_int(int v);
 void s_printf(const char *fmt, ...);
 void hexdump(const void *addr, size_t len, uintptr_t base_addr_label);

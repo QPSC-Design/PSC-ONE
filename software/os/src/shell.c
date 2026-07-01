@@ -56,22 +56,25 @@ prompt:
 
             if (sw1_pressed) {
                 printf("SW1 pressed\n");
-                break;
+                //break;
             }
 
             if (sw2_pressed) {
                 printf("SW2 pressed\n");
-                break;
+                //break;
             }
 
             prev_sw = sw;
 #endif
+#if 0
+            int ch = getchar();
+#else
             int ch = getchar_timeout();
 
             if (ch < 0) {
                 continue;   // SWポーリングへ戻る
             }
-                        
+#endif                        
             // CRLF 後の “余り LF” を無視（空バッファで LF が来たらスキップ）
             if (ch == '\n' && len == 0) {
                 continue;

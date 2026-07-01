@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/QPSC-Design/PSC-ONE">
-    <img src="/docs/images/PSC-ONE_Logo.png" width="100%">
+    <img src="../docs/images/PSC-ONE_Logo.png" width="100%">
   </a>
 </p>
 

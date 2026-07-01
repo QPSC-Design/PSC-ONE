@@ -11,6 +11,7 @@ module PSC_ONE_DMA_axi #(
 
     // DMA controll
     input  wire                     dma_start,
+    output reg                      dma_busy,
     output reg                      dma_done,
 
     // SDRAM base address
@@ -82,6 +83,7 @@ module PSC_ONE_DMA_axi #(
             st <= ST_IDLE;
             word_count <= 32'd0;
             dma_buf <= 32'd0;
+            dma_busy <= 1'b0;
             dma_done <= 1'b0;
 
             dma_axi_awid    <= {ID_WIDTH{1'b0}};
@@ -111,6 +113,7 @@ module PSC_ONE_DMA_axi #(
 
             case (st)
                 ST_IDLE: begin
+                    dma_busy <= 1'b0;
                     dma_done <= 1'b0;
 
                     dma_axi_awvalid <= 1'b0;
@@ -122,6 +125,7 @@ module PSC_ONE_DMA_axi #(
 
                     if (dma_start) begin
                         word_count <= 32'd0;
+                        dma_busy   <= 1'b1;
                         st <= ST_AR;
                     end
                 end
@@ -189,6 +193,7 @@ module PSC_ONE_DMA_axi #(
                 end
 
                 ST_DONE: begin
+                    dma_busy <= 1'b0;
                     dma_done <= 1'b1;
                     if (dma_start) begin
                         st <= ST_IDLE;

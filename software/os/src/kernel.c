@@ -445,6 +445,10 @@ struct process *create_process(const void *image, size_t image_size) {
             size_t copy_size = (remaining < PAGE_SIZE) ? remaining : PAGE_SIZE;
 
             memcpy((void *)page, (const uint8_t *)image + off, copy_size);
+            //dma_memcpy((void *)page, (const uint8_t *)image + off, copy_size);
+
+            // 命令フェンス
+            //__asm__ __volatile__("fence.i" ::: "memory");
 
             //s_printf("DBG: map user image v=%x -> p=%x\n", (unsigned)(USER_BASE + off), (unsigned)page);
             map_page(page_table,
@@ -835,7 +839,7 @@ void kernel_main(void) {
         "| UART  : MMIO console\n"
         "| CMD1  : hello, primes, dump, sa_start\n"
         "| CMD2  : sd_read, sd_write, mic_read\n"
-        "| CMD3  : fat32_mount, fat32_ls, fat32_cat\n"
+        "| CMD3  : fat32_info, fat32_ls, fat32_cat\n"
         "| quit  : Ctl+A C. q.\n"
         "+--------------------------------------------------+\n",
         __DATE__, __TIME__
@@ -864,6 +868,9 @@ void kernel_main(void) {
     //printf("================================================\n");
     s_printf("--- create_process_2 ---\n");
     create_process(_binary_shell_bin_start, shell_size);
+
+    // 命令フェンス
+    __asm__ __volatile__("fence.i" ::: "memory");
 
     //printf("================================================\n");
     s_printf("--- yield ---\n");
