@@ -1,8 +1,8 @@
-# PSC_SDReader
+# PSC_SDCard
 
 ## Overview
 
-PSC_SDReader is a hardware IP core that implements SD card (SPI mode) sector read functionality for FPGA-based systems.
+PSC_SDCard is a hardware IP core that implements SD card (SPI mode) sector read functionality for FPGA-based systems.
 
 It provides a simple MMIO-based interface for the CPU, while internally handling SD card initialization, command sequencing, data transfer, FIFO buffering, and SPI communication.
 
