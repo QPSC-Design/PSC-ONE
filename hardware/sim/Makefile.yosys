@@ -8,8 +8,6 @@
 # ============================================================
 # yosys：合成可否チェック（プロジェクト一括）
 # ============================================================
-YOSYS_TOP := PSC_RV32ISP_core
-YOSYS_LOG := ./log/yosys_$(YOSYS_TOP).log
 
 # SDRAMモデル除外（超重要）
 # SystolicArray2x2_Ctrl.v内部のバス表記がyosysエラー
@@ -17,6 +15,9 @@ YOSYS_INPUT := $(filter-out \
     $(SA_FILE) \
     $(SDRAM_MODEL), \
     $(CPU_FILES))
+
+YOSYS_TOP := PSC_RV32ISP_core
+YOSYS_LOG := ./log/yosys_$(YOSYS_TOP).log
 
 yosys_check:
 	@mkdir -p ./log_yosys
@@ -36,11 +37,12 @@ yosys_check:
 # ============================================================
 # yosys：PSC_RV32ISP ロジック規模見積もり
 # ============================================================
-CPU_YOSYS_TOP := PSC_RV32ISP_core
-CPU_YOSYS_LOG := ./log_yosys/yosys_$(CPU_YOSYS_TOP).log
 
 # PSC_RV32ISP_coreファイル
 CPU_YOSYS_INPUT := $(CPU_CORE_FILES)
+
+CPU_YOSYS_TOP := PSC_RV32ISP_core
+CPU_YOSYS_LOG := ./log_yosys/yosys_$(CPU_YOSYS_TOP).log
 
 yosys_cpu:
 	@mkdir -p ./log_yosys
@@ -53,11 +55,12 @@ yosys_cpu:
 # ============================================================
 # yosys：SynapEngine ロジック規模見積もり
 # ============================================================
-SE_YOSYS_TOP := SystolicArray2x2_Ctrl
-SE_YOSYS_LOG := ./log_yosys/yosys_$(SE_YOSYS_TOP).log
 
 # SynapEngineファイル
 SE_YOSYS_INPUT := $(SA_FILE)
+
+SE_YOSYS_TOP := SystolicArray2x2_Ctrl
+SE_YOSYS_LOG := ./log_yosys/yosys_$(SE_YOSYS_TOP).log
 
 # SystolicArray2x2_Ctrl.v内部のバス表記がyosysエラー
 yosys_se:

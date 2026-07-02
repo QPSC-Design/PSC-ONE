@@ -103,12 +103,20 @@ extern "C" void run()
         // ----------------------------------------------------
         // SA開始
         // ----------------------------------------------------
+        // sa_clear:bit[2]
+        CSR_WRITE(0x7C0, 0x04);
+        CSR_WRITE(0x7C0, 0x00);
         // sa_reset
         CSR_WRITE(0x7C0, 0x02);
         CSR_WRITE(0x7C0, 0x00);
+        // sa_mode : OS mode.
+        CSR_WRITE(0x7C4, 0x01);
         // sa_start
-        CSR_WRITE(0x7C0, 0x01);
-        CSR_WRITE(0x7C0, 0x00);
+        //CSR_WRITE(0x7C0, 0x01);
+        //CSR_WRITE(0x7C0, 0x00);
+        // OS mode.
+        CSR_WRITE(0x7C0, (0x08 | 0x01));   // SA start
+        CSR_WRITE(0x7C0, (0x08 | 0x00));   // clear start
 
         while ((CSR_READ(0x7C8) & 0x01) != 0x01) {
             asm volatile("nop");
@@ -137,7 +145,7 @@ extern "C" void run()
         }
 #endif
 
-#if 0
+#if 1
         // debug出力
         PIO32 = 0xEEA0;
         for (int i = 0; i < 4; i++) {

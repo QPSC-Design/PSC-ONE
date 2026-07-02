@@ -230,6 +230,8 @@ module sdram_controller #(
         if (!reset_n) begin
             state       <= IDLE;
             write_ready <= 0;
+            adr_r       <= 13'd0;
+            ba_r        <= 2'd0;
             cs_r        <= 0; 
             ras_r       <= 1; 
             cas_r       <= 1; 

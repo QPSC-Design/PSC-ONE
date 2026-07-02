@@ -94,6 +94,9 @@ $(MEM): $(BIN)
 ###############################################################################
 # ディスアセンブルとクリーン
 ###############################################################################
+# Usage
+# make disasm TARGET=add_test1
+
 disasm: $(ELF)
 	$(RISCV_PREFIX)objdump -d $(ELF) > $(TARGET).S
 	@echo "Disassembly saved to $(TARGET).S"

@@ -173,17 +173,13 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 # tang 20k 
 PSCONE_TEST = \
-	sd_card_test1:RV32ISP_chip_test:./mem/sd_card_test1.mem:0x000000ff
+	add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b
+	#memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521
+	#sret_test1:RV32ISP_chip_test:./mem/sret_test1.mem:0x0000DC12
+	#add_test2:RV32ISP_chip_test:./mem/add_test2.mem:0x00000000
+	#cachewb_test1:RV32ISP_chip_test:./mem/cachewb_test1.mem:0x00000000
 	#dma_test1:RV32ISP_chip_test:./mem/dma_test1.mem:0x00000000
-	#add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b
-	#mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
-	#fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678
-	#mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033
-	#fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678
-	#add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b
-	#pio_uart_test1:RV32ISP_chip_test:./mem/pio_uart_test1.mem:0x00001212
-	#led_test1:RV32ISP_chip_test:./mem/led_test1.mem:0x00000022
-	#pio_test1:RV32ISP_chip_test:./mem/pio_test1.mem:0x00000022
+	#sa_test2:RV32ISP_chip_test:./mem/sa_test2.mem:0x0000BEEF
 	#memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521
 	#i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x008034aa
 
@@ -228,46 +224,24 @@ simulate_PSC_ONE:
 PSCONE_TESTS = \
 	add_test1:RV32ISP_chip_test:./mem/add_test1.mem:0xff00ff0b \
 	add_test2:RV32ISP_chip_test:./mem/add_test2.mem:0x00000000 \
-	mulsi3_test1:RV32ISP_chip_test:./mem/mulsi3_test1.mem:0x00000015 \
-	xor_test1:RV32ISP_chip_test:./mem/xor_test1.mem:0x00003344 \
-	alu_mul_test1:RV32ISP_chip_test:./mem/alu_mul_test1.mem:0x00000000 \
-	fft_test1:RV32ISP_chip_test:./mem/fft_test1.mem:0x0000beef \
-	q15_fft_test1:RV32ISP_chip_test:./mem/q15_fft_test1.mem:0x0000beef \
-	fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef \
-	sub_test1:RV32ISP_chip_test:./mem/sub_test1.mem:0x0000006e \
-	mem_write1:RV32ISP_chip_test:./mem/mem_write1.mem:0x00000037 \
-	shift_test1:RV32ISP_chip_test:./mem/shift_test1.mem:0x00001234 \
-	jump_test1:RV32ISP_chip_test:./mem/jump_test1.mem:0x12345678 \
-	matrix_test1:RV32ISP_chip_test:./mem/matrix_test1.mem:0x0000ABCD \
-	mul_test1:RV32ISP_chip_test:./mem/mul_test1.mem:0x00000063 \
-	mul_test2:RV32ISP_chip_test:./mem/mul_test2.mem:0x00000033 \
-	memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521 \
-	fetch_test1:RV32ISP_chip_test:./mem/fetch_test1.mem:0xcd1023bb \
-	csr_test1:RV32ISP_chip_test:./mem/csr_test1.mem:0x00000022 \
-	cache_RW_test1:RV32ISP_chip_test:./mem/cache_RW_test1.mem:0x600DCAFE \
-	fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678 \
-	pio_test1:RV32ISP_chip_test:./mem/pio_test1.mem:0x00000022 \
-	uart_test1:RV32ISP_chip_test:./mem/uart_test1.mem:0x00000077 \
-	sp_test1:RV32ISP_chip_test:./mem/sp_test1.mem:0x00005AA5 \
-	csr_test2:RV32ISP_chip_test:./mem/csr_test2.mem:0x00000321 \
-	mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033 \
 	sbwrite_test1:RV32ISP_chip_test:./mem/sbwrite_test1.mem:0xE500000F \
 	jal_test1:RV32ISP_chip_test:./mem/jal_test1.mem:0x12345678 \
 	timer_test1:RV32ISP_chip_test:./mem/timer_test1.mem:0x00000123 \
 	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x008034aa \
-	sa_test1:RV32ISP_chip_test:./mem/sa_test1.mem:0x0000BEEF \
-	sa_test2:RV32ISP_chip_test:./mem/sa_test2.mem:0x0000BEEF \
-	sa_test3:RV32ISP_chip_test:./mem/sa_test3.mem:0x0000BEEF \
 	montepi_test1:RV32ISP_chip_test:./mem/montepi_test1.mem:0x0000beef \
-	sa_matrix_test1:RV32ISP_chip_test:./mem/sa_matrix_test1.mem:0x0000BEEF \
 	uart_tx:RV32ISP_chip_test:./mem/uart_tx.mem:0x00000123 \
 	mret_test1:RV32ISP_chip_test:./mem/mret_test1.mem:0x0000DCBA \
+	pio_uart_test1:RV32ISP_chip_test:./mem/pio_uart_test1.mem:0x00001212 \
+	mulsi3_test1:RV32ISP_chip_test:./mem/mulsi3_test1.mem:0x00000015 \
+	xor_test1:RV32ISP_chip_test:./mem/xor_test1.mem:0x00003344 \
 	sret_test1:RV32ISP_chip_test:./mem/sret_test1.mem:0x0000DC12 \
 	sfence_test1:RV32ISP_chip_test:./mem/sfence_test1.mem:0x00000F01 \
+	cachewb_test1:RV32ISP_chip_test:./mem/cachewb_test1.mem:0x00000000 \
 	ret_test1:RV32ISP_chip_test:./mem/ret_test1.mem:0x12345678 \
 	trap_test1:RV32ISP_chip_test:./mem/trap_test1.mem:0xCAFEBABE \
 	lw_test1:RV32ISP_chip_test:./mem/lw_test1.mem:0xC0DEC0DE \
 	audipc_test1:RV32ISP_chip_test:./mem/audipc_test1.mem:0xFFFFFFF8 \
+	mmu_test1:RV32ISP_chip_test:./mem/mmu_test1.mem:0x00000033 \
 	jalr_test1:RV32ISP_chip_test:./mem/jalr_test1.mem:0x00000044 \
 	ecall_test1:RV32ISP_chip_test:./mem/ecall_test1.mem:0x00000321 \
 	dma_test1:RV32ISP_chip_test:./mem/dma_test1.mem:0x00000000 \
@@ -281,7 +255,30 @@ PSCONE_TESTS = \
 	boot_test1:RV32ISP_chip_test:./mem/boot_test1.mem:0x00001321 \
 	boot_test2:RV32ISP_chip_test:./mem/boot_test2.mem:0x00002321 \
 	lcd_test1:RV32ISP_chip_test:./mem/lcd_test1.mem:0x00000012 \
-	pio_uart_test1:RV32ISP_chip_test:./mem/pio_uart_test1.mem:0x00001212 \
+	alu_mul_test1:RV32ISP_chip_test:./mem/alu_mul_test1.mem:0x00000000 \
+	fft_test1:RV32ISP_chip_test:./mem/fft_test1.mem:0x0000beef \
+	q15_fft_test1:RV32ISP_chip_test:./mem/q15_fft_test1.mem:0x0000beef \
+	fft_N8_test1:RV32ISP_chip_test:./mem/fft_N8_test1.mem:0x0000beef \
+	sub_test1:RV32ISP_chip_test:./mem/sub_test1.mem:0x0000006e \
+	mem_write1:RV32ISP_chip_test:./mem/mem_write1.mem:0x00000037 \
+	shift_test1:RV32ISP_chip_test:./mem/shift_test1.mem:0x00001234 \
+	jump_test1:RV32ISP_chip_test:./mem/jump_test1.mem:0x12345678 \
+	matrix_test1:RV32ISP_chip_test:./mem/matrix_test1.mem:0x0000ABCD \
+	mul_test1:RV32ISP_chip_test:./mem/mul_test1.mem:0x00000063 \
+	mul_test2:RV32ISP_chip_test:./mem/mul_test2.mem:0x00000033 \
+	sa_test1:RV32ISP_chip_test:./mem/sa_test1.mem:0x0000BEEF \
+	sa_test2:RV32ISP_chip_test:./mem/sa_test2.mem:0x0000BEEF \
+	sa_test3:RV32ISP_chip_test:./mem/sa_test3.mem:0x0000BEEF \
+	sa_matrix_test1:RV32ISP_chip_test:./mem/sa_matrix_test1.mem:0x0000BEEF \
+	memcpy_test1:RV32ISP_chip_test:./mem/memcpy_test1.mem:0x00002521 \
+	fetch_test1:RV32ISP_chip_test:./mem/fetch_test1.mem:0xcd1023bb \
+	csr_test1:RV32ISP_chip_test:./mem/csr_test1.mem:0x00000022 \
+	cache_RW_test1:RV32ISP_chip_test:./mem/cache_RW_test1.mem:0x600DCAFE \
+	fencei_test1:RV32ISP_chip_test:./mem/fencei_test1.mem:0xabcd5678 \
+	pio_test1:RV32ISP_chip_test:./mem/pio_test1.mem:0x00000022 \
+	uart_test1:RV32ISP_chip_test:./mem/uart_test1.mem:0x00000077 \
+	sp_test1:RV32ISP_chip_test:./mem/sp_test1.mem:0x00005AA5 \
+	csr_test2:RV32ISP_chip_test:./mem/csr_test2.mem:0x00000321 \
 	led_test1:RV32ISP_chip_test:./mem/led_test1.mem:0x00000022
 
 # Sub List
@@ -323,6 +320,7 @@ simulate_PSC_ONE_TESTS:
 		TOPLEVEL_LANG=verilog \
 		SIM=$(SIM) \
 		VERILOG_SOURCES="$(INPUT_FILE_PSCONE)" \
+		COMPILE_ARGS="$(VCD_COMPILE_ARGS)" \
 		EXTRA_ARGS="$(EXTRA_ARGS) $(VDEF)" \
 		make --silent -f $(COCOTB_MAKEFILE); \
 	done; \

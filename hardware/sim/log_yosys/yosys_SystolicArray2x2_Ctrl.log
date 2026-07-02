@@ -27,8 +27,8 @@
 1. Executing Verilog-2005 frontend: ../rtl/ai/src/SystolicArray2x2_Ctrl.v
 Parsing SystemVerilog input from `../rtl/ai/src/SystolicArray2x2_Ctrl.v' to AST representation.
 Generating RTLIL representation for module `\SystolicArray2x2_Ctrl'.
-Warning: Replacing memory \b_data with list of registers. See ../rtl/ai/src/SystolicArray2x2_Ctrl.v:357
-Warning: Replacing memory \a_data with list of registers. See ../rtl/ai/src/SystolicArray2x2_Ctrl.v:329
+Warning: Replacing memory \b_data with list of registers. See ../rtl/ai/src/SystolicArray2x2_Ctrl.v:335
+Warning: Replacing memory \a_data with list of registers. See ../rtl/ai/src/SystolicArray2x2_Ctrl.v:307
 Successfully finished Verilog frontend.
 
 2. Executing Verilog-2005 frontend: ../rtl/ai/src/SystolicArray2x2.v
@@ -205,61 +205,61 @@ Removed 4 unused modules.
 Cleaned up 0 empty switches.
 
 7.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
-Marked 5 switch rules as full_case in process $proc$../rtl/ai/src/PE_mult.v:30$283 in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Marked 5 switch rules as full_case in process $proc$../rtl/ai/src/PE_INT.v:93$259 in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
-Marked 2 switch rules as full_case in process $proc$../rtl/ai/src/PE_INT.v:73$257 in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
-Marked 2 switch rules as full_case in process $proc$../rtl/ai/src/PE_INT.v:61$255 in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
-Removed 4 dead cases from process $proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16 in module SystolicArray2x2_Ctrl.
-Marked 27 switch rules as full_case in process $proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16 in module SystolicArray2x2_Ctrl.
-Marked 1 switch rules as full_case in process $proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:169$14 in module SystolicArray2x2_Ctrl.
-Removed a total of 4 dead cases.
+Marked 5 switch rules as full_case in process $proc$../rtl/ai/src/PE_mult.v:30$257 in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Marked 5 switch rules as full_case in process $proc$../rtl/ai/src/PE_INT.v:93$233 in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
+Marked 2 switch rules as full_case in process $proc$../rtl/ai/src/PE_INT.v:73$231 in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
+Marked 2 switch rules as full_case in process $proc$../rtl/ai/src/PE_INT.v:61$229 in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
+Removed 2 dead cases from process $proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14 in module SystolicArray2x2_Ctrl.
+Marked 19 switch rules as full_case in process $proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14 in module SystolicArray2x2_Ctrl.
+Marked 1 switch rules as full_case in process $proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:166$12 in module SystolicArray2x2_Ctrl.
+Removed a total of 2 dead cases.
 
 7.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
 Removed 15 redundant assignments.
-Promoted 99 assignments to connections.
+Promoted 95 assignments to connections.
 
 7.4. Executing PROC_INIT pass (extract init attributes).
 
 7.5. Executing PROC_ARST pass (detect async resets in processes).
-Found async reset \reset_n in `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-Found async reset \reset_n in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-Found async reset \reset_n in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$257'.
-Found async reset \reset_n in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$255'.
-Found async reset \reset_n in `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-Found async reset \reset_n in `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:169$14'.
+Found async reset \reset_n in `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+Found async reset \reset_n in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+Found async reset \reset_n in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$231'.
+Found async reset \reset_n in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$229'.
+Found async reset \reset_n in `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+Found async reset \reset_n in `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:166$12'.
 
 7.6. Executing PROC_ROM pass (convert switches to ROMs).
 Converted 0 switches.
-<suppressed ~50 debug messages>
+<suppressed ~41 debug messages>
 
 7.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
-Creating decoders for process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-Creating decoders for process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
+Creating decoders for process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+Creating decoders for process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
      1/24: $0\idx[1:0]
-     2/24: $2$lookahead\data_out_ready$282[1:0]$311
-     3/24: $2$bitselwrite$data$../rtl/ai/src/PE_mult.v:52$273[1:0]$308
-     4/24: $2$bitselwrite$mask$../rtl/ai/src/PE_mult.v:52$272[1:0]$307
-     5/24: $2$bitselwrite$sel$../rtl/ai/src/PE_mult.v:52$274[1:0]$309
-     6/24: $4$lookahead\data_in_valid_reg$281[3:0]$310
-     7/24: $2$bitselwrite$data$../rtl/ai/src/PE_mult.v:51$270[3:0]$305
-     8/24: $2$bitselwrite$mask$../rtl/ai/src/PE_mult.v:51$269[3:0]$304
-     9/24: $2$bitselwrite$sel$../rtl/ai/src/PE_mult.v:51$271[1:0]$306
-    10/24: $3$lookahead\data_in_valid_reg$281[1:1]$302
-    11/24: $2$lookahead\data_in_valid_reg$281[0:0]$301
-    12/24: $1$lookahead\data_out_ready$282[1:0]$300
-    13/24: $1$lookahead\data_in_valid_reg$281[3:0]$299
-    14/24: $1$bitselwrite$sel$../rtl/ai/src/PE_mult.v:52$274[1:0]$298
-    15/24: $1$bitselwrite$data$../rtl/ai/src/PE_mult.v:52$273[1:0]$297
-    16/24: $1$bitselwrite$mask$../rtl/ai/src/PE_mult.v:52$272[1:0]$296
-    17/24: $1$bitselwrite$sel$../rtl/ai/src/PE_mult.v:51$271[1:0]$295
-    18/24: $1$bitselwrite$data$../rtl/ai/src/PE_mult.v:51$270[3:0]$294
-    19/24: $1$bitselwrite$mask$../rtl/ai/src/PE_mult.v:51$269[3:0]$293
+     2/24: $2$lookahead\data_out_ready$256[1:0]$285
+     3/24: $2$bitselwrite$data$../rtl/ai/src/PE_mult.v:52$247[1:0]$282
+     4/24: $2$bitselwrite$mask$../rtl/ai/src/PE_mult.v:52$246[1:0]$281
+     5/24: $2$bitselwrite$sel$../rtl/ai/src/PE_mult.v:52$248[1:0]$283
+     6/24: $4$lookahead\data_in_valid_reg$255[3:0]$284
+     7/24: $2$bitselwrite$data$../rtl/ai/src/PE_mult.v:51$244[3:0]$279
+     8/24: $2$bitselwrite$mask$../rtl/ai/src/PE_mult.v:51$243[3:0]$278
+     9/24: $2$bitselwrite$sel$../rtl/ai/src/PE_mult.v:51$245[1:0]$280
+    10/24: $3$lookahead\data_in_valid_reg$255[1:1]$276
+    11/24: $2$lookahead\data_in_valid_reg$255[0:0]$275
+    12/24: $1$lookahead\data_out_ready$256[1:0]$274
+    13/24: $1$lookahead\data_in_valid_reg$255[3:0]$273
+    14/24: $1$bitselwrite$sel$../rtl/ai/src/PE_mult.v:52$248[1:0]$272
+    15/24: $1$bitselwrite$data$../rtl/ai/src/PE_mult.v:52$247[1:0]$271
+    16/24: $1$bitselwrite$mask$../rtl/ai/src/PE_mult.v:52$246[1:0]$270
+    17/24: $1$bitselwrite$sel$../rtl/ai/src/PE_mult.v:51$245[1:0]$269
+    18/24: $1$bitselwrite$data$../rtl/ai/src/PE_mult.v:51$244[3:0]$268
+    19/24: $1$bitselwrite$mask$../rtl/ai/src/PE_mult.v:51$243[3:0]$267
     20/24: $1\i[31:0]
     21/24: $0\result_C_32bit[31:0]
     22/24: $0\data_B_latch[15:0]
     23/24: $0\data_A_latch[15:0]
     24/24: $0\result_C[31:0]
-Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
+Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
      1/9: $0\inject_product[0:0]
      2/9: $0\data_out_valid[0:0]
      3/9: $0\done[0:0]
@@ -269,377 +269,353 @@ Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698
      7/9: $0\ps_acc[31:0]
      8/9: $0\sum_to_bottom[31:0]
      9/9: $0\busy[0:0]
-Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$257'.
+Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$231'.
      1/1: $0\b_reg[7:0]
-Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$255'.
+Creating decoders for process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$229'.
      1/1: $0\a_reg[7:0]
-Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-     1/110: $3\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.$result[31:0]$158
-     2/110: $3\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.k[3:0]$159
-     3/110: $3$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_DATA[31:0]$148
-     4/110: $3$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_DATA[31:0]$147
-     5/110: $0\c_data_11[31:0] [31:16]
-     6/110: $0\c_data_11[31:0] [15:0]
-     7/110: $0\c_data_10[31:0] [15:0]
-     8/110: $0\c_data_01[31:0] [15:0]
-     9/110: $0\c_data_00[31:0] [15:0]
-    10/110: $3$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_DATA[31:0]$140
-    11/110: $3$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_ADDR[0:0]$139
-    12/110: $3$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_DATA[31:0]$135
-    13/110: $4\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.idx[3:0]$128
-    14/110: $4\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.k[3:0]$127
-    15/110: $4\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.$result[31:0]$126
-    16/110: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.idx[3:0]$122
-    17/110: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.k[3:0]$121
-    18/110: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.$result[31:0]$120
-    19/110: $3$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_ADDR[0:0]$123
-    20/110: $3$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_DATA[31:0]$124
-    21/110: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.$result[31:0]$115
-    22/110: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.idx[3:0]$116
-    23/110: $4\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.idx[3:0]$108
-    24/110: $4\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.k[3:0]$107
-    25/110: $4\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.$result[31:0]$106
-    26/110: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.idx[3:0]$102
-    27/110: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.k[3:0]$101
-    28/110: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.$result[31:0]$100
-    29/110: $3$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_ADDR[0:0]$103
-    30/110: $3$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_DATA[31:0]$104
-    31/110: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.$result[31:0]$95
-    32/110: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.idx[3:0]$96
-    33/110: $2$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_DATA[31:0]$93
-    34/110: $2$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_ADDR[1:0]$92
-    35/110: $2$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_DATA[31:0]$91
-    36/110: $2$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_ADDR[1:0]$90
-    37/110: $2$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_DATA[31:0]$89
-    38/110: $2$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_ADDR[0:0]$88
-    39/110: $2$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_DATA[31:0]$87
-    40/110: $2$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_ADDR[0:0]$86
-    41/110: $2$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_DATA[31:0]$85
-    42/110: $2$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_ADDR[0:0]$84
-    43/110: $2$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_DATA[31:0]$83
-    44/110: $2$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_ADDR[0:0]$82
-    45/110: $2\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.k[3:0]$81
-    46/110: $2\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.$result[31:0]$80
-    47/110: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.idx[3:0]$79
-    48/110: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.k[3:0]$78
-    49/110: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.$result[31:0]$77
-    50/110: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.idx[3:0]$76
-    51/110: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.$result[31:0]$75
-    52/110: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.idx[3:0]$74
-    53/110: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.k[3:0]$73
-    54/110: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.$result[31:0]$72
-    55/110: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.idx[3:0]$71
-    56/110: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.$result[31:0]$70
-    57/110: $1$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_DATA[31:0]$65
-    58/110: $1$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_ADDR[1:0]$64
-    59/110: $1$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_DATA[31:0]$63
-    60/110: $1$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_ADDR[1:0]$62
-    61/110: $1$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_DATA[31:0]$61
-    62/110: $1$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_ADDR[0:0]$60
-    63/110: $1$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_DATA[31:0]$59
-    64/110: $1$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_ADDR[0:0]$58
-    65/110: $1$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_DATA[31:0]$57
-    66/110: $1$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_ADDR[0:0]$56
-    67/110: $1$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_DATA[31:0]$55
-    68/110: $1$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_ADDR[0:0]$54
-    69/110: $1\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.k[3:0]$53
-    70/110: $1\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.$result[31:0]$52
-    71/110: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.idx[3:0]$51
-    72/110: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.k[3:0]$50
-    73/110: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.$result[31:0]$49
-    74/110: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.idx[3:0]$48
-    75/110: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.$result[31:0]$47
-    76/110: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.idx[3:0]$46
-    77/110: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.k[3:0]$45
-    78/110: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.$result[31:0]$44
-    79/110: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.idx[3:0]$43
-    80/110: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.$result[31:0]$42
-    81/110: $0\done[0:0]
-    82/110: $0\busy[0:0]
-    83/110: $0\c_write_valid[0:0]
-    84/110: $0\rd_read_valid[0:0]
-    85/110: $0\start_pulse[0:0]
-    86/110: $0\en_shift_bottom[0:0]
-    87/110: $0\en_shift_right[0:0]
-    88/110: $0\en_b_shift_bottom[0:0]
-    89/110: $0\data_clear[0:0]
-    90/110: $0\b_data[1][31:0]
-    91/110: $0\b_data[0][31:0]
-    92/110: $0\a_data[1][31:0]
-    93/110: $0\a_data[0][31:0]
-    94/110: $0\shift_down_cnt[3:0]
-    95/110: $0\wait_cnt[3:0]
-    96/110: $0\row_s[3:0]
-    97/110: $0\b_send_idx[3:0]
-    98/110: $0\b_idx[3:0]
-    99/110: $0\a_idx[3:0]
-   100/110: $0\state[5:0]
-   101/110: $0\c_data_10[31:0] [31:16]
-   102/110: $0\c_data_01[31:0] [31:16]
-   103/110: $0\c_data_00[31:0] [31:16]
-   104/110: $4$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_DATA[31:0]$141
-   105/110: $0\cur_b_data[31:0]
-   106/110: $0\cur_a_data[31:0]
-   107/110: $0\cycle_idx[3:0]
-   108/110: $0\c_write_wdata[31:0]
-   109/110: $0\c_write_addr[31:0]
-   110/110: $0\rd_read_addr[31:0]
-Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:169$14'.
+Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+     1/94: $3\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.$result[31:0]$132
+     2/94: $3\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.k[3:0]$133
+     3/94: $3$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_DATA[31:0]$122
+     4/94: $3$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_DATA[31:0]$121
+     5/94: $4\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.idx[3:0]$114
+     6/94: $4\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.k[3:0]$113
+     7/94: $4\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.$result[31:0]$112
+     8/94: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.idx[3:0]$108
+     9/94: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.k[3:0]$107
+    10/94: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.$result[31:0]$106
+    11/94: $3$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_ADDR[0:0]$109
+    12/94: $3$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_DATA[31:0]$110
+    13/94: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.$result[31:0]$101
+    14/94: $3\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.idx[3:0]$102
+    15/94: $4\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.idx[3:0]$94
+    16/94: $4\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.k[3:0]$93
+    17/94: $4\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.$result[31:0]$92
+    18/94: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.idx[3:0]$88
+    19/94: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.k[3:0]$87
+    20/94: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.$result[31:0]$86
+    21/94: $3$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_ADDR[0:0]$89
+    22/94: $3$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_DATA[31:0]$90
+    23/94: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.$result[31:0]$81
+    24/94: $3\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.idx[3:0]$82
+    25/94: $2$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_DATA[31:0]$79
+    26/94: $2$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_ADDR[1:0]$78
+    27/94: $2$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_DATA[31:0]$77
+    28/94: $2$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_ADDR[1:0]$76
+    29/94: $2$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_DATA[31:0]$75
+    30/94: $2$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_ADDR[0:0]$74
+    31/94: $2$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_DATA[31:0]$73
+    32/94: $2$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_ADDR[0:0]$72
+    33/94: $2\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.k[3:0]$71
+    34/94: $2\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.$result[31:0]$70
+    35/94: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.idx[3:0]$69
+    36/94: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.k[3:0]$68
+    37/94: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.$result[31:0]$67
+    38/94: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.idx[3:0]$66
+    39/94: $2\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.$result[31:0]$65
+    40/94: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.idx[3:0]$64
+    41/94: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.k[3:0]$63
+    42/94: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.$result[31:0]$62
+    43/94: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.idx[3:0]$61
+    44/94: $2\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.$result[31:0]$60
+    45/94: $1$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_DATA[31:0]$55
+    46/94: $1$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_ADDR[1:0]$54
+    47/94: $1$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_DATA[31:0]$53
+    48/94: $1$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_ADDR[1:0]$52
+    49/94: $1$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_DATA[31:0]$51
+    50/94: $1$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_ADDR[0:0]$50
+    51/94: $1$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_DATA[31:0]$49
+    52/94: $1$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_ADDR[0:0]$48
+    53/94: $1\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.k[3:0]$47
+    54/94: $1\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.$result[31:0]$46
+    55/94: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.idx[3:0]$45
+    56/94: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.k[3:0]$44
+    57/94: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.$result[31:0]$43
+    58/94: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.idx[3:0]$42
+    59/94: $1\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.$result[31:0]$41
+    60/94: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.idx[3:0]$40
+    61/94: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.k[3:0]$39
+    62/94: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.$result[31:0]$38
+    63/94: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.idx[3:0]$37
+    64/94: $1\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.$result[31:0]$36
+    65/94: $0\done[0:0]
+    66/94: $0\busy[0:0]
+    67/94: $0\c_write_valid[0:0]
+    68/94: $0\rd_read_valid[0:0]
+    69/94: $0\start_pulse[0:0]
+    70/94: $0\en_shift_bottom[0:0]
+    71/94: $0\en_shift_right[0:0]
+    72/94: $0\en_b_shift_bottom[0:0]
+    73/94: $0\data_clear[0:0]
+    74/94: $0\b_data[1][31:0]
+    75/94: $0\b_data[0][31:0]
+    76/94: $0\a_data[1][31:0]
+    77/94: $0\a_data[0][31:0]
+    78/94: $0\shift_down_cnt[3:0]
+    79/94: $0\wait_cnt[3:0]
+    80/94: $0\row_s[3:0]
+    81/94: $0\b_send_idx[3:0]
+    82/94: $0\b_idx[3:0]
+    83/94: $0\a_idx[3:0]
+    84/94: $0\state[5:0]
+    85/94: $0\c_data_11[31:0]
+    86/94: $0\c_data_10[31:0]
+    87/94: $0\c_data_01[31:0]
+    88/94: $0\c_data_00[31:0]
+    89/94: $0\cur_b_data[31:0]
+    90/94: $0\cur_a_data[31:0]
+    91/94: $0\cycle_idx[3:0]
+    92/94: $0\c_write_wdata[31:0]
+    93/94: $0\c_write_addr[31:0]
+    94/94: $0\rd_read_addr[31:0]
+Creating decoders for process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:166$12'.
      1/2: $0\b_top_in_bus[15:0]
      2/2: $0\a_left_in_bus[15:0]
 
 7.8. Executing PROC_DLATCH pass (convert process syncs to latches).
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_left_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_left_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_top_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_top_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_top_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_top_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[4]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[5]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[4]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[5]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[4]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[5]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[0]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[1]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[2]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[3]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[0]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[1]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[2]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[3]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_left_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_left_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_top_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_top_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_top_in_flat[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_top_in_flat[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[4]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\a_wire[5]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[4]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\b_wire[5]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[4]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_wire[5]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\busy_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\done_wire[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\ps_acc[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_out_valid[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_in_ready[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_A_in[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_B_in[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[0]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[1]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[2]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.\data_C_out[3]' from process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[0]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[1]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[2]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\a_os_data[3]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[0]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[1]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[2]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+No latch inferred for signal `\SystolicArray2x2_Ctrl.\b_os_data[3]' from process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
 
 7.9. Executing PROC_DFF pass (convert process syncs to FFs).
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\result_C' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2805' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_out_ready' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2806' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\idx' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2807' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_in_valid_reg' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2808' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_A_latch' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $dff cell `$procdff$2811' with positive edge clock.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_B_latch' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $dff cell `$procdff$2814' with positive edge clock.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\result_C_32bit' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2815' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\i' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $dff cell `$procdff$2818' with positive edge clock.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$mask$../rtl/ai/src/PE_mult.v:51$269' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2819' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$data$../rtl/ai/src/PE_mult.v:51$270' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2820' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$sel$../rtl/ai/src/PE_mult.v:51$271' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2821' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$mask$../rtl/ai/src/PE_mult.v:52$272' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2822' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$data$../rtl/ai/src/PE_mult.v:52$273' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2823' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$sel$../rtl/ai/src/PE_mult.v:52$274' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2824' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$lookahead\data_in_valid_reg$281' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2825' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$lookahead\data_out_ready$282' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-  created $adff cell `$procdff$2826' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\busy' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2827' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\done' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2828' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\data_out_valid' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2829' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\sum_to_bottom' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2830' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\ps_acc' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2831' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\wait_mult' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2832' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\product' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2833' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\count' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2834' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\inject_product' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-  created $adff cell `$procdff$2835' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\b_reg' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$257'.
-  created $adff cell `$procdff$2836' with positive edge clock and negative level reset.
-Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\a_reg' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$255'.
-  created $adff cell `$procdff$2837' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\rd_read_addr' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2838' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\rd_read_valid' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2839' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_write_valid' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2840' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_write_addr' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2841' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_write_wdata' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2842' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\busy' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2843' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\done' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2844' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\data_clear' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2845' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\en_b_shift_bottom' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2846' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\en_shift_right' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2847' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\en_shift_bottom' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2848' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\start_pulse' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2849' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\cycle_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2850' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\cur_a_data' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2851' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\cur_b_data' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2852' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_00' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2853' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_01' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2854' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_10' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2855' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_11' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2856' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\state' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2857' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\a_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2858' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\b_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2859' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\b_send_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2860' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\row_s' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2861' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\wait_cnt' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2862' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\shift_down_cnt' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2863' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2864' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:319$1.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2865' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2866' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.k' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2867' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:334$2.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2868' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2869' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:347$3.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2870' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2871' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.k' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2872' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:366$4.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2873' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2874' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:566$5.k' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2875' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\a_data[0]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $dff cell `$procdff$2878' with positive edge clock.
-Creating register for signal `\SystolicArray2x2_Ctrl.\a_data[1]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $dff cell `$procdff$2881' with positive edge clock.
-Creating register for signal `\SystolicArray2x2_Ctrl.\b_data[0]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $dff cell `$procdff$2884' with positive edge clock.
-Creating register for signal `\SystolicArray2x2_Ctrl.\b_data[1]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $dff cell `$procdff$2887' with positive edge clock.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2888' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:329$6_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2889' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2890' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$7_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2891' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2892' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:378$8_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2893' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2894' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:402$9_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2895' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2896' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:495$10_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2897' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2898' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:496$11_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-  created $adff cell `$procdff$2899' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\a_left_in_bus' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:169$14'.
-  created $adff cell `$procdff$2900' with positive edge clock and negative level reset.
-Creating register for signal `\SystolicArray2x2_Ctrl.\b_top_in_bus' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:169$14'.
-  created $adff cell `$procdff$2901' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\result_C' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1839' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_out_ready' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1840' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\idx' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1841' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_in_valid_reg' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1842' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_A_latch' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $dff cell `$procdff$1845' with positive edge clock.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\data_B_latch' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $dff cell `$procdff$1848' with positive edge clock.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\result_C_32bit' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1849' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.\i' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $dff cell `$procdff$1852' with positive edge clock.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$mask$../rtl/ai/src/PE_mult.v:51$243' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1853' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$data$../rtl/ai/src/PE_mult.v:51$244' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1854' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$sel$../rtl/ai/src/PE_mult.v:51$245' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1855' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$mask$../rtl/ai/src/PE_mult.v:52$246' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1856' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$data$../rtl/ai/src/PE_mult.v:52$247' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1857' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$bitselwrite$sel$../rtl/ai/src/PE_mult.v:52$248' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1858' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$lookahead\data_in_valid_reg$255' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1859' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$lookahead\data_out_ready$256' using process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+  created $adff cell `$procdff$1860' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\busy' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1861' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\done' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1862' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\data_out_valid' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1863' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\sum_to_bottom' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1864' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\ps_acc' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1865' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\wait_mult' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1866' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\product' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1867' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\count' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1868' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\inject_product' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+  created $adff cell `$procdff$1869' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\b_reg' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$231'.
+  created $adff cell `$procdff$1870' with positive edge clock and negative level reset.
+Creating register for signal `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.\a_reg' using process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$229'.
+  created $adff cell `$procdff$1871' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\rd_read_addr' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1872' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\rd_read_valid' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1873' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_write_valid' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1874' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_write_addr' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1875' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_write_wdata' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1876' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\busy' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1877' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\done' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1878' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\data_clear' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1879' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\en_b_shift_bottom' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1880' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\en_shift_right' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1881' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\en_shift_bottom' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1882' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\start_pulse' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1883' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\cycle_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1884' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\cur_a_data' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1885' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\cur_b_data' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1886' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_00' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1887' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_01' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1888' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_10' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1889' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\c_data_11' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1890' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\state' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1891' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\a_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1892' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\b_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1893' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\b_send_idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1894' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\row_s' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1895' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\wait_cnt' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1896' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\shift_down_cnt' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1897' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1898' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:297$1.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1899' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1900' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.k' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1901' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_A$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:312$2.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1902' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1903' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:325$3.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1904' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1905' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.k' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1906' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_B$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:341$4.idx' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1907' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.$result' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1908' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\addr_C$func$../rtl/ai/src/SystolicArray2x2_Ctrl.v:428$5.k' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1909' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\a_data[0]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $dff cell `$procdff$1912' with positive edge clock.
+Creating register for signal `\SystolicArray2x2_Ctrl.\a_data[1]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $dff cell `$procdff$1915' with positive edge clock.
+Creating register for signal `\SystolicArray2x2_Ctrl.\b_data[0]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $dff cell `$procdff$1918' with positive edge clock.
+Creating register for signal `\SystolicArray2x2_Ctrl.\b_data[1]' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $dff cell `$procdff$1921' with positive edge clock.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1922' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\a_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:307$6_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1923' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1924' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_wr$\b_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:335$7_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1925' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1926' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\a_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:357$8_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1927' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_ADDR' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1928' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.$mem2reg_rd$\b_os_data$../rtl/ai/src/SystolicArray2x2_Ctrl.v:358$9_DATA' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+  created $adff cell `$procdff$1929' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\a_left_in_bus' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:166$12'.
+  created $adff cell `$procdff$1930' with positive edge clock and negative level reset.
+Creating register for signal `\SystolicArray2x2_Ctrl.\b_top_in_bus' using process `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:166$12'.
+  created $adff cell `$procdff$1931' with positive edge clock and negative level reset.
 
 7.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
 
 7.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
-Removing empty process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$450'.
-Found and cleaned up 4 empty switches in `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-Removing empty process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$283'.
-Found and cleaned up 7 empty switches in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-Removing empty process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$259'.
-Found and cleaned up 2 empty switches in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$257'.
-Removing empty process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$257'.
-Found and cleaned up 2 empty switches in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$255'.
-Removing empty process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$255'.
-Removing empty process `SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$164'.
-Found and cleaned up 35 empty switches in `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-Removing empty process `SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:239$16'.
-Removing empty process `SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:169$14'.
-Cleaned up 50 empty switches.
+Removing empty process `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.$proc$../rtl/ai/src/SystolicArray2x2_x2.v:0$424'.
+Found and cleaned up 4 empty switches in `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+Removing empty process `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.$proc$../rtl/ai/src/PE_mult.v:30$257'.
+Found and cleaned up 7 empty switches in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+Removing empty process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:93$233'.
+Found and cleaned up 2 empty switches in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$231'.
+Removing empty process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:73$231'.
+Found and cleaned up 2 empty switches in `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$229'.
+Removing empty process `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.$proc$../rtl/ai/src/PE_INT.v:61$229'.
+Removing empty process `SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:0$138'.
+Found and cleaned up 26 empty switches in `\SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+Removing empty process `SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:217$14'.
+Removing empty process `SystolicArray2x2_Ctrl.$proc$../rtl/ai/src/SystolicArray2x2_Ctrl.v:166$12'.
+Cleaned up 41 empty switches.
 
 7.12. Executing OPT_EXPR pass (perform const folding).
 Optimizing module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.
@@ -647,7 +623,7 @@ Optimizing module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
 <suppressed ~2 debug messages>
 Optimizing module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
 Optimizing module SystolicArray2x2_Ctrl.
-<suppressed ~25 debug messages>
+<suppressed ~21 debug messages>
 
 8. Executing OPT pass (performing simple optimizations).
 
@@ -666,8 +642,8 @@ Finding identical cells in module `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e
 Finding identical cells in module `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT'.
 <suppressed ~6 debug messages>
 Finding identical cells in module `\SystolicArray2x2_Ctrl'.
-<suppressed ~483 debug messages>
-Removed a total of 177 cells.
+<suppressed ~372 debug messages>
+Removed a total of 140 cells.
 
 8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001..
@@ -677,201 +653,182 @@ Running muxtree optimizer on module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
-    dead port 1/2 on $mux $procmux$476.
-    dead port 2/2 on $mux $procmux$476.
-    dead port 1/2 on $mux $procmux$473.
-    dead port 2/2 on $mux $procmux$473.
-    dead port 1/2 on $mux $procmux$470.
-    dead port 2/2 on $mux $procmux$470.
-    dead port 1/2 on $mux $procmux$464.
-    dead port 2/2 on $mux $procmux$464.
-    dead port 1/2 on $mux $procmux$461.
-    dead port 2/2 on $mux $procmux$461.
-    dead port 1/2 on $mux $procmux$458.
-    dead port 2/2 on $mux $procmux$458.
+    dead port 1/2 on $mux $procmux$450.
+    dead port 2/2 on $mux $procmux$450.
+    dead port 1/2 on $mux $procmux$447.
+    dead port 2/2 on $mux $procmux$447.
+    dead port 1/2 on $mux $procmux$444.
+    dead port 2/2 on $mux $procmux$444.
+    dead port 1/2 on $mux $procmux$438.
+    dead port 2/2 on $mux $procmux$438.
+    dead port 1/2 on $mux $procmux$435.
+    dead port 2/2 on $mux $procmux$435.
+    dead port 1/2 on $mux $procmux$432.
+    dead port 2/2 on $mux $procmux$432.
 Running muxtree optimizer on module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
-      Replacing known input bits on port A of cell $procmux$598: \busy -> 1'0
-      Replacing known input bits on port B of cell $procmux$596: \busy -> 1'1
-      Replacing known input bits on port A of cell $procmux$593: \busy -> 1'1
+      Replacing known input bits on port A of cell $procmux$572: \busy -> 1'0
+      Replacing known input bits on port B of cell $procmux$570: \busy -> 1'1
+      Replacing known input bits on port A of cell $procmux$567: \busy -> 1'1
   Analyzing evaluation results.
 Running muxtree optimizer on module \SystolicArray2x2_Ctrl..
   Creating internal representation of mux trees.
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
-    dead port 1/2 on $mux $procmux$2058.
-    dead port 2/2 on $mux $procmux$2058.
-    dead port 1/2 on $mux $procmux$2027.
-    dead port 2/2 on $mux $procmux$2027.
-    dead port 1/2 on $mux $procmux$1996.
-    dead port 2/2 on $mux $procmux$1996.
-    dead port 1/2 on $mux $procmux$1966.
-    dead port 2/2 on $mux $procmux$1966.
-    dead port 1/2 on $mux $procmux$1936.
-    dead port 2/2 on $mux $procmux$1936.
-    dead port 1/2 on $mux $procmux$1906.
-    dead port 2/2 on $mux $procmux$1906.
-    dead port 1/2 on $mux $procmux$1877.
-    dead port 2/2 on $mux $procmux$1877.
-    dead port 1/2 on $mux $procmux$1848.
-    dead port 2/2 on $mux $procmux$1848.
-    dead port 1/2 on $mux $procmux$1820.
-    dead port 2/2 on $mux $procmux$1820.
-    dead port 1/2 on $mux $procmux$1792.
-    dead port 2/2 on $mux $procmux$1792.
-    dead port 1/2 on $mux $procmux$1764.
-    dead port 2/2 on $mux $procmux$1764.
-    dead port 1/2 on $mux $procmux$1759.
-    dead port 2/2 on $mux $procmux$1759.
-    dead port 1/2 on $mux $procmux$1754.
-    dead port 2/2 on $mux $procmux$1754.
-    dead port 1/2 on $mux $procmux$1724.
-    dead port 2/2 on $mux $procmux$1724.
-    dead port 1/2 on $mux $procmux$1694.
-    dead port 2/2 on $mux $procmux$1694.
-    dead port 1/2 on $mux $procmux$1666.
-    dead port 2/2 on $mux $procmux$1666.
-    dead port 1/2 on $mux $procmux$1638.
-    dead port 2/2 on $mux $procmux$1638.
-    dead port 1/2 on $mux $procmux$1611.
-    dead port 2/2 on $mux $procmux$1611.
-    dead port 1/2 on $mux $procmux$1584.
-    dead port 2/2 on $mux $procmux$1584.
-    dead port 1/2 on $mux $procmux$1560.
-    dead port 2/2 on $mux $procmux$1560.
-    dead port 1/2 on $mux $procmux$1536.
-    dead port 2/2 on $mux $procmux$1536.
-    dead port 1/2 on $mux $procmux$1523.
-    dead port 2/2 on $mux $procmux$1523.
-    dead port 1/2 on $mux $procmux$1510.
-    dead port 2/2 on $mux $procmux$1510.
-    dead port 1/2 on $mux $procmux$1497.
-    dead port 2/2 on $mux $procmux$1497.
-    dead port 1/2 on $mux $procmux$1484.
-    dead port 2/2 on $mux $procmux$1484.
-    dead port 2/2 on $mux $procmux$2667.
-    dead port 1/2 on $mux $procmux$1482.
-    dead port 2/2 on $mux $procmux$1482.
-    dead port 1/2 on $mux $procmux$1450.
-    dead port 2/2 on $mux $procmux$1450.
-    dead port 1/2 on $mux $procmux$1448.
-    dead port 2/2 on $mux $procmux$1448.
-    dead port 1/2 on $mux $procmux$1416.
-    dead port 2/2 on $mux $procmux$1416.
-    dead port 2/2 on $mux $procmux$2665.
-    dead port 1/2 on $mux $procmux$1414.
-    dead port 2/2 on $mux $procmux$1414.
-    dead port 1/2 on $mux $procmux$1383.
-    dead port 2/2 on $mux $procmux$1383.
-    dead port 1/2 on $mux $procmux$1381.
-    dead port 2/2 on $mux $procmux$1381.
-    dead port 1/2 on $mux $procmux$1350.
-    dead port 2/2 on $mux $procmux$1350.
-    dead port 1/2 on $mux $procmux$1348.
-    dead port 2/2 on $mux $procmux$1348.
-    dead port 1/2 on $mux $procmux$1317.
-    dead port 2/2 on $mux $procmux$1317.
-    dead port 1/2 on $mux $procmux$1315.
-    dead port 2/2 on $mux $procmux$1315.
-    dead port 1/2 on $mux $procmux$1284.
-    dead port 2/2 on $mux $procmux$1284.
-    dead port 1/2 on $mux $procmux$1282.
-    dead port 2/2 on $mux $procmux$1282.
-    dead port 1/2 on $mux $procmux$1251.
-    dead port 2/2 on $mux $procmux$1251.
-    dead port 1/2 on $mux $procmux$1249.
-    dead port 2/2 on $mux $procmux$1249.
-    dead port 1/2 on $mux $procmux$1247.
-    dead port 2/2 on $mux $procmux$1247.
-    dead port 1/2 on $mux $procmux$1215.
-    dead port 2/2 on $mux $procmux$1215.
+    dead port 1/2 on $mux $procmux$1332.
+    dead port 2/2 on $mux $procmux$1332.
+    dead port 1/2 on $mux $procmux$1314.
+    dead port 2/2 on $mux $procmux$1314.
+    dead port 1/2 on $mux $procmux$1296.
+    dead port 2/2 on $mux $procmux$1296.
+    dead port 1/2 on $mux $procmux$1279.
+    dead port 2/2 on $mux $procmux$1279.
+    dead port 1/2 on $mux $procmux$1262.
+    dead port 2/2 on $mux $procmux$1262.
+    dead port 1/2 on $mux $procmux$1245.
+    dead port 2/2 on $mux $procmux$1245.
+    dead port 1/2 on $mux $procmux$1229.
+    dead port 2/2 on $mux $procmux$1229.
     dead port 1/2 on $mux $procmux$1213.
     dead port 2/2 on $mux $procmux$1213.
-    dead port 1/2 on $mux $procmux$1211.
-    dead port 2/2 on $mux $procmux$1211.
-    dead port 1/2 on $mux $procmux$1179.
-    dead port 2/2 on $mux $procmux$1179.
-    dead port 1/2 on $mux $procmux$1177.
-    dead port 2/2 on $mux $procmux$1177.
-    dead port 1/2 on $mux $procmux$1175.
-    dead port 2/2 on $mux $procmux$1175.
-    dead port 1/2 on $mux $procmux$1143.
-    dead port 2/2 on $mux $procmux$1143.
+    dead port 1/2 on $mux $procmux$1198.
+    dead port 2/2 on $mux $procmux$1198.
+    dead port 1/2 on $mux $procmux$1183.
+    dead port 2/2 on $mux $procmux$1183.
+    dead port 1/2 on $mux $procmux$1168.
+    dead port 2/2 on $mux $procmux$1168.
+    dead port 1/2 on $mux $procmux$1163.
+    dead port 2/2 on $mux $procmux$1163.
+    dead port 1/2 on $mux $procmux$1158.
+    dead port 2/2 on $mux $procmux$1158.
     dead port 1/2 on $mux $procmux$1141.
     dead port 2/2 on $mux $procmux$1141.
-    dead port 1/2 on $mux $procmux$1111.
-    dead port 2/2 on $mux $procmux$1111.
+    dead port 1/2 on $mux $procmux$1124.
+    dead port 2/2 on $mux $procmux$1124.
     dead port 1/2 on $mux $procmux$1109.
     dead port 2/2 on $mux $procmux$1109.
-    dead port 1/2 on $mux $procmux$1079.
-    dead port 2/2 on $mux $procmux$1079.
-    dead port 1/2 on $mux $procmux$1077.
-    dead port 2/2 on $mux $procmux$1077.
-    dead port 1/2 on $mux $procmux$1048.
-    dead port 2/2 on $mux $procmux$1048.
-    dead port 1/2 on $mux $procmux$1046.
-    dead port 2/2 on $mux $procmux$1046.
-    dead port 1/2 on $mux $procmux$1017.
-    dead port 2/2 on $mux $procmux$1017.
-    dead port 1/2 on $mux $procmux$1015.
-    dead port 2/2 on $mux $procmux$1015.
-    dead port 1/2 on $mux $procmux$986.
-    dead port 2/2 on $mux $procmux$986.
-    dead port 1/2 on $mux $procmux$984.
-    dead port 2/2 on $mux $procmux$984.
-    dead port 1/2 on $mux $procmux$955.
-    dead port 2/2 on $mux $procmux$955.
-    dead port 1/2 on $mux $procmux$953.
-    dead port 2/2 on $mux $procmux$953.
-    dead port 1/2 on $mux $procmux$924.
-    dead port 2/2 on $mux $procmux$924.
-    dead port 1/2 on $mux $procmux$922.
-    dead port 2/2 on $mux $procmux$922.
+    dead port 1/2 on $mux $procmux$1094.
+    dead port 2/2 on $mux $procmux$1094.
+    dead port 1/2 on $mux $procmux$1081.
+    dead port 2/2 on $mux $procmux$1081.
+    dead port 1/2 on $mux $procmux$1068.
+    dead port 2/2 on $mux $procmux$1068.
+    dead port 1/2 on $mux $procmux$1055.
+    dead port 2/2 on $mux $procmux$1055.
+    dead port 1/2 on $mux $procmux$1042.
+    dead port 2/2 on $mux $procmux$1042.
+    dead port 1/2 on $mux $procmux$1040.
+    dead port 2/2 on $mux $procmux$1040.
+    dead port 1/2 on $mux $procmux$1021.
+    dead port 2/2 on $mux $procmux$1021.
+    dead port 1/2 on $mux $procmux$1019.
+    dead port 2/2 on $mux $procmux$1019.
+    dead port 1/2 on $mux $procmux$1000.
+    dead port 2/2 on $mux $procmux$1000.
+    dead port 1/2 on $mux $procmux$998.
+    dead port 2/2 on $mux $procmux$998.
+    dead port 1/2 on $mux $procmux$980.
+    dead port 2/2 on $mux $procmux$980.
+    dead port 1/2 on $mux $procmux$978.
+    dead port 2/2 on $mux $procmux$978.
+    dead port 1/2 on $mux $procmux$960.
+    dead port 2/2 on $mux $procmux$960.
+    dead port 1/2 on $mux $procmux$958.
+    dead port 2/2 on $mux $procmux$958.
+    dead port 1/2 on $mux $procmux$940.
+    dead port 2/2 on $mux $procmux$940.
+    dead port 1/2 on $mux $procmux$938.
+    dead port 2/2 on $mux $procmux$938.
     dead port 1/2 on $mux $procmux$920.
     dead port 2/2 on $mux $procmux$920.
-    dead port 1/2 on $mux $procmux$890.
-    dead port 2/2 on $mux $procmux$890.
-    dead port 1/2 on $mux $procmux$888.
-    dead port 2/2 on $mux $procmux$888.
-    dead port 1/2 on $mux $procmux$886.
-    dead port 2/2 on $mux $procmux$886.
-    dead port 1/2 on $mux $procmux$856.
-    dead port 2/2 on $mux $procmux$856.
+    dead port 1/2 on $mux $procmux$918.
+    dead port 2/2 on $mux $procmux$918.
+    dead port 1/2 on $mux $procmux$900.
+    dead port 2/2 on $mux $procmux$900.
+    dead port 1/2 on $mux $procmux$898.
+    dead port 2/2 on $mux $procmux$898.
+    dead port 1/2 on $mux $procmux$896.
+    dead port 2/2 on $mux $procmux$896.
+    dead port 1/2 on $mux $procmux$877.
+    dead port 2/2 on $mux $procmux$877.
+    dead port 1/2 on $mux $procmux$875.
+    dead port 2/2 on $mux $procmux$875.
+    dead port 1/2 on $mux $procmux$873.
+    dead port 2/2 on $mux $procmux$873.
     dead port 1/2 on $mux $procmux$854.
     dead port 2/2 on $mux $procmux$854.
     dead port 1/2 on $mux $procmux$852.
     dead port 2/2 on $mux $procmux$852.
-    dead port 2/2 on $mux $procmux$822.
-    dead port 1/2 on $mux $procmux$792.
-    dead port 2/2 on $mux $procmux$792.
-    dead port 1/2 on $mux $procmux$790.
-    dead port 2/2 on $mux $procmux$790.
-    dead port 1/2 on $mux $procmux$765.
-    dead port 2/2 on $mux $procmux$765.
-    dead port 1/2 on $mux $procmux$763.
-    dead port 2/2 on $mux $procmux$763.
-    dead port 2/2 on $mux $procmux$666.
-    dead port 2/2 on $mux $procmux$648.
-    dead port 1/2 on $mux $procmux$630.
-    dead port 2/2 on $mux $procmux$630.
-    dead port 1/2 on $mux $procmux$628.
-    dead port 2/2 on $mux $procmux$628.
-    dead port 1/2 on $mux $procmux$622.
+    dead port 1/2 on $mux $procmux$850.
+    dead port 2/2 on $mux $procmux$850.
+    dead port 1/2 on $mux $procmux$831.
+    dead port 2/2 on $mux $procmux$831.
+    dead port 1/2 on $mux $procmux$829.
+    dead port 2/2 on $mux $procmux$829.
+    dead port 1/2 on $mux $procmux$812.
+    dead port 2/2 on $mux $procmux$812.
+    dead port 1/2 on $mux $procmux$810.
+    dead port 2/2 on $mux $procmux$810.
+    dead port 1/2 on $mux $procmux$793.
+    dead port 2/2 on $mux $procmux$793.
+    dead port 1/2 on $mux $procmux$791.
+    dead port 2/2 on $mux $procmux$791.
+    dead port 1/2 on $mux $procmux$775.
+    dead port 2/2 on $mux $procmux$775.
+    dead port 1/2 on $mux $procmux$773.
+    dead port 2/2 on $mux $procmux$773.
+    dead port 1/2 on $mux $procmux$757.
+    dead port 2/2 on $mux $procmux$757.
+    dead port 1/2 on $mux $procmux$755.
+    dead port 2/2 on $mux $procmux$755.
+    dead port 1/2 on $mux $procmux$739.
+    dead port 2/2 on $mux $procmux$739.
+    dead port 1/2 on $mux $procmux$737.
+    dead port 2/2 on $mux $procmux$737.
+    dead port 1/2 on $mux $procmux$721.
+    dead port 2/2 on $mux $procmux$721.
+    dead port 1/2 on $mux $procmux$719.
+    dead port 2/2 on $mux $procmux$719.
+    dead port 1/2 on $mux $procmux$703.
+    dead port 2/2 on $mux $procmux$703.
+    dead port 1/2 on $mux $procmux$701.
+    dead port 2/2 on $mux $procmux$701.
+    dead port 1/2 on $mux $procmux$699.
+    dead port 2/2 on $mux $procmux$699.
+    dead port 1/2 on $mux $procmux$682.
+    dead port 2/2 on $mux $procmux$682.
+    dead port 1/2 on $mux $procmux$680.
+    dead port 2/2 on $mux $procmux$680.
+    dead port 1/2 on $mux $procmux$678.
+    dead port 2/2 on $mux $procmux$678.
+    dead port 1/2 on $mux $procmux$661.
+    dead port 2/2 on $mux $procmux$661.
+    dead port 1/2 on $mux $procmux$659.
+    dead port 2/2 on $mux $procmux$659.
+    dead port 1/2 on $mux $procmux$657.
+    dead port 2/2 on $mux $procmux$657.
+    dead port 2/2 on $mux $procmux$640.
     dead port 2/2 on $mux $procmux$622.
-    dead port 1/2 on $mux $procmux$620.
-    dead port 2/2 on $mux $procmux$620.
-Removed 173 multiplexer ports.
-<suppressed ~52 debug messages>
+    dead port 1/2 on $mux $procmux$604.
+    dead port 2/2 on $mux $procmux$604.
+    dead port 1/2 on $mux $procmux$602.
+    dead port 2/2 on $mux $procmux$602.
+    dead port 1/2 on $mux $procmux$596.
+    dead port 2/2 on $mux $procmux$596.
+    dead port 1/2 on $mux $procmux$594.
+    dead port 2/2 on $mux $procmux$594.
+Removed 154 multiplexer ports.
+<suppressed ~45 debug messages>
 
 8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.
   Optimizing cells in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
   Optimizing cells in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
   Optimizing cells in module \SystolicArray2x2_Ctrl.
-    New ctrl vector for $pmux cell $procmux$2160: $auto$opt_reduce.cc:134:opt_pmux$2903
-    New ctrl vector for $pmux cell $procmux$2150: $auto$opt_reduce.cc:134:opt_pmux$2905
-    New ctrl vector for $pmux cell $procmux$2122: $auto$opt_reduce.cc:134:opt_pmux$2907
+    New ctrl vector for $pmux cell $procmux$1401: $auto$opt_reduce.cc:134:opt_pmux$1933
+    New ctrl vector for $pmux cell $procmux$1392: $auto$opt_reduce.cc:134:opt_pmux$1935
+    New ctrl vector for $pmux cell $procmux$1383: $auto$opt_reduce.cc:134:opt_pmux$1937
   Optimizing cells in module \SystolicArray2x2_Ctrl.
 Performed a total of 3 changes.
 
@@ -881,233 +838,298 @@ Finding identical cells in module `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e
 Finding identical cells in module `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT'.
 <suppressed ~18 debug messages>
 Finding identical cells in module `\SystolicArray2x2_Ctrl'.
-<suppressed ~9 debug messages>
-Removed a total of 9 cells.
+<suppressed ~18 debug messages>
+Removed a total of 12 cells.
 
 8.6. Executing OPT_DFF pass (perform DFF optimizations).
-Adding EN signal on $procdff$2811 ($dff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $procmux$494_Y, Q = \data_A_latch).
-Adding EN signal on $procdff$2814 ($dff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $procmux$488_Y, Q = \data_B_latch).
-Handling D = Q on $procdff$2815 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (removing D path).
-Adding EN signal on $procdff$2808 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $or$../rtl/ai/src/PE_mult.v:0$320_Y [3:2], Q = \data_in_valid_reg [3:2]).
-Adding EN signal on $procdff$2818 ($dff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = 2, Q = \i).
-Adding EN signal on $procdff$2805 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $mul$../rtl/ai/src/PE_mult.v:54$330_Y, Q = \result_C).
-Setting constant 0-bit at position 0 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 1 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 2 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 3 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 4 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 5 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 6 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 7 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 8 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 9 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 10 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 11 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 12 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 13 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 14 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 15 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 16 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 17 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 18 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 19 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 20 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 21 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 22 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 23 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 24 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 25 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 26 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 27 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 28 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 29 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 30 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 31 on $procdff$2815 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 0 on $procdff$2820 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 1 on $procdff$2820 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 2 on $procdff$2820 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 3 on $procdff$2820 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 0 on $procdff$2822 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 1 on $procdff$2822 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 1-bit at position 1 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 4 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 5 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 6 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 7 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 8 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 9 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 10 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 11 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 12 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 13 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 14 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 15 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 16 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 17 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 18 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 19 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 20 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 21 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 22 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 23 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 24 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 25 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 26 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 27 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 28 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 29 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 30 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Setting constant 0-bit at position 31 on $auto$ff.cc:266:slice$2920 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
-Adding EN signal on $procdff$2836 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$609_Y, Q = \b_reg).
-Adding EN signal on $procdff$2837 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$614_Y, Q = \a_reg).
-Adding EN signal on $procdff$2830 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $add$../rtl/ai/src/PE_INT.v:157$267_Y, Q = \sum_to_bottom).
-Adding EN signal on $procdff$2834 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$552_Y, Q = \count).
-Adding EN signal on $procdff$2833 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$566_Y, Q = \product).
-Adding EN signal on $procdff$2832 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$577_Y, Q = \wait_mult).
-Adding EN signal on $procdff$2831 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$585_Y, Q = \ps_acc).
-Adding EN signal on $procdff$2851 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2692_Y, Q = \cur_a_data).
-Adding EN signal on $procdff$2852 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2675_Y, Q = \cur_b_data).
-Adding EN signal on $procdff$2853 ($adff) from module SystolicArray2x2_Ctrl (D = \ps_bottom_out_bus_0 [15:0], Q = \c_data_00 [15:0]).
-Adding EN signal on $procdff$2853 ($adff) from module SystolicArray2x2_Ctrl (D = \c_data_00 [31:16], Q = \c_data_00 [31:16]).
-Handling D = Q on $auto$ff.cc:266:slice$2986 ($adffe) from module SystolicArray2x2_Ctrl (removing D path).
-Adding EN signal on $procdff$2854 ($adff) from module SystolicArray2x2_Ctrl (D = \ps_bottom_out_bus_1 [15:0], Q = \c_data_01 [15:0]).
-Adding EN signal on $procdff$2854 ($adff) from module SystolicArray2x2_Ctrl (D = \c_data_01 [31:16], Q = \c_data_01 [31:16]).
-Handling D = Q on $auto$ff.cc:266:slice$2992 ($adffe) from module SystolicArray2x2_Ctrl (removing D path).
-Adding EN signal on $procdff$2855 ($adff) from module SystolicArray2x2_Ctrl (D = \ps_bottom_out_bus_0 [15:0], Q = \c_data_10 [15:0]).
-Adding EN signal on $procdff$2855 ($adff) from module SystolicArray2x2_Ctrl (D = \c_data_10 [31:16], Q = \c_data_10 [31:16]).
-Handling D = Q on $auto$ff.cc:266:slice$2998 ($adffe) from module SystolicArray2x2_Ctrl (removing D path).
-Adding EN signal on $procdff$2856 ($adff) from module SystolicArray2x2_Ctrl (D = \ps_bottom_out_bus_1 [15:0], Q = \c_data_11 [15:0]).
-Adding EN signal on $procdff$2856 ($adff) from module SystolicArray2x2_Ctrl (D = \c_data_11 [31:16], Q = \c_data_11 [31:16]).
-Handling D = Q on $auto$ff.cc:266:slice$3004 ($adffe) from module SystolicArray2x2_Ctrl (removing D path).
-Adding EN signal on $procdff$2857 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2548_Y, Q = \state).
-Adding EN signal on $procdff$2858 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2529_Y, Q = \a_idx).
-Adding EN signal on $procdff$2859 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2490_Y, Q = \b_idx).
-Adding EN signal on $procdff$2860 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2446_Y, Q = \b_send_idx).
-Adding EN signal on $procdff$2861 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2396_Y, Q = \row_s).
-Adding EN signal on $procdff$2862 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2383_Y, Q = \wait_cnt).
-Adding EN signal on $procdff$2863 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2354_Y, Q = \shift_down_cnt).
-Adding EN signal on $procdff$2838 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2788_Y, Q = \rd_read_addr).
-Adding EN signal on $procdff$2841 ($adff) from module SystolicArray2x2_Ctrl (D = $add$../rtl/ai/src/SystolicArray2x2_Ctrl.v:162$161_Y, Q = \c_write_addr).
-Adding EN signal on $procdff$2842 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2742_Y, Q = \c_write_wdata).
-Adding EN signal on $procdff$2878 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \a_data[0]).
-Adding EN signal on $procdff$2881 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \a_data[1]).
-Adding EN signal on $procdff$2850 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$2722_Y, Q = \cycle_idx).
-Adding EN signal on $procdff$2884 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \b_data[0]).
-Adding EN signal on $procdff$2887 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \b_data[1]).
-Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 1 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 4 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 5 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 6 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 7 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 8 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 9 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 10 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 11 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 12 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 13 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 14 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 15 on $auto$ff.cc:266:slice$3004 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 1 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 4 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 5 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 6 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 7 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 8 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 9 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 10 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 11 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 12 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 13 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 14 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 15 on $auto$ff.cc:266:slice$2998 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 1 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 4 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 5 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 6 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 7 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 8 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 9 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 10 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 11 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 12 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 13 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 14 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 15 on $auto$ff.cc:266:slice$2992 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 1 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 4 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 5 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 6 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 7 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 8 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 9 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 10 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 11 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 12 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 13 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 14 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 0-bit at position 15 on $auto$ff.cc:266:slice$2986 ($dlatch) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 0 on $procdff$2894 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 0 on $procdff$2875 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 1 on $procdff$2875 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 2 on $procdff$2875 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 3 on $procdff$2875 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 0 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 1 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 2 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 3 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 4 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 5 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 6 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 7 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 8 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 9 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 10 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 11 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 12 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 13 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 14 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 15 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 16 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 17 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 18 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 19 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 20 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 21 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 22 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 23 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 24 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 25 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 26 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 27 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 28 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 29 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 30 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 31 on $procdff$2893 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 0 on $procdff$2896 ($adff) from module SystolicArray2x2_Ctrl.
-Setting constant 1-bit at position 1 on $procdff$2896 ($adff) from module SystolicArray2x2_Ctrl.
+Adding EN signal on $procdff$1845 ($dff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $procmux$468_Y, Q = \data_A_latch).
+Adding EN signal on $procdff$1848 ($dff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $procmux$462_Y, Q = \data_B_latch).
+Handling D = Q on $procdff$1849 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (removing D path).
+Adding EN signal on $procdff$1842 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $or$../rtl/ai/src/PE_mult.v:0$294_Y [3:2], Q = \data_in_valid_reg [3:2]).
+Adding EN signal on $procdff$1852 ($dff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = 2, Q = \i).
+Adding EN signal on $procdff$1839 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult (D = $mul$../rtl/ai/src/PE_mult.v:54$304_Y, Q = \result_C).
+Setting constant 0-bit at position 0 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 1 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 2 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 3 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 4 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 5 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 6 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 7 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 8 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 9 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 10 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 11 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 12 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 13 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 14 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 15 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 16 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 17 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 18 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 19 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 20 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 21 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 22 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 23 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 24 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 25 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 26 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 27 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 28 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 29 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 30 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 31 on $procdff$1849 ($dlatch) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 0 on $procdff$1854 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 1 on $procdff$1854 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 2 on $procdff$1854 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 3 on $procdff$1854 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 0 on $procdff$1856 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 1 on $procdff$1856 ($adff) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 1-bit at position 1 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 4 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 5 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 6 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 7 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 8 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 9 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 10 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 11 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 12 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 13 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 14 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 15 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 16 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 17 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 18 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 19 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 20 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 21 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 22 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 23 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 24 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 25 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 26 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 27 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 28 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 29 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 30 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Setting constant 0-bit at position 31 on $auto$ff.cc:266:slice$1950 ($dffe) from module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
+Adding EN signal on $procdff$1870 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$583_Y, Q = \b_reg).
+Adding EN signal on $procdff$1871 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$588_Y, Q = \a_reg).
+Adding EN signal on $procdff$1864 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $add$../rtl/ai/src/PE_INT.v:157$241_Y, Q = \sum_to_bottom).
+Adding EN signal on $procdff$1868 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$526_Y, Q = \count).
+Adding EN signal on $procdff$1867 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$540_Y, Q = \product).
+Adding EN signal on $procdff$1866 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$551_Y, Q = \wait_mult).
+Adding EN signal on $procdff$1865 ($adff) from module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT (D = $procmux$559_Y, Q = \ps_acc).
+Adding EN signal on $procdff$1891 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1666_Y, Q = \state).
+Adding EN signal on $procdff$1892 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1647_Y, Q = \a_idx).
+Adding EN signal on $procdff$1893 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1621_Y, Q = \b_idx).
+Adding EN signal on $procdff$1894 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1597_Y, Q = \b_send_idx).
+Adding EN signal on $procdff$1895 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1562_Y, Q = \row_s).
+Adding EN signal on $procdff$1896 ($adff) from module SystolicArray2x2_Ctrl (D = 4'0000, Q = \wait_cnt).
+Adding EN signal on $procdff$1897 ($adff) from module SystolicArray2x2_Ctrl (D = 4'0000, Q = \shift_down_cnt).
+Adding EN signal on $procdff$1872 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1822_Y, Q = \rd_read_addr).
+Adding EN signal on $procdff$1912 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \a_data[0]).
+Adding EN signal on $procdff$1875 ($adff) from module SystolicArray2x2_Ctrl (D = $add$../rtl/ai/src/SystolicArray2x2_Ctrl.v:159$135_Y, Q = \c_write_addr).
+Adding EN signal on $procdff$1876 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1789_Y, Q = \c_write_wdata).
+Adding EN signal on $procdff$1915 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \a_data[1]).
+Adding EN signal on $procdff$1884 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1769_Y, Q = \cycle_idx).
+Adding EN signal on $procdff$1885 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1747_Y, Q = \cur_a_data).
+Adding EN signal on $procdff$1886 ($adff) from module SystolicArray2x2_Ctrl (D = $procmux$1735_Y, Q = \cur_b_data).
+Adding EN signal on $procdff$1918 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \b_data[0]).
+Handling D = Q on $procdff$1887 ($adff) from module SystolicArray2x2_Ctrl (removing D path).
+Adding EN signal on $procdff$1921 ($dff) from module SystolicArray2x2_Ctrl (D = \rd_read_data, Q = \b_data[1]).
+Handling D = Q on $procdff$1888 ($adff) from module SystolicArray2x2_Ctrl (removing D path).
+Handling D = Q on $procdff$1889 ($adff) from module SystolicArray2x2_Ctrl (removing D path).
+Handling D = Q on $procdff$1890 ($adff) from module SystolicArray2x2_Ctrl (removing D path).
+Setting constant 0-bit at position 0 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 1 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 2 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 3 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 4 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 5 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 6 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 7 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 8 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 9 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 10 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 11 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 12 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 13 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 14 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 15 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 16 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 17 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 18 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 19 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 20 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 21 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 22 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 23 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 24 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 25 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 26 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 27 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 28 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 29 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 30 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 31 on $procdff$1890 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 0 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 1 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 2 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 3 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 4 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 5 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 6 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 7 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 8 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 9 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 10 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 11 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 12 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 13 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 14 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 15 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 16 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 17 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 18 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 19 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 20 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 21 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 22 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 23 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 24 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 25 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 26 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 27 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 28 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 29 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 30 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 31 on $procdff$1887 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 0 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 1 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 2 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 3 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 4 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 5 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 6 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 7 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 8 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 9 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 10 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 11 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 12 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 13 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 14 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 15 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 16 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 17 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 18 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 19 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 20 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 21 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 22 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 23 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 24 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 25 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 26 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 27 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 28 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 29 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 30 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 31 on $procdff$1889 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 0 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 1 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 2 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 3 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 4 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 5 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 6 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 7 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 8 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 9 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 10 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 11 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 12 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 13 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 14 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 15 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 16 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 17 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 18 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 19 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 20 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 21 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 22 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 23 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 24 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 25 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 26 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 27 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 28 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 29 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 30 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 31 on $procdff$1923 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 0 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 1 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 2 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 3 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 4 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 5 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 6 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 7 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 8 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 9 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 10 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 11 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 12 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 13 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 14 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 15 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 16 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 17 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 18 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 19 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 20 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 21 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 22 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 23 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 24 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 25 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 26 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 27 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 28 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 29 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 30 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 31 on $procdff$1888 ($dlatch) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 0 on $procdff$1924 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 0 on $procdff$1882 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 0 on $procdff$1909 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 1 on $procdff$1909 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 2 on $procdff$1909 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 3 on $procdff$1909 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$2067 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 1 on $auto$ff.cc:266:slice$2067 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$2067 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$2067 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 0 on $auto$ff.cc:266:slice$2064 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 1 on $auto$ff.cc:266:slice$2064 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 2 on $auto$ff.cc:266:slice$2064 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 0-bit at position 3 on $auto$ff.cc:266:slice$2064 ($adffe) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 0 on $procdff$1926 ($adff) from module SystolicArray2x2_Ctrl.
+Setting constant 1-bit at position 1 on $procdff$1926 ($adff) from module SystolicArray2x2_Ctrl.
 
 8.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001..
 Finding unused cells or wires in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult..
 Finding unused cells or wires in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT..
 Finding unused cells or wires in module \SystolicArray2x2_Ctrl..
-Removed 55 unused cells and 817 unused wires.
-<suppressed ~64 debug messages>
+Removed 50 unused cells and 731 unused wires.
+<suppressed ~59 debug messages>
 
 8.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
@@ -1116,7 +1138,7 @@ Optimizing module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
 <suppressed ~6 debug messages>
 Optimizing module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.
 Optimizing module SystolicArray2x2_Ctrl.
-<suppressed ~10 debug messages>
+<suppressed ~8 debug messages>
 
 8.9. Rerunning OPT passes. (Maybe there is more to do..)
 
@@ -1137,17 +1159,18 @@ Running muxtree optimizer on module \SystolicArray2x2_Ctrl..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~35 debug messages>
+<suppressed ~31 debug messages>
 
 8.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
   Optimizing cells in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
   Optimizing cells in module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.
   Optimizing cells in module \SystolicArray2x2_Ctrl.
-    New ctrl vector for $pmux cell $procmux$2100: { $procmux$1180_CMP $auto$opt_reduce.cc:134:opt_pmux$3161 $procmux$1018_CMP }
-    New ctrl vector for $pmux cell $procmux$2529: { $procmux$2362_CMP $procmux$1180_CMP $auto$opt_reduce.cc:134:opt_pmux$3163 }
+    New ctrl vector for $pmux cell $procmux$1361: { $procmux$1001_CMP $auto$opt_reduce.cc:134:opt_pmux$2143 $procmux$1110_CMP }
+    New ctrl vector for $pmux cell $procmux$1647: { $procmux$1532_CMP $procmux$1001_CMP $auto$opt_reduce.cc:134:opt_pmux$2145 }
+    New ctrl vector for $pmux cell $procmux$1778: $auto$opt_reduce.cc:134:opt_pmux$2147
   Optimizing cells in module \SystolicArray2x2_Ctrl.
-Performed a total of 2 changes.
+Performed a total of 3 changes.
 
 8.12. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `$paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult'.
@@ -1156,18 +1179,18 @@ Finding identical cells in module `$paramod$8a1723a9d30752d723dbeabcb9b277bffc0c
 <suppressed ~9 debug messages>
 Finding identical cells in module `$paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001'.
 Finding identical cells in module `\SystolicArray2x2_Ctrl'.
-<suppressed ~93 debug messages>
-Removed a total of 36 cells.
+<suppressed ~69 debug messages>
+Removed a total of 28 cells.
 
 8.13. Executing OPT_DFF pass (perform DFF optimizations).
-Adding EN signal on $auto$ff.cc:266:slice$3032 ($adffe) from module SystolicArray2x2_Ctrl (D = $0\a_idx[3:0], Q = \a_idx).
+Adding EN signal on $auto$ff.cc:266:slice$2016 ($adffe) from module SystolicArray2x2_Ctrl (D = $0\a_idx[3:0], Q = \a_idx).
 
 8.14. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult..
 Finding unused cells or wires in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT..
 Finding unused cells or wires in module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001..
 Finding unused cells or wires in module \SystolicArray2x2_Ctrl..
-Removed 0 unused cells and 36 unused wires.
+Removed 0 unused cells and 28 unused wires.
 <suppressed ~3 debug messages>
 
 8.15. Executing OPT_EXPR pass (perform const folding).
@@ -1195,14 +1218,14 @@ Running muxtree optimizer on module \SystolicArray2x2_Ctrl..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~37 debug messages>
+<suppressed ~33 debug messages>
 
 8.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
   Optimizing cells in module $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT.
   Optimizing cells in module $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001.
   Optimizing cells in module \SystolicArray2x2_Ctrl.
-    New input vector for $reduce_and cell $auto$opt_dff.cc:220:make_patterns_logic$3168: { $auto$opt_dff.cc:194:make_patterns_logic$3165 $auto$opt_dff.cc:194:make_patterns_logic$2964 $auto$opt_dff.cc:194:make_patterns_logic$3039 $auto$opt_dff.cc:194:make_patterns_logic$3020 $auto$opt_dff.cc:194:make_patterns_logic$3037 }
+    New input vector for $reduce_and cell $auto$opt_dff.cc:220:make_patterns_logic$2152: { $auto$opt_dff.cc:194:make_patterns_logic$2149 $auto$opt_dff.cc:194:make_patterns_logic$2023 $auto$opt_dff.cc:194:make_patterns_logic$2021 $auto$opt_dff.cc:194:make_patterns_logic$2006 $auto$opt_dff.cc:194:make_patterns_logic$1994 }
   Optimizing cells in module \SystolicArray2x2_Ctrl.
 Performed a total of 1 changes.
 
@@ -1249,7 +1272,7 @@ Running muxtree optimizer on module \SystolicArray2x2_Ctrl..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~38 debug messages>
+<suppressed ~34 debug messages>
 
 8.25. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult.
@@ -1347,34 +1370,33 @@ Optimizing module SystolicArray2x2_Ctrl.
 
 === SystolicArray2x2_Ctrl ===
 
-   Number of wires:                287
-   Number of wire bits:           2607
+   Number of wires:                233
+   Number of wire bits:           2340
    Number of public wires:          76
    Number of public wire bits:    1307
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                243
-     $add                           12
-     $adff                          11
-     $adffe                         16
+   Number of cells:                181
+     $add                           11
+     $adff                           9
+     $adffe                         10
      $and                            1
      $dffe                           4
-     $eq                            40
+     $eq                            26
      $logic_and                      1
-     $logic_not                      5
+     $logic_not                      4
      $logic_or                       1
-     $lt                             1
-     $mux                           67
-     $ne                            25
-     $not                            4
+     $mux                           51
+     $ne                            19
+     $not                            2
      $or                             1
      $paramod\SystolicArray2x2_x2\PE_CYCLE=s32'00000000000000000000000000000001      1
-     $pmux                          17
-     $reduce_and                    19
-     $reduce_bool                   11
+     $pmux                          12
+     $reduce_and                    14
+     $reduce_bool                    9
      $reduce_or                      4
-     $sub                            2
+     $sub                            1
 
 === design hierarchy ===
 
@@ -1383,39 +1405,38 @@ Optimizing module SystolicArray2x2_Ctrl.
        $paramod$1fe61a0f21d9e9a4c1a08f0425c8282a920e972a\PE_mult      2
        $paramod$8a1723a9d30752d723dbeabcb9b277bffc0c2698\PE_INT      4
 
-   Number of wires:                780
-   Number of wire bits:           7074
+   Number of wires:                726
+   Number of wire bits:           6807
    Number of public wires:         301
    Number of public wire bits:    3822
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                570
-     $add                           26
-     $adff                          29
-     $adffe                         48
+   Number of cells:                508
+     $add                           25
+     $adff                          27
+     $adffe                         42
      $and                            3
      $dffe                           8
-     $eq                            46
+     $eq                            32
      $logic_and                      9
-     $logic_not                     13
+     $logic_not                     12
      $logic_or                       1
-     $lt                             1
      $mul                            2
-     $mux                          221
-     $ne                            41
+     $mux                          205
+     $ne                            35
      $neg                            2
-     $not                           10
+     $not                            8
      $or                             3
-     $pmux                          17
-     $reduce_and                    39
-     $reduce_bool                   33
+     $pmux                          12
+     $reduce_and                    34
+     $reduce_bool                   31
      $reduce_or                      4
      $shift                          6
      $shiftx                         6
-     $sub                            2
+     $sub                            1
 
 Warnings: 2 unique messages, 2 total
-End of script. Logfile hash: c202eb71a3, CPU: user 0.38s system 0.01s, MEM: 16.42 MB peak
+End of script. Logfile hash: e6fa75aa62, CPU: user 0.27s system 0.01s, MEM: 15.95 MB peak
 Yosys 0.33 (git sha1 2584903a060)
-Time spent: 25% 6x opt_expr (0 sec), 12% 4x opt_dff (0 sec), ...
+Time spent: 26% 6x opt_expr (0 sec), 13% 4x opt_clean (0 sec), ...

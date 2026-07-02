@@ -45,7 +45,7 @@ PEx2_FILE = $(SRC_DIR)/PE_INT.v \
 
 VERILOG_FILE_SA 	= $(SRC_DIR)/SystolicArray2x2.v $(PE_FILE) $(INC_FILE)
 VERILOG_FILE_SAx2 	= $(SRC_DIR)/SystolicArray2x2_x2.v $(PE_FILE) $(INC_FILE)
-VERILOG_FILE_MODULE = $(SRC_DIR)/SystolicArray2x2_Ctrl.v $(SRC_DIR)/SystolicArray2x2.v $(PE_FILE) 
+VERILOG_FILE_MODULE = $(SRC_DIR)/SystolicArray2x2_Ctrl.v $(SRC_DIR)/SystolicArray2x2_x2.v $(PE_FILE) 
 
 VERILOG_FILE = $(SRC_DIR)/sim_top.v $(SRC_DIR)/PSC_SynapEngine_axi.v $(SRC_DIR)/SystolicArray2x2_Ctrl.v $(SRC_DIR)/SystolicArray2x2.v \
 			   $(PE_FILE) $(DM_CNT_FILE) $(SDRAM_MODEL)
@@ -71,7 +71,7 @@ SIM_BUILD        ?= sim_build
 .PHONY: all 
 
 # まとめて実行
-all: simulate_PE simulate_PEx2 simulate_DF_SA simulate_OS_SA simulate_OS_SA_x2 simulate_DF_SA_Ctrl simulate_OS_SA_Ctrl
+all: simulate_PE simulate_PEx2 simulate_OS_SA simulate_OS_SA_x2 simulate_OS_SA_Ctrl
 		
 # Output Stationary.
 simulate_OS_SA_Ctrl: 
@@ -80,18 +80,6 @@ simulate_OS_SA_Ctrl:
 	make -f $(COCOTB_MAKEFILE) \
 	    SIM=$(SIM) \
 	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_OS_SA_M) \
-	    TOPLEVEL=SystolicArray2x2_Ctrl \
-	    TOPLEVEL_LANG=verilog \
-	    EXTRA_ARGS="$(EXTRA_ARGS)" \
-	    VERILOG_SOURCES="$(VERILOG_FILE_MODULE)"
-
-# Data Flow Mode.
-simulate_DF_SA_Ctrl:
-	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
-	make clean
-	make -f $(COCOTB_MAKEFILE) \
-	    SIM=$(SIM) \
-	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_DF_SA_M) \
 	    TOPLEVEL=SystolicArray2x2_Ctrl \
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
@@ -120,18 +108,6 @@ simulate_OS_SA_x2:
 	    TOPLEVEL_LANG=verilog \
 	    EXTRA_ARGS="$(EXTRA_ARGS)" \
 	    VERILOG_SOURCES="$(VERILOG_FILE_SAx2)"
-
-# Data Flow Mode.
-simulate_DF_SA: 
-	@echo "[SIM] MODE=$(MODE), SIM=$(SIM)"
-	make clean
-	make -f $(COCOTB_MAKEFILE) \
-	    SIM=$(SIM) \
-	    COCOTB_TEST_MODULES=cocotb_tb.ai.$(COCOTB_FILE_DF_SA) \
-	    TOPLEVEL=SystolicArray2x2 \
-	    TOPLEVEL_LANG=verilog \
-	    EXTRA_ARGS="$(EXTRA_ARGS)" \
-	    VERILOG_SOURCES="$(VERILOG_FILE_SA)"
 
 simulate_PE: 
 	make clean

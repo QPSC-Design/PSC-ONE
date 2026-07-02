@@ -167,6 +167,7 @@ extern "C" void run() {
     if (!memeq8(DST,SRC,256)) fail|=1<<0;
     PIO32 = fail;
 
+#if 1
     /* --- half memcpy --- */
     PIO32=0xA2;
     init_buf();
@@ -200,15 +201,16 @@ extern "C" void run() {
     init_buf();
     if (!test_lh_sh(DST+2)) fail|=1<<5;
     PIO32 = fail;
-
+#endif
     /* --- LW/SW --- */
     PIO32=0xA7;
     init_buf();
     if (!test_lw_sw(DST+4)) fail|=1<<6;
     PIO32 = fail;
-#if 1
 
+#if 1
     /* --- guard --- */
+    PIO32=0xA8;
     if (!check_guard()) fail|=1<<7;
     PIO32 = fail;
 #endif

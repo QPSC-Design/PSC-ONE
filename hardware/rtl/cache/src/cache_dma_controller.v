@@ -31,6 +31,7 @@ module cache_dma_controller #(
     output reg  [CPU_DATA_WIDTH-1:0]      cpu_data_out,
     output wire                           cpu_req_ready,
 
+    // --------- Cache 制御信号 ---------
     input  wire                           cpu_cache_clear, 
 
     // --------- 外部メモリ（ライン転送） ---------

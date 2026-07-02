@@ -4,36 +4,36 @@
 module SystolicArray2x2_x2 #(
     parameter integer PE_CYCLE = 1
 )(
-    input  wire         clock,
-    input  wire         reset_n,
+    input  wire             clock,
+    input  wire             reset_n,
 
     // Shared controls
-    input  wire         data_clear,
-    input  wire         en_b_shift_bottom,
-    input  wire         en_shift_right,
-    input  wire         en_shift_bottom,
-    input  wire         start_pulse,
+    input  wire             data_clear,
+    input  wire             en_b_shift_bottom,
+    input  wire             en_shift_right,
+    input  wire             en_shift_bottom,
+    input  wire             start_pulse,
 
     // external input bus
-    input  wire [15:0]  a_left_in_bus,
-    input  wire [15:0]  b_top_in_bus,
+    input  wire [15:0]      a_left_in_bus,
+    input  wire [15:0]      b_top_in_bus,
 
-    input  wire [31:0]  ps_top_in_bus_0,
-    input  wire [31:0]  ps_top_in_bus_1,
+    input  wire [31:0]      ps_top_in_bus_0,
+    input  wire [31:0]      ps_top_in_bus_1,
 
     // bottom output bus
-    output wire [31:0]  ps_bottom_out_bus_0,
-    output wire [31:0]  ps_bottom_out_bus_1,
+    output wire [31:0]      ps_bottom_out_bus_0,
+    output wire [31:0]      ps_bottom_out_bus_1,
 
     // PE accumulators
-    output wire [31:0]  ps_acc_0,
-    output wire [31:0]  ps_acc_1,
-    output wire [31:0]  ps_acc_2,
-    output wire [31:0]  ps_acc_3,
+    output wire [31:0]      ps_acc_0,
+    output wire [31:0]      ps_acc_1,
+    output wire [31:0]      ps_acc_2,
+    output wire [31:0]      ps_acc_3,
 
     // status
-    output wire         busy_out,
-    output wire         done_out
+    output wire             busy_out,
+    output wire             done_out
 );
 
     // vcd output

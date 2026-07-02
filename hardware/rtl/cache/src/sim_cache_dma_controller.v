@@ -1,9 +1,14 @@
 // nishiharu
 `timescale 1ns/1ps
 
+// default cache word = 1024
+`define ICache_W256
+//`define DCache_W256
+`define DCache_W64
+
 module sim_cache_dma_controller #(
     parameter integer ADDR_WIDTH   = 32,
-    parameter PROTECT_MODE         = 1,
+    parameter PROTECT_MODE         = 0,
     parameter PROTECT_ADDR         = 32'h0001_0000,
 
     // PIO アドレス（0なら無効）
@@ -47,6 +52,8 @@ module sim_cache_dma_controller #(
     input  wire  [2:0]      mem_write_sel,
     input  wire [31:0]      data_mem_write_address,
     input  wire [31:0]      mem_write_data,
+    input  wire             data_cache_clear, 
+    input  wire             data_cache_wb, 
     // MMU
     input  wire             mmu_data_mem_read_valid,
     output wire             mmu_data_mem_read_ready,
@@ -89,7 +96,11 @@ module sim_cache_dma_controller #(
         .CACHE_DATA_WIDTH    (128),
         .MAIN_MEM_DATA_WIDTH (128),
         .TAGMSB              (31),
+        `ifdef ICache_W256
+        .TAGLSB              (12)
+        `else
         .TAGLSB              (14)
+        `endif
     ) u_program_dma_ctrl (
         .clock              (clock),
         .reset_n            (reset_n),
@@ -215,8 +226,10 @@ module sim_cache_dma_controller #(
         .CACHE_DATA_WIDTH    (128),
         .MAIN_MEM_DATA_WIDTH (128),
         .TAGMSB              (31),
-        `ifdef DCache_SUB
+        `ifdef DCache_W256
         .TAGLSB              (12),
+        `elsif DCache_W64
+        .TAGLSB              (10),
         `else
         .TAGLSB              (14),
         `endif
@@ -251,6 +264,8 @@ module sim_cache_dma_controller #(
         .cpu_ready          (dcache_ready),
         .cpu_data_out       (data_mem_read_data),
         .cpu_req_ready      (data_mem_req_ready),
+        .cpu_cache_clear    (data_cache_clear),
+        .cpu_cache_wb       (data_cache_wb),
         // SynapEngine
         .sa_valid           (1'b0),    
         .sa_rw              (1'b0),    
@@ -270,7 +285,7 @@ module sim_cache_dma_controller #(
         .mmio_rw            (),
         .mmio_addr          (),
         .mmio_rdata         (),
-        .mmio_ready         (),
+        .mmio_ready         (1'b0),
         .mmio_wdata         (),
         // 128b 側
         .mem_req_ready      (1'b1),             // 1'b1 fix
@@ -411,18 +426,18 @@ module sim_cache_dma_controller #(
     wire [7:0]              d_axi_awlen;
     wire [2:0]              d_axi_awsize;
     wire [1:0]              d_axi_awburst;
-    wire                    d_axi_awvalid = 1'b0;
+    wire                    d_axi_awvalid;
     wire                    d_axi_awready;
 
     wire [DW-1:0]           d_axi_wdata;
     wire [(DW/8)-1:0]       d_axi_wstrb;
     wire                    d_axi_wlast;
-    wire                    d_axi_wvalid = 1'b0;
+    wire                    d_axi_wvalid;
     wire                    d_axi_wready;
 
     wire [ID_W-1:0]         d_axi_bid;
     wire [1:0]              d_axi_bresp;
-    wire                    d_axi_bvalid = 1'b0;
+    wire                    d_axi_bvalid;
     wire                    d_axi_bready;
 
     wire [ID_W-1:0]         d_axi_arid;
@@ -430,7 +445,7 @@ module sim_cache_dma_controller #(
     wire [7:0]              d_axi_arlen;
     wire [2:0]              d_axi_arsize;
     wire [1:0]              d_axi_arburst;
-    wire                    d_axi_arvalid = 1'b0;
+    wire                    d_axi_arvalid;
     wire                    d_axi_arready;
 
     wire [ID_W-1:0]         d_axi_rid;

@@ -289,9 +289,14 @@ extern "C" void run() {
     // sa_reset
     CSR_WRITE(0x7C0, 0x02);
     CSR_WRITE(0x7C0, 0x00);
+    // sa_mode : OS mode.
+    CSR_WRITE(0x7C4, 0x01);
     // sa_start
-    CSR_WRITE(0x7C0, 0x01);   // SA start
-    CSR_WRITE(0x7C0, 0x00);   // clear start
+    //CSR_WRITE(0x7C0, 0x01);   // SA start
+    //CSR_WRITE(0x7C0, 0x00);   // clear start
+    // OS mode.
+    CSR_WRITE(0x7C0, (0x08 | 0x01));   // SA start
+    CSR_WRITE(0x7C0, (0x08 | 0x00));   // clear start
 
     // SA計算待ち
     //tiny_delay(100);

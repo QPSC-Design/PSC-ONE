@@ -1,8 +1,8 @@
 module PE_mult #(
-    parameter integer DW = 8,
-    parameter integer PW = 32,
-    parameter integer SW = PW,
-    parameter integer N  = 4    // max:4
+    parameter integer DW        = 8,
+    parameter integer PW        = 32,
+    parameter integer SW        = PW,
+    parameter integer N         = 4    // max:4
 )(
     input  wire                     clock,
     input  wire                     reset_n,

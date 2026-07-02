@@ -25,6 +25,7 @@ module PSC_RV32ISP_core #(
     output wire [31:0]      data_mem_read_address,
     input  wire [31:0]      data_mem_read_data,
     input  wire             data_mem_req_ready,
+    
     output wire             data_mem_write_valid,    
     input wire              data_mem_write_ready,
     output wire  [2:0]      mem_write_sel,
@@ -38,6 +39,8 @@ module PSC_RV32ISP_core #(
     input  wire             mmu_data_req_ready,
     // Cashe 
     output wire             is_fence_i,
+    // DATA Cache
+    output wire [31:0]      csr_DCACHE_CTRL,
     // DMA
     output wire [31:0]      csr_DMA_CTRL,
     output wire [31:0]      csr_DMA_WORDS,
@@ -236,6 +239,9 @@ module PSC_RV32ISP_core #(
         .out_stval          (csr_stval),
         .out_satp           (csr_satp),
 
+        // DATA Cache
+        .out_DCACHE_CTRL    (csr_DCACHE_CTRL),
+        
         // DMA
         .out_DMA_CTRL       (csr_DMA_CTRL),
         .out_DMA_WORDS      (csr_DMA_WORDS),
@@ -380,12 +386,12 @@ module PSC_RV32ISP_core #(
         .data_mem_read_ready        (data_mem_read_ready),
         .data_mem_read_address      (data_mem_read_address),
         .data_mem_read_data         (data_mem_read_data),
-        .data_mem_read_req_ready    (data_mem_req_ready),
         .data_mem_write_valid       (data_mem_write_valid),
         .data_mem_write_ready       (data_mem_write_ready),
         .data_mem_write_address     (mem_write_address),
         .data_mem_write_data        (mem_write_data),
         .mem_write_sel              (mem_write_sel),
+        .data_mem_req_ready         (data_mem_req_ready),
         // vaddr for stval
         .vaddr                      (execute_vaddr),
         .uart_out                   (uart_out)

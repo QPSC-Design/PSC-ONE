@@ -532,13 +532,6 @@ module PSC_ONE_Chip #(
     //==========================================================
     // AXI But Sdram I/F
     //==========================================================
-    // ---- ch2 (unused) tie-offs ----
-    wire                s2_awready_dummy, s2_wready_dummy, s2_bvalid_dummy;
-    wire                s2_arready_dummy, s2_rlast_dummy,  s2_rvalid_dummy;
-    wire                s2_bid_dummy, s2_rid_dummy;
-    wire [31:0]         s2_rdata_dummy;
-    wire [1:0]          s2_bresp_dummy, s2_rresp_dummy;
-
     //wire [1:0]          dummy_O_sdram_addr;
     wire   sdram_init_fin;
     assign O_sdram_cke   = 1'b1;

@@ -42,7 +42,9 @@ module Decorder(
     // pc
     output reg [31:0]       out_pc,
     // illegal_instruction
-    output reg              raise_illegal_instruction
+    output reg              raise_illegal_instruction,
+    // done
+    output reg              decode_done
 );
 
     // Privilege level encoding (RISC-V spec)
@@ -349,42 +351,49 @@ module Decorder(
             out_pc      <= 32'h0;
             // illegal_instruction
             raise_illegal_instruction <= 1'b0;
-        end else if (decode_enb) begin
-            r_addr1     <= r_addr1_w; 
-            r_addr2     <= r_addr2_w;
-            w_addr      <= w_addr_w;
-            imm         <= imm_w;
-            alucon      <= alucon_w;
-            funct3      <= funct3_w;
-            op1sel      <= op1sel_w; 
-            op2sel      <= op2sel_w; 
-            mem_rw      <= mem_rw_w; 
-            rf_wen      <= rf_wen_w;
-            wb_sel      <= wb_sel_w; 
-            pc_sel      <= pc_sel_w;
-            is_fence    <= is_fence_w;
-            is_fence_i  <= is_fence_i_w;
-            is_sfence_vma <= is_sfence_vma_w;
-            // CSR
-            csr_wr      <= csr_wr_w;
-            csr_cmd     <= csr_cmd_w;
-            csr_use_imm <= csr_use_imm_w;
-            csr_addr    <= csr_addr_mux;
-            csr_zimm    <= csr_zimm_w;
-            is_sret     <= is_sret_w;
-            is_mret     <= is_mret_w;
-            is_ecall    <= is_ecall_w; 
-            // Load Store
-            is_load     <= is_load_w;
-            is_store    <= is_store_w;
-            // pipeline sig.
-            is_R_type   <= is_R_type_w;
-            is_op_imm   <= is_op_imm_w;
-            // pc
-            out_pc      <= in_pc;
-            // illegal_instruction
-            raise_illegal_instruction <= raise_illegal_instruction_sw | raise_illegal_instruction_mw 
-                                        | raise_illegal_instruction_alu;
+            decode_done <= 1'b0;
+
+        end else begin
+            decode_done <= 1'b0;
+
+            if (decode_enb) begin
+                r_addr1     <= r_addr1_w; 
+                r_addr2     <= r_addr2_w;
+                w_addr      <= w_addr_w;
+                imm         <= imm_w;
+                alucon      <= alucon_w;
+                funct3      <= funct3_w;
+                op1sel      <= op1sel_w; 
+                op2sel      <= op2sel_w; 
+                mem_rw      <= mem_rw_w; 
+                rf_wen      <= rf_wen_w;
+                wb_sel      <= wb_sel_w; 
+                pc_sel      <= pc_sel_w;
+                is_fence    <= is_fence_w;
+                is_fence_i  <= is_fence_i_w;
+                is_sfence_vma <= is_sfence_vma_w;
+                // CSR
+                csr_wr      <= csr_wr_w;
+                csr_cmd     <= csr_cmd_w;
+                csr_use_imm <= csr_use_imm_w;
+                csr_addr    <= csr_addr_mux;
+                csr_zimm    <= csr_zimm_w;
+                is_sret     <= is_sret_w;
+                is_mret     <= is_mret_w;
+                is_ecall    <= is_ecall_w; 
+                // Load Store
+                is_load     <= is_load_w;
+                is_store    <= is_store_w;
+                // pipeline sig.
+                is_R_type   <= is_R_type_w;
+                is_op_imm   <= is_op_imm_w;
+                // pc
+                out_pc      <= in_pc;
+                // illegal_instruction
+                raise_illegal_instruction <= raise_illegal_instruction_sw | raise_illegal_instruction_mw 
+                                            | raise_illegal_instruction_alu;
+                decode_done <= 1'b1;
+            end
         end
     end
 

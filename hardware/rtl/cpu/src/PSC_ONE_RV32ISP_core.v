@@ -155,6 +155,11 @@ module PSC_ONE_RV32ISP_core #(
 );
 
     // --------------------------------
+    // Csr to Data Cache
+    // --------------------------------
+    wire [31:0]  csr_DCACHE_CTRL;
+    
+    // --------------------------------
     // Csr to SynapEngine
     // --------------------------------
     wire [31:0]  csr_SA_CTRL;
@@ -231,6 +236,8 @@ module PSC_ONE_RV32ISP_core #(
         .mmu_data_req_ready         (mmu_data_req_ready),
 
         .is_fence_i                 (is_fence_i),       // cache clear
+
+        .csr_DCACHE_CTRL            (csr_DCACHE_CTRL),  // DATA Cache
 
         .csr_DMA_CTRL               (csr_DMA_CTRL),     // DMA
         .csr_DMA_WORDS              (csr_DMA_WORDS), 
@@ -463,6 +470,10 @@ module PSC_ONE_RV32ISP_core #(
     assign data_mem_read_ready  = dcache_ready;
     assign data_mem_write_ready = dcache_ready;
 
+    // clear, WB
+    wire    cpu_cache_clear = csr_DCACHE_CTRL[0];
+    wire    cpu_cache_wb    = csr_DCACHE_CTRL[1];
+
     cache_dma_controller_io #(
         .PROTECT_MODE        (PROTECT_MODE),
         .PROTECT_ADDR        (PROTECT_ADDR),
@@ -509,6 +520,8 @@ module PSC_ONE_RV32ISP_core #(
         .cpu_ready          (dcache_ready),
         .cpu_data_out       (data_mem_read_data),
         .cpu_req_ready      (data_mem_req_ready),
+        .cpu_cache_clear    (cpu_cache_clear),
+        .cpu_cache_wb       (cpu_cache_wb),
         // SynapEngine
         .sa_valid           (sa_valid),    
         .sa_rw              (sa_rw),    

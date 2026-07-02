@@ -1,81 +1,35 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Sun Jun 28 17:08:57 2026
+[*] Thu Jul  2 08:08:02 2026
 [*]
 [dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_CASHE_test.vcd"
-[dumpfile_mtime] "Sun Jun 28 17:07:30 2026"
-[dumpfile_size] 321063
+[dumpfile_mtime] "Thu Jul  2 08:06:41 2026"
+[dumpfile_size] 65005162
 [savefile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/cache.program.gtkw"
-[timestart] 0
-[size] 2448 1183
+[timestart] 2661247000
+[size] 2579 1240
 [pos] -1 -1
-*-23.400000 10560000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-18.478699 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] sim_cache_dma_controller.
 [sst_width] 278
-[signals_width] 246
+[signals_width] 198
 [sst_expanded] 1
-[sst_vpaned_height] 360
-@22
-sim_cache_dma_controller.cpu_program_addr[31:0]
-sim_cache_dma_controller.program_mem_read_data[31:0]
+[sst_vpaned_height] 380
 @28
-sim_cache_dma_controller.program_mem_read_ready
-sim_cache_dma_controller.program_mem_read_valid
-@201
--
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_cache_clear
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_cache_clear_d1
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_cache_clear_latch
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_cache_wb
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_cache_wb_d1
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_cache_wb_latch
 @22
-sim_cache_dma_controller.u_program_dma_ctrl.ZERO_LINE[127:0]
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_data[31:0]
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_data_latch[31:0]
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_data_out[31:0]
 @28
-sim_cache_dma_controller.u_program_dma_ctrl.clk
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_addr[31:0]
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_byte_addr[33:0]
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_data[31:0]
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_data_out[31:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_ready
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_rw
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_valid
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.cpu_word_addr[31:0]
-sim_cache_dma_controller.u_program_dma_ctrl.cur_index_r[9:0]
-sim_cache_dma_controller.u_program_dma_ctrl.cur_tag_r[17:0]
-sim_cache_dma_controller.u_program_dma_ctrl.data_read[127:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.data_we
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.data_write[127:0]
-sim_cache_dma_controller.u_program_dma_ctrl.fill_line_r[127:0]
-sim_cache_dma_controller.u_program_dma_ctrl.init_idx[9:0]
-sim_cache_dma_controller.u_program_dma_ctrl.line_read_r[127:0]
-sim_cache_dma_controller.u_program_dma_ctrl.mem_addr[31:0]
-sim_cache_dma_controller.u_program_dma_ctrl.mem_data_in[127:0]
-sim_cache_dma_controller.u_program_dma_ctrl.mem_data_out[127:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.mem_ready
-sim_cache_dma_controller.u_program_dma_ctrl.mem_req_ready
-sim_cache_dma_controller.u_program_dma_ctrl.mem_rw
-sim_cache_dma_controller.u_program_dma_ctrl.mem_valid
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.req_addr_w[31:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.req_is_write
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.req_wdata[31:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.req_word_sel_r[1:0]
-sim_cache_dma_controller.u_program_dma_ctrl.rst
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.state[3:0]
-sim_cache_dma_controller.u_program_dma_ctrl.tag_read[19:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.tag_read_dirty
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.tag_read_tag[17:0]
-@28
-sim_cache_dma_controller.u_program_dma_ctrl.tag_read_valid
-sim_cache_dma_controller.u_program_dma_ctrl.tag_we
-@22
-sim_cache_dma_controller.u_program_dma_ctrl.tag_write[19:0]
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_req_ready
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_valid
+@29
+sim_cache_dma_controller.u_data_dma_ctrl.cpu_valid_latch
 [pattern_trace] 1
 [pattern_trace] 0

@@ -55,6 +55,10 @@ module cache_dma_controller_io #(
     output reg  [CPU_DATA_WIDTH-1:0]      cpu_data_out,
     output wire                           cpu_req_ready,
 
+    // --------- Cache 制御信号 ---------
+    input  wire                           cpu_cache_clear, 
+    input  wire                           cpu_cache_wb, 
+
     // --------- SynapEngine リクエスト/レスポンス ---------
     input  wire                           sa_valid,
     input  wire                           sa_rw,          // 1:W, 0:R
@@ -102,18 +106,25 @@ module cache_dma_controller_io #(
     assign  cpu_req_ready      = (state == S_IDLE);                 // Data port(Main)
 
     // FSM ステート
-    localparam [3:0]
-        S_INIT              = 4'd0, // ★起動時初期化（全エントリ invalid）
-        S_IDLE              = 4'd1,
-        S_CASHE_START       = 4'd2,
-        S_LOOKUP_ISSUE      = 4'd4,
-        S_LOOKUP_READ       = 4'd5,
-        S_COMPARE           = 4'd6,
-        S_WRITEBACK         = 4'd7,
-        S_ALLOC_WAIT        = 4'd8,
-        S_ALLOC_RESP        = 4'd9,
-        S_POST_WBALLOC      = 4'd10,
-        S_MMIO_WAIT         = 4'd11;
+    localparam [4:0]
+        S_INIT                  = 5'd0, // ★起動時初期化（全エントリ invalid）
+        S_IDLE                  = 5'd1,
+        S_CASHE_START           = 5'd2,
+        S_LOOKUP_ISSUE          = 5'd4,
+        S_LOOKUP_READ           = 5'd5,
+        S_COMPARE               = 5'd6,
+        S_WRITEBACK             = 5'd7,
+        S_ALLOC_WAIT            = 5'd8,
+        S_ALLOC_RESP            = 5'd9,
+        S_POST_WBALLOC          = 5'd10,
+        S_MMIO_WAIT             = 5'd11,
+        S_CACHE_WB_START        = 5'd12,
+        S_CACHE_WB_START_WAIT   = 5'd13,
+        S_CACHE_WB_READ         = 5'd14,
+        S_CACHE_WB_CHECK        = 5'd15,
+        S_CACHE_WB_WRITE_REQ    = 5'd16,
+        S_CACHE_WB_WRITE_WAIT   = 5'd17,
+        S_CACHE_WB_NEXT         = 5'd18;
 
     // ---------------- wire ----------------
     // 書き込む位置
@@ -127,7 +138,7 @@ module cache_dma_controller_io #(
     reg [127:0] new_line;
 
     // ---------------- 内部レジスタ ----------------
-    reg [3:0]                 state;
+    reg [4:0]                 state;
 
     // 初期化スイープ
     reg  [INDEX_WIDTH_BA-1:0] init_idx;
@@ -141,6 +152,14 @@ module cache_dma_controller_io #(
     reg  [CPU_DATA_WIDTH-1:0] req_wdata;
     reg  [1:0]                req_word_sel_r;    // ライン内 word 選択（[1:0]）
     reg  [2:0]                req_write_sel_r;
+
+    // キャッシュ初期化
+    reg                       cpu_cache_clear_d1;
+    reg                       cpu_cache_clear_latch;
+
+    // キャッシュWB
+    reg                       cpu_cache_wb_d1;
+    reg                       cpu_cache_wb_latch;
 
     // アドレス
     wire [ADDR_WIDTH-1:0]     cpu_byte_addr =  cpu_addr[31:0];  
@@ -185,11 +204,19 @@ module cache_dma_controller_io #(
     reg                           cpu_rw_latch;
     reg [CPU_DATA_WIDTH-1:0]      cpu_data_latch;
     reg [2:0]                     cpu_write_sel_latch;
+
     reg [ADDR_WIDTH-1:0]          sa_word_addr_latch;
     reg [ADDR_WIDTH-1:0]          sa_byte_addr_latch;
     reg                           sa_rw_latch;
     reg [CPU_DATA_WIDTH-1:0]      sa_data_latch;
     reg [2:0]                     sa_write_sel_latch;
+
+    // WB関連
+    reg [INDEX_WIDTH_BA-1:0]      cache_wb_index;
+    reg [TAG_WIDTH-1:0]           cache_wb_tag;
+    reg                           cache_wb_valid;
+    reg                           cache_wb_dirty;
+    reg [127:0]                   cache_wb_line;
 
     // ---------------- ヘルパ関数 ----------------
     function [31:0] pick_word(input [127:0] line, input [1:0] sel);
@@ -331,6 +358,19 @@ module cache_dma_controller_io #(
             cpu_ready     <= 1'b0;
             cpu_data_out  <= {CPU_DATA_WIDTH{1'b0}};
 
+            // clear, wb
+            cpu_cache_clear_d1    <= 1'b0;
+            cpu_cache_clear_latch <= 1'b0;
+
+            cpu_cache_wb_d1       <= 1'b0;
+            cpu_cache_wb_latch    <= 1'b0;
+            cache_wb_index        <= {INDEX_WIDTH_BA{1'b0}};
+
+            cache_wb_tag   <= {TAG_WIDTH{1'b0}};
+            cache_wb_valid <= 1'b0;
+            cache_wb_dirty <= 1'b0;
+            cache_wb_line  <= {INDEX_WIDTH_BA{1'b0}};
+
             sa_ready      <= 1'b0;
             sa_data_out   <= {CPU_DATA_WIDTH{1'b0}};
 
@@ -371,6 +411,18 @@ module cache_dma_controller_io #(
             mmio_valid  <= 1'b0;
             mmio_rw     <= 1'b0;
 
+            cpu_cache_clear_d1 <= cpu_cache_clear;
+            cpu_cache_wb_d1    <= cpu_cache_wb;
+
+            // cpu_cache_clear posedge
+            if (cpu_cache_clear & !cpu_cache_clear_d1) begin
+                cpu_cache_clear_latch   <= 1'b1;
+            end
+            // cpu_cache_wb posedge
+            if (cpu_cache_wb & !cpu_cache_wb_d1) begin
+                cpu_cache_wb_latch      <= 1'b1;
+            end
+
             // ---------------- Valid latch ----------------
             // CPU port
             if (cpu_valid) begin
@@ -380,6 +432,14 @@ module cache_dma_controller_io #(
                 cpu_rw_latch        <= cpu_rw;
                 cpu_data_latch      <= cpu_data;
                 cpu_write_sel_latch <= cpu_write_sel;
+            end
+            else if (cpu_cache_clear_latch) begin
+                state       <= S_INIT;
+                cpu_cache_clear_latch <= 1'b0;
+            end
+            else if (cpu_cache_wb_latch) begin
+                state       <= S_CACHE_WB_START;
+                cpu_cache_wb_latch <= 1'b0;
             end
             // SA port
             if (sa_valid) begin
@@ -712,6 +772,7 @@ module cache_dma_controller_io #(
                 end
 
                 // -------- READミス返却（フィル直後の1clk後） --------
+                // state = 9
                 S_ALLOC_RESP: begin
                     if (req_from_mmu) begin
                         mmu_data_out <= pick_word(fill_line_r, req_word_sel_r);
@@ -729,6 +790,76 @@ module cache_dma_controller_io #(
                     state <= S_IDLE;
                 end
 
+                // ------------------------------------------
+                // Write back all
+                // ------------------------------------------
+
+                // -------- CACHE ALL DATA WRITEBACK --------
+                S_CACHE_WB_START: begin
+                    cur_index_r <= cache_wb_index;
+                    state <= S_CACHE_WB_START_WAIT;
+                end
+
+                S_CACHE_WB_START_WAIT: begin
+                    state <= S_CACHE_WB_READ;
+                end
+
+                // -------- TAG READ --------
+                S_CACHE_WB_READ: begin
+                    cache_wb_tag   <= tag_read_tag;
+                    cache_wb_valid <= tag_read_valid;
+                    cache_wb_dirty <= tag_read_dirty;
+                    cache_wb_line  <= data_read;
+
+                    state <= S_CACHE_WB_CHECK;
+                end
+
+                // -------- TAG CHECK --------
+                S_CACHE_WB_CHECK: begin
+
+                    if (cache_wb_valid && cache_wb_dirty) begin
+                        state <= S_CACHE_WB_WRITE_REQ;
+                    end
+                    else begin
+                        state <= S_CACHE_WB_NEXT;
+                    end
+
+                end
+
+                // -------- メモリにWB --------
+                S_CACHE_WB_WRITE_REQ: begin
+                    if (mem_req_ready) begin
+                        mem_valid    <= 1'b1;
+                        mem_rw       <= 1'b1;
+                        mem_addr     <= wb_addr_ba_f(cache_wb_tag, cache_wb_index);
+                        mem_data_out <= cache_wb_line;
+                        state        <= S_CACHE_WB_WRITE_WAIT;
+                    end
+                end
+
+                S_CACHE_WB_WRITE_WAIT: begin
+                    if (mem_ready) begin
+                        cur_index_r <= cache_wb_index;
+                        tag_write   <= {cache_wb_tag, 1'b1, 1'b0};
+                        tag_we      <= 1'b1;
+                        state       <= S_CACHE_WB_NEXT;
+                    end
+                end
+
+                // -------- アドレスインクメント --------
+                S_CACHE_WB_NEXT: begin
+
+                    if (cache_wb_index == DEPTH-1) begin
+                        cpu_ready <= 1'b1;
+                        cache_wb_index <= {INDEX_WIDTH_BA{1'b0}};
+                        state <= S_IDLE;
+                    end
+                    else begin
+                        cache_wb_index <= cache_wb_index + 1'b1;
+                        state <= S_CACHE_WB_START;
+                    end
+
+                end           
                 default: state <= S_IDLE;
             endcase
         end

@@ -19,14 +19,23 @@ module MemoryStore #(
     input  wire [31:0]      counter,
     input  wire [1:0]       ld_low2,           // ★ 追加：ロード時のアドレス下位2bit
     input  wire [31:0]      csr_rdata,
+    input wire [31:0]       d_paddr,
+    // memory 
+    output wire [31:0]      data_mem_write_address,
+    output reg              data_mem_write_valid,
+    output reg  [31:0]      data_mem_write_data,
+    input wire              data_mem_write_ready,
+    input wire              data_mem_req_ready,
     // output 
-    output reg              mem_write_valid,
-    output reg  [31:0]      mem_write_data,
     output reg  [8:0]       uart,
     output wire [31:0]      w_data,
+    output reg              store_done,
     // pc
     output reg [31:0]       out_pc
 );
+
+    assign  data_mem_write_address = d_paddr;
+
     // ------------------------------------------------------------
     // アドレス/基本信号
     // ------------------------------------------------------------
@@ -52,12 +61,11 @@ module MemoryStore #(
     wire is_LBU = (mem_val == 3'b100);
     wire is_LHU = (mem_val == 3'b101);
 
-    wire [31:0] ld_result =
-        is_LB  ? {{24{rbyte[7]}},   rbyte}  :
-        is_LBU ? {24'b0,            rbyte}  :
-        is_LH  ? {{16{rhword[15]}}, rhword} :
-        is_LHU ? {16'b0,            rhword} :
-                 mem_read_data; // LW
+    wire [31:0] ld_result =     is_LB  ? {{24{rbyte[7]}},   rbyte}  :
+                                is_LBU ? {24'b0,            rbyte}  :
+                                is_LH  ? {{16{rhword[15]}}, rhword} :
+                                is_LHU ? {16'b0,            rhword} :
+                                        mem_read_data; // LW
 
     // ------------------------------------------------------------
     // MMIO 読み取りの特例（従来優先度を維持）
@@ -68,11 +76,10 @@ module MemoryStore #(
     // ------------------------------------------------------------
     // MEMORY READ 出力（wb_sel=01 のとき w_data に使われる）
     // ------------------------------------------------------------
-    wire [31:0] mem_data =
-        (mem_rw == 1'b1) ? 32'b0 :
-        is_mmio_counter   ? counter :
-        is_mmio_uart_flag ? 32'h0000_0001 :
-                            ld_result;
+    wire [31:0] mem_data =  (mem_rw == 1'b1) ? 32'b0 :
+                            is_mmio_counter   ? counter :
+                            is_mmio_uart_flag ? 32'h0000_0001 :
+                                                ld_result;
 
     // ------------------------------------------------------------
     // MEMORY WRITE + UART
@@ -80,28 +87,65 @@ module MemoryStore #(
     //   ※ バイトレーン位置を下位モジュールで解釈する場合は、
     //      mem_addr[1:0] を併せて伝搬/利用してください。
     // ------------------------------------------------------------
+
+    localparam IDLE             = 4'd0;
+    localparam STORE            = 4'd1;
+    localparam STORE_WAIT       = 4'd2;
+    localparam STORE_DONE       = 4'd3;
+    localparam STORE_DONE_WAIT  = 4'd4;
+
+    reg [3:0]  state;
+    
     always @(posedge clock or negedge reset_n) begin
         if(!reset_n) begin
-            mem_write_valid  <= 1'b0;
-            mem_write_data   <= 32'h00;
+            data_mem_write_valid  <= 1'b0;
+            data_mem_write_data   <= 32'h00;
             out_pc           <= 32'h0;
             uart             <= 9'b0;
+            store_done       <= 1'b0;
+            state            <= 4'd0;
         end else begin
-            if (mem_rw & store_enb) begin
-                // word
-                mem_write_valid  <= 1'b1;
-                mem_write_data   <= r_data2;
-                // uart
-                if ((mem_rw == 1'b1) && (mem_addr == UART_MMIO_ADDR)) begin
-                    uart <= {1'b1, r_data2[7:0]};
-                end else begin
-                    uart <= 9'b0;
+            data_mem_write_valid  <= 1'b0;
+            store_done       <= 1'b0;
+
+            case (state)
+                IDLE: begin
+                    if (store_enb)
+                        state <= STORE;
                 end
-            end else begin
-                mem_write_valid  <= 1'b0;
-                mem_write_data   <= 32'h00;
-                uart             <= 9'b0;
-            end
+                STORE: begin
+                    if (data_mem_req_ready) begin
+                        // word
+                        if (mem_rw) begin
+                            data_mem_write_valid  <= 1'b1;
+                            data_mem_write_data   <= r_data2;
+                            state            <= STORE_WAIT;
+                        end else begin
+                            state            <= IDLE;
+                        end
+                        // uart (TBD)
+                        if ((mem_rw == 1'b1) && (mem_addr == UART_MMIO_ADDR)) begin
+                            uart <= {1'b1, r_data2[7:0]};
+                        end else begin
+                            uart <= 9'b0;
+                        end
+                    end
+                end
+                STORE_WAIT: begin
+                    if (data_mem_write_ready) begin
+                        store_done  <= 1'b1;
+                        state       <= STORE_DONE_WAIT;
+                    end
+                end
+                STORE_DONE_WAIT: begin
+                    state <= IDLE;
+                end
+                default: begin
+                    data_mem_write_valid  <= 1'b0;
+                end
+
+            endcase
+
             // pc
             if (store_enb) begin
                 out_pc           <= in_pc;

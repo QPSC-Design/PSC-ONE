@@ -51,6 +51,9 @@ module Csr (
     output reg [31:0]       out_stval,
     output reg [31:0]       out_satp,
 
+    // to Data-Cache
+    output reg [31:0]       out_DCACHE_CTRL,
+
     // to DMA
     output reg [31:0]       out_DMA_CTRL,
     output reg [31:0]       out_DMA_WORDS,
@@ -101,6 +104,7 @@ module Csr (
     reg [1:0]   csr_priv_mode;
 
     // ---------------- DMA CSRs ----------------
+    reg  [31:0] csr_DCACHE_CTRL;
     reg  [31:0] csr_DMA_CTRL;
     reg  [31:0] csr_DMA_WORDS;
     reg  [31:0] csr_DMA_SRC;
@@ -210,18 +214,20 @@ module Csr (
 
             priv_mode   <= 2'b0;
 
-            out_DMA_CTRL  <= 32'd0;
-            out_DMA_WORDS <= 32'd0;
-            out_DMA_SRC   <= 32'd0;
-            out_DMA_DST   <= 32'd0;
+            out_DCACHE_CTRL <= 32'd0;
 
-            out_SA_CTRL   <= 32'd0;
-            out_SA_ADDR_A <= 32'd0;
-            out_SA_ADDR_B <= 32'd0;
-            out_SA_ADDR_C <= 32'd0;
+            out_DMA_CTRL    <= 32'd0;
+            out_DMA_WORDS   <= 32'd0;
+            out_DMA_SRC     <= 32'd0;
+            out_DMA_DST     <= 32'd0;
+
+            out_SA_CTRL     <= 32'd0;
+            out_SA_ADDR_A   <= 32'd0;
+            out_SA_ADDR_B   <= 32'd0;
+            out_SA_ADDR_C   <= 32'd0;
             
-            csr_DMA_STATUS <= 32'd0;
-            csr_SA_STATUS  <= 32'd0;
+            csr_DMA_STATUS  <= 32'd0;
+            csr_SA_STATUS   <= 32'd0;
         end else begin
             if(csr_valid) begin
                 out_mstatus <= csr_mstatus;
@@ -238,6 +244,8 @@ module Csr (
                 out_scause  <= csr_scause;
                 out_stval   <= csr_stval;
                 out_satp    <= csr_satp;
+
+                out_DCACHE_CTRL  <= csr_DCACHE_CTRL;
 
                 out_DMA_CTRL  <= csr_DMA_CTRL;
                 out_DMA_WORDS <= csr_DMA_WORDS;
@@ -330,17 +338,19 @@ module Csr (
             csr_scause    <= 32'b0;
             csr_stval     <= 32'b0;
             csr_satp      <= 32'b0;
+            // Data Cache
+            csr_DCACHE_CTRL <= 32'b0; 
             // DMA
-            csr_DMA_CTRL  <= 32'b0; 
-            csr_DMA_WORDS <= 32'b0; 
-            csr_DMA_SRC   <= 32'b0; 
-            csr_DMA_DST   <= 32'b0; 
+            csr_DMA_CTRL    <= 32'b0; 
+            csr_DMA_WORDS   <= 32'b0; 
+            csr_DMA_SRC     <= 32'b0; 
+            csr_DMA_DST     <= 32'b0; 
             // SA
-            csr_SA_CTRL   <= 32'b0; 
-            csr_SA_MODE   <= 32'b0; 
-            csr_SA_ADDR_A <= SA_ADDR_A;
-            csr_SA_ADDR_B <= SA_ADDR_B;
-            csr_SA_ADDR_C <= SA_ADDR_C;
+            csr_SA_CTRL     <= 32'b0; 
+            csr_SA_MODE     <= 32'b0; 
+            csr_SA_ADDR_A   <= SA_ADDR_A;
+            csr_SA_ADDR_B   <= SA_ADDR_B;
+            csr_SA_ADDR_C   <= SA_ADDR_C;
 
         end else begin
             // ---- CSR writes ----
@@ -373,6 +383,9 @@ module Csr (
                     12'h341: csr_mepc     <= pack_epc(newv);
                     12'h342: csr_mcause   <= newv;
                     12'h344: csr_mip      <= (newv & MIRQ_MASK);
+
+                    // ===== DATA CACHE =====
+                    12'h7F0: csr_DCACHE_CTRL <= newv;
 
                     // ===== DMA =====
                     12'h7E0: csr_DMA_CTRL   <= newv;

@@ -4,44 +4,44 @@ module PSC_RV32ISP_Fetch #(
     parameter integer   FIFO_DEPTH   = 4
 )(
     // clock, reset
-    input wire          clock,
-    input wire          reset_n,
-    input wire          cpu_stop,
+    input wire              clock,
+    input wire              reset_n,
+    input wire              cpu_stop,
     // in,out
-    input wire          fetch_valid,
-    output reg          fetch_ready,        /// Not used.
-    input wire          execute_ready,
+    input wire              fetch_valid,
+    output reg              fetch_ready,        /// Not used.
+    input wire              execute_ready,
     // fifo sig.
-    output wire         fifo_empty,
-    output wire         fifo_full,
-    input wire          fifo_read_valid,
-    output wire         fifo_read_ready,
-    input wire          fifo_flush,
+    output wire             fifo_empty,
+    output wire             fifo_full,
+    input wire              fifo_read_valid,
+    output wire             fifo_read_ready,
+    input wire              fifo_flush,
     // other sig.
-    input wire [31:0]   pc,
-    input wire [31:0]   csr_satp,
-    input  wire [1:0]   priv_mode,
-    input wire          is_load,
-    input wire          is_store,
-    input wire          is_sfence_vma,
-    output wire         fifo_ready,
+    input wire [31:0]       pc,
+    input wire [31:0]       csr_satp,
+    input  wire [1:0]       priv_mode,
+    input wire              is_load,
+    input wire              is_store,
+    input wire              is_sfence_vma,
+    output wire             fifo_ready,
     // fault sig.
-    output wire         i_pf,
+    output wire             i_pf,
     // to memory
-    output wire         program_mem_read_valid,
-    input wire          program_mem_read_ready,
-    output wire [31:0]  program_mem_read_address,
-    input wire [31:0]   program_mem_read_data,
-    input wire          program_mem_req_ready,
+    output wire             program_mem_read_valid,
+    input wire              program_mem_read_ready,
+    output wire [31:0]      program_mem_read_address,
+    input wire [31:0]       program_mem_read_data,
+    input wire              program_mem_req_ready,
     // MMU
-    output wire         data_mem_read_valid,
-    input wire          data_mem_read_ready,
-    output wire [31:0]  data_mem_read_address,
-    input  wire [31:0]  data_mem_read_data,
-    input  wire         data_mem_read_req_ready,
+    output wire             data_mem_read_valid,
+    input wire              data_mem_read_ready,
+    output wire [31:0]      data_mem_read_address,
+    input  wire [31:0]      data_mem_read_data,
+    input  wire             data_mem_read_req_ready,
     // opcode
-    output wire [31:0]  opcode,
-    output wire [31:0]  fifo_opcode_data
+    output wire [31:0]      opcode,
+    output wire [31:0]      fifo_opcode_data
 );
 
     // FIFO state sig.

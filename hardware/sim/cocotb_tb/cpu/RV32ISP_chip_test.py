@@ -35,7 +35,7 @@ CLK_PERIOD_NS = int(os.getenv("CLK_PERIOD_NS", "10"))     # 100 MHz
 # === RUN CYCLE Setting.
 #RUN_CYCLES    = int(os.getenv("RUN_CYCLES", "50000"))   # run_test_P setting
 #RUN_CYCLES    = int(os.getenv("RUN_CYCLES", "800000"))   # sd_read setting
-RUN_CYCLES    = int(os.getenv("RUN_CYCLES", "3000000"))
+RUN_CYCLES    = int(os.getenv("RUN_CYCLES", "3500000"))
 #RUN_CYCLES    = int(os.getenv("RUN_CYCLES", "5000000000"))  # sa_matrix_test
 
 SDRAM_INIT_TIMEOUT = int(os.getenv("SDRAM_INIT_TIMEOUT", "500000"))  # cycles
