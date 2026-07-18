@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# PSC-ONE
+# PSC-ONE SoC
 
 An open-source full-stack RISC-V SoC platform for FPGA-based edge computing and AI acceleration.  
 PSC-ONE integrates a custom CPU, memory subsystem, peripherals,
@@ -45,6 +45,15 @@ PSC-ONE is not just a CPU core, but a complete experimental SoC platform for res
 
 ---
 
+## PSC-ONE SoC Architecture
+
+![PSC-SOC Block Diagram](docs/images/PSC_ONE_SoC_Block.jpg)
+
+This section presents the overall PSC-ONE SoC architecture, including the
+PSC_RV32ISP CPU, memory subsystem, peripherals, PSC-OS, and PSC-ONE AI.
+
+---
+
 ## Repository Structure
 
 - `hardware/` - FPGA RTL design, including the CPU core, memory subsystem, and peripherals
@@ -75,7 +84,9 @@ The software side of PSC-ONE currently includes:
 
 ---
 
-## PSC_RV32ISP (CPU Architecture)
+# CPU (PSC_RV32ISP)
+
+## CPU Architecture
 
 This diagram presents the top-level architecture of the PSC system.  
 It shows how the PSC_RV32ISP CPU core is integrated with memory and peripheral components, including UART, SDRAM, and the SD card interface.  
@@ -92,7 +103,7 @@ cache/memory subsystem, reducing redundant memory copies.
   
 This tightly coupled architecture improves overall efficiency by reducing memory access overhead and is particularly suitable for data-intensive workloads such as matrix operations and future neural-network inference.
 
-![PSC_RV32ISP Block Diagram](docs/images/PSC_ONE_DMA_Block.jpg)
+![PSC_RV32ISP Block Diagram](docs/images/PSC_RV32ISP.jpg)
 
 ---
 
