@@ -1,6 +1,6 @@
 // ===================================================================
 // cache_dma_controller_io  (for packed dm_cache_tag / write-first RAMs)
-//   - 16B line, Direct-Mapped, Write-back / Write-no-allocate
+//   - 16B line, Direct-Mapped, Write-back / Write-allocate
 //   - Sync-read 1clk (tag/data) に整合（ISSUE → READ → COMPARE）
 //   - mem_req_ready で外部要求をゲート
 //   - 単一 PIO アドレスはキャッシュ迂回で即応答
@@ -324,9 +324,6 @@ module cache_dma_controller_io #(
                  ((PSC_PFE_IF_CTRL      != {ADDR_WIDTH{1'b0}}) && (addr_mmio == PSC_PFE_IF_CTRL     )));
         end
     endfunction
-
-    // ゼロライン（ライトミス導入用）
-    wire [CACHE_DATA_WIDTH-1:0] ZERO_LINE = {CACHE_DATA_WIDTH{1'b0}};
 
     // ------------------------ FSM 本体 ------------------------
     always @(posedge clock or negedge reset_n) begin
@@ -677,55 +674,35 @@ module cache_dma_controller_io #(
 
                     end else begin
                         // ---- MISS ----
-                        if (victim_valid_r && victim_dirty_r) begin
-                            // 先にWRITEBACK（mem_req_ready待ち）
-                            if (mem_req_ready) begin
-                                mem_valid    <= 1'b1;
-                                mem_rw       <= 1'b1;               // WRITEBACK
-                                mem_addr     <= victim_addr_ba;
-                                mem_data_out <= line_read_r;        // victim 全体
-                                cache_miss_pulse <= 1'b1;
-                                state        <= S_WRITEBACK;
+                        // PROTECT領域への書込み要求はキャッシュを変更せず完了する
+                        if (req_is_write && PROTECT_MODE &&
+                            (req_addr_b < PROTECT_ADDR)) begin
+                            if (req_from_sa) begin
+                                sa_valid_latch <= 1'b0;
+                                sa_ready       <= 1'b1;
+                            end else begin
+                                cpu_valid_latch <= 1'b0;
+                                cpu_ready       <= 1'b1;
                             end
-                        end else if (!req_is_write) begin
-                            // READミス：READ ALLOCATE
+                            state <= S_IDLE;
+                        end else if (victim_valid_r && victim_dirty_r) begin
+                            // dirty victimを先にWRITEBACK
                             if (mem_req_ready) begin
-                                mem_valid <= 1'b1;
-                                mem_rw    <= 1'b0;
-                                mem_addr  <= alloc_addr_ba_f(req_addr_b);
+                                mem_valid        <= 1'b1;
+                                mem_rw           <= 1'b1;
+                                mem_addr         <= victim_addr_ba;
+                                mem_data_out     <= line_read_r;
                                 cache_miss_pulse <= 1'b1;
-                                state     <= S_ALLOC_WAIT;
+                                state            <= S_WRITEBACK;
                             end
                         end else begin
-                            // WRITEミス
-                            // ★★★ PROTECT MODE: 書き込み禁止なら破壊しない ★★★
-                            if (PROTECT_MODE && (req_addr_b < PROTECT_ADDR)) begin
-                                if (req_from_sa) sa_valid_latch  <= 1'b0;
-                                if (req_from_sa) sa_ready   <= 1'b1;
-                                else             cpu_ready  <= 1'b1;
-                                state     <= S_IDLE;
-                            end else begin
-                                // ゼロライン導入（通常の書き込みミス）
-                                case (req_write_sel_r)
-                                    3'b000: new_line = place_byte(ZERO_LINE, req_word_sel_r, byte_sel, req_wdata[7:0]);
-                                    3'b001: new_line = place_half(ZERO_LINE, req_word_sel_r, half_sel, req_wdata[15:0]);
-                                    3'b010: new_line = place_word(ZERO_LINE, req_word_sel_r, req_wdata);
-                                    default: new_line = place_word(ZERO_LINE, req_word_sel_r, req_wdata);
-                                endcase
-
-                                data_write <= new_line;
-                                data_we    <= 1'b1;
-                                tag_write  <= {cur_tag_r, 1'b1, 1'b1};
-                                tag_we     <= 1'b1;
-                                if (req_from_sa) begin
-                                    sa_valid_latch  <= 1'b0;
-                                    sa_ready   <= 1'b1;
-                                end else begin       
-                                    cpu_valid_latch  <= 1'b0;      
-                                    cpu_ready  <= 1'b1;
-                                end
+                            // READ/WRITEともにREAD ALLOCATE
+                            if (mem_req_ready) begin
+                                mem_valid        <= 1'b1;
+                                mem_rw           <= 1'b0;
+                                mem_addr         <= alloc_addr_ba_f(req_addr_b);
                                 cache_miss_pulse <= 1'b1;
-                                state      <= S_IDLE;
+                                state            <= S_ALLOC_WAIT;
                             end
                         end
                     end
@@ -735,35 +712,8 @@ module cache_dma_controller_io #(
                 // state = 7
                 S_WRITEBACK: begin
                     if (mem_ready) begin
-                        if (!req_is_write) begin
-                            state <= S_POST_WBALLOC; // READミス継続
-                        end else begin
-                            if (PROTECT_MODE && (req_addr_b < PROTECT_ADDR)) begin
-                                if (req_from_sa) sa_valid_latch  <= 1'b0;
-                                if (req_from_sa) sa_ready <= 1'b1;
-                                else             cpu_ready  <= 1'b1;
-                                state     <= S_IDLE;
-                            end else begin
-                                // WRITEミス：WB後にゼロライン導入で終了
-                                case (req_write_sel_r)
-                                    3'b000: data_write <= place_byte(ZERO_LINE, req_word_sel_r, byte_sel, req_wdata[7:0]);     // SB
-                                    3'b001: data_write <= place_half(ZERO_LINE, req_word_sel_r, half_sel, req_wdata[15:0]);    // SH
-                                    3'b010: data_write <= place_word(ZERO_LINE, req_word_sel_r, req_wdata);                    // SW
-                                    default: data_write <= place_word(ZERO_LINE, req_word_sel_r, req_wdata);
-                                endcase
-                                data_we    <= 1'b1;    // 追加
-                                tag_write  <= {cur_tag_r, 1'b1, 1'b1};
-                                tag_we     <= 1'b1;
-                                if (req_from_sa) begin
-                                    sa_valid_latch  <= 1'b0;
-                                    sa_ready   <= 1'b1;
-                                end else begin      
-                                    cpu_valid_latch  <= 1'b0;       
-                                    cpu_ready  <= 1'b1;
-                                end
-                                state      <= S_IDLE;
-                            end
-                        end
+                        // READ/WRITEともにvictim退避後は新ラインを取得する
+                        state <= S_POST_WBALLOC;
                     end
                 end
 
@@ -782,13 +732,65 @@ module cache_dma_controller_io #(
                 // state = 8
                 S_ALLOC_WAIT: begin
                     if (mem_ready) begin
-                        // 受信ラインをインストール（次拍で返却）
-                        fill_line_r <= mem_data_in;
-                        data_write  <= mem_data_in;
-                        data_we     <= 1'b1;
-                        tag_write   <= {cur_tag_r, 1'b1, 1'b0}; // valid=1, dirty=0
-                        tag_we      <= 1'b1;
-                        state       <= S_ALLOC_RESP;
+                        if (req_is_write) begin
+                            case (req_write_sel_r)
+                                3'b000: begin
+                                    data_write <= place_byte(
+                                        mem_data_in,
+                                        req_word_sel_r,
+                                        byte_sel,
+                                        req_wdata[7:0]
+                                    );
+                                end
+
+                                3'b001: begin
+                                    data_write <= place_half(
+                                        mem_data_in,
+                                        req_word_sel_r,
+                                        half_sel,
+                                        req_wdata[15:0]
+                                    );
+                                end
+
+                                3'b010: begin
+                                    data_write <= place_word(
+                                        mem_data_in,
+                                        req_word_sel_r,
+                                        req_wdata
+                                    );
+                                end
+
+                                default: begin
+                                    data_write <= place_word(
+                                        mem_data_in,
+                                        req_word_sel_r,
+                                        req_wdata
+                                    );
+                                end
+                            endcase
+
+                            data_we   <= 1'b1;
+                            tag_write <= {cur_tag_r, 1'b1, 1'b1};
+                            tag_we    <= 1'b1;
+
+                            // 処理した要求だけをクリアする
+                            if (req_from_sa) begin
+                                sa_valid_latch <= 1'b0;
+                                sa_ready       <= 1'b1;
+                            end else begin
+                                cpu_valid_latch <= 1'b0;
+                                cpu_ready       <= 1'b1;
+                            end
+
+                            state <= S_IDLE;
+                        end else begin
+                            fill_line_r <= mem_data_in;
+                            data_write  <= mem_data_in;
+                            data_we     <= 1'b1;
+                            tag_write   <= {cur_tag_r, 1'b1, 1'b0};
+                            tag_we      <= 1'b1;
+                            state       <= S_ALLOC_RESP;
+                        end
                     end
                 end
 

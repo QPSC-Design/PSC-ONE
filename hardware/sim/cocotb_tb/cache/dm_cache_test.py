@@ -336,11 +336,18 @@ async def cpu_data_byte_read(dut, addr, timeout=1000):
         await ReadOnly()
 
         if int(dut.data_mem_read_ready.value) == 1:
-            data32 = int(dut.data_mem_read_data.value)
+            data_value = dut.data_mem_read_data.value
 
-            # アドレス下位2bitに対応するバイトをLSBへ移動
             shift = (addr & 0x3) * 8
-            data = (data32 >> shift) & 0xFF
+            selected_byte = data_value[shift + 7 : shift]
+
+            assert selected_byte.is_resolvable, (
+                f"Selected byte contains X/Z: "
+                f"addr=0x{addr:08x}, "
+                f"data={data_value}"
+            )
+
+            data = int(selected_byte)
             break
     else:
         raise AssertionError(
@@ -1104,4 +1111,78 @@ async def cache_cpu_sa_same_clock_write_read_test(dut):
     )
     dut._log.info(
         "==== PASS CPU/SA same-clock Write + Read test ===="
+    )
+
+# ------------------------------------------------
+# TEST 8:
+# Write Miss時に同一16Bラインの未更新ワードが保持されることを確認
+# ------------------------------------------------
+@cocotb.test()
+async def cache_write_miss_preserve_line_test(dut):
+    dut._log.info("--------------------------------------------------")
+    dut._log.info(
+        "==== Write Miss preserve existing line test start ===="
+    )
+
+    cocotb.start_soon(gen_clock(dut))
+
+    await reset_dut(dut)
+    await sdram_init_fin_wait(dut)
+
+    # 16Bアラインされた1キャッシュライン
+    base_addr = 0x0018_0000
+
+    initial_words = [
+        0x1111_1111,
+        0x2222_2222,
+        0x3333_3333,
+        0x4444_4444,
+    ]
+
+    updated_word = 0xAAAA_AAAA
+    updated_index = 2
+
+    # --------------------------------------------------------
+    # 外部メモリへ非ゼロの既存ラインを作る
+    # 最初のStore後は同一ラインへのHitになるため、4ワードを構築できる
+    # --------------------------------------------------------
+    for index, data in enumerate(initial_words):
+        await cpu_data_write(
+            dut,
+            base_addr + index * 4,
+            data,
+            mode="CPU"
+        )
+
+    # dirtyラインを外部メモリへ反映し、キャッシュをinvalid化する
+    await data_cache_wb_start(dut)
+    await data_cache_clear_start(dut)
+
+    # --------------------------------------------------------
+    # キャッシュにラインがない状態でword2だけを書き換える
+    # --------------------------------------------------------
+    await cpu_data_write(
+        dut,
+        base_addr + updated_index * 4,
+        updated_word,
+        mode="CPU"
+    )
+
+    expected_words = initial_words.copy()
+    expected_words[updated_index] = updated_word
+
+    # 更新対象以外の3ワードも、外部メモリの値を保持していることを確認
+    for index, expected in enumerate(expected_words):
+        address = base_addr + index * 4
+        actual = await cpu_data_read(dut, address, mode="CPU")
+
+        assert actual == expected, (
+            "Write Miss corrupted existing cache line: "
+            f"addr=0x{address:08X}, "
+            f"expected=0x{expected:08X}, "
+            f"got=0x{actual:08X}"
+        )
+
+    dut._log.info(
+        "==== PASS Write Miss preserve existing line test ===="
     )

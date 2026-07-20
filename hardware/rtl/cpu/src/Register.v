@@ -36,11 +36,19 @@ module Register(
         end
     end
 
+    `ifdef COCOTB_SIM
     // debug for gtkwave
     wire [31:0] reg_0  = registers[0];
     wire [31:0] reg_1  = registers[1];
     wire [31:0] reg_2  = registers[2];
     wire [31:0] reg_3  = registers[3];
     wire [31:0] reg_10 = registers[10];
+    wire [31:0] reg_11 = registers[11];
+    wire [31:0] reg_12 = registers[12];
+    wire [31:0] reg_13 = registers[13];
+    wire [31:0] reg_14 = registers[14];
+    wire [31:0] reg_15 = registers[15];
+    `endif
+
 
 endmodule

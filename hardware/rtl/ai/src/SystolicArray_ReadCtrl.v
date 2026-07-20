@@ -1,7 +1,8 @@
 `timescale 1ns/1ps
 
 module SystolicArray_ReadCtrl #(
-    parameter integer PE_N = 4
+    parameter integer PE_N = 4,
+    parameter RADDR_MASK   = 32'h000F_FFFF
 )(
     input  wire             clock,
     input  wire             reset_n,
@@ -120,10 +121,11 @@ module SystolicArray_ReadCtrl #(
         input [1:0] local_row;
         begin
             matrix_addr_A =
-                BASE_ADDR_A
+                RADDR_MASK &
+                (BASE_ADDR_A
                 + tile_row_offset(i_idx, matrix_size)
                 + row_offset(local_row, matrix_size)
-                + ({24'd0, k_idx} << 2);
+                + ({24'd0, k_idx} << 2));
         end
     endfunction
 
@@ -139,10 +141,11 @@ module SystolicArray_ReadCtrl #(
         input [1:0] local_row;
         begin
             matrix_addr_B =
-                BASE_ADDR_B
+                RADDR_MASK &
+                (BASE_ADDR_B
                 + tile_row_offset(k_idx, matrix_size)
                 + row_offset(local_row, matrix_size)
-                + ({24'd0, j_idx} << 2);
+                + ({24'd0, j_idx} << 2));
         end
     endfunction
 

@@ -1,75 +1,76 @@
-// RV32IS 10+ stage pipeline 
-// pipeline動作ON
 // NISHIHARU
-
 `timescale 1ns / 1ps
 
+import PSC_Types::*;
+
 module PSC_RV32ISP_core #(
-    parameter [31:0] UART_MMIO_ADDR    = 32'hF004_00F0,     // 未使用.
-    parameter [31:0] UART_MMIO_FLAG    = 32'hF004_00F4,
-    parameter [31:0] COUNTER_MMIO_ADDR = 32'hF004_FFF0
+    parameter logic [31:0] UART_MMIO_ADDR    = 32'hF004_00F0,     // 未使用.
+    parameter logic [31:0] UART_MMIO_FLAG    = 32'hF004_00F4,
+    parameter logic [31:0] COUNTER_MMIO_ADDR = 32'hF004_FFF0
 )(
-    input wire              clock,
-    input wire              reset_n,
-    input wire              cpu_stop,
-    input wire              irq_ext,     // TBD
+    input logic              clock,
+    input logic              reset_n,
+    input logic              cpu_stop,
+    input logic              irq_ext,     // TBD
     // Program
-    output wire             program_mem_read_valid,
-    input wire              program_mem_read_ready,
-    output wire [31:0]      program_mem_read_address,
-    input  wire [31:0]      program_mem_read_data,
-    input wire              program_mem_req_ready,
+    output logic             program_mem_read_valid,
+    input  logic             program_mem_read_ready,
+    output logic [31:0]      program_mem_read_address,
+    input  logic [31:0]      program_mem_read_data,
+    input  logic             program_mem_req_ready,
     // Data
-    output wire             data_mem_read_valid,
-    input wire              data_mem_read_ready,
-    output wire [31:0]      data_mem_read_address,
-    input  wire [31:0]      data_mem_read_data,
-    input  wire             data_mem_req_ready,
+    output logic             data_mem_read_valid,
+    input  logic              data_mem_read_ready,
+    output logic [31:0]      data_mem_read_address,
+    input  logic [31:0]      data_mem_read_data,
+    input  logic             data_mem_req_ready,
     
-    output wire             data_mem_write_valid,    
-    input wire              data_mem_write_ready,
-    output wire  [2:0]      mem_write_sel,
-    output wire [31:0]      mem_write_address,
-    output wire [31:0]      mem_write_data,
+    output logic             data_mem_write_valid,    
+    input  logic             data_mem_write_ready,
+    output logic  [2:0]      mem_write_sel,
+    output logic [31:0]      mem_write_address,
+    output logic [31:0]      mem_write_data,
     // MMU
-    output wire             mmu_data_mem_read_valid,
-    input wire              mmu_data_mem_read_ready,
-    output wire [31:0]      mmu_data_mem_read_address,
-    input  wire [31:0]      mmu_data_mem_read_data,
-    input  wire             mmu_data_req_ready,
+    output logic             mmu_data_mem_read_valid,
+    input  logic              mmu_data_mem_read_ready,
+    output logic [31:0]      mmu_data_mem_read_address,
+    input  logic [31:0]      mmu_data_mem_read_data,
+    input  logic             mmu_data_req_ready,
     // Cashe 
-    output wire             is_fence_i,
+    output logic             is_fence_i,
     // DATA Cache
-    output wire [31:0]      csr_DCACHE_CTRL,
+    output logic [31:0]      csr_DCACHE_CTRL,
     // DMA
-    output wire [31:0]      csr_DMA_CTRL,
-    output wire [31:0]      csr_DMA_WORDS,
-    output wire [31:0]      csr_DMA_SRC,
-    output wire [31:0]      csr_DMA_DST,
-    input  wire [31:0]      csr_DMA_STATUS,
+    output logic [31:0]      csr_DMA_CTRL,
+    output logic [31:0]      csr_DMA_WORDS,
+    output logic [31:0]      csr_DMA_SRC,
+    output logic [31:0]      csr_DMA_DST,
+    input  logic [31:0]      csr_DMA_STATUS,
     // SynapEngine
-    output wire [31:0]      csr_SA_CTRL,
-    output wire [31:0]      csr_SA_MODE,
-    input  wire [31:0]      csr_SA_STATUS,
-    output wire [31:0]      csr_SA_ADDR_A,
-    output wire [31:0]      csr_SA_ADDR_B,
-    output wire [31:0]      csr_SA_ADDR_C,
+    output logic [31:0]      csr_SA_CTRL,
+    output logic [31:0]      csr_SA_MODE,
+    input  logic [31:0]      csr_SA_STATUS,
+    output logic [31:0]      csr_SA_ADDR_A,
+    output logic [31:0]      csr_SA_ADDR_B,
+    output logic [31:0]      csr_SA_ADDR_C,
     // CPU Monitor
-    output wire [31:0]      csr_CPU_MON_CTRL,
-    input  wire [31:0]      csr_CPU_MON_CYCLE,
-    output wire  [8:0]      uart_out    // not used
+    output logic [31:0]      csr_CPU_MON_CTRL,
+    input  logic [31:0]      csr_CPU_MON_CYCLE,
+    output logic  [8:0]      uart_out    // not used
 );
+
+    dec_ctrl_t decoder_ctrl;
 
     `ifdef COCOTB_SIM
     `ifdef CPU_CORE_SIM
     initial begin
         `ifdef DUMP_VCD
         $display("COCOTB_SIM CPU CORE DUMP_VCD ENABLE");
-        $dumpfile("./wave/PSC_RV32ISP_core.vcd");
+        $dumpfile("./wave/PSC_RV32ISP_V1_core.vcd");
         $dumpvars(0);
         `else
         $display("COCOTB_SIM CPU CORE verilator FST ENABLE");
-        $dumpfile("./wave/PSC_RV32ISP_core.fst");
+        $dumpfile("./wave/PSC_RV32ISP_V1_core.fst");
         $dumpvars(0);
         `endif
     end
@@ -77,23 +78,25 @@ module PSC_RV32ISP_core #(
     `endif
 
     // Program Counter
-    reg [31:0] pc;
-    reg [31:0] counter;
+    logic [31:0] pc;
+    logic [31:0] counter;
 
     // =====================================
     // CPU Main State counter
     // =====================================
-    localparam IDLE         = 0;
-    localparam CPU_RUN      = 1;
-    localparam CPU_TRAP     = 2;
-    localparam CPU_HALT     = 3;
-    localparam EXECUTE      = 4;    // TBD
+    typedef enum logic [3:0] {
+        IDLE     = 4'd0,
+        CPU_RUN  = 4'd1,
+        CPU_TRAP = 4'd2,
+        CPU_HALT = 4'd3,
+        EXECUTE  = 4'd4     // TBD
+    } cpu_state_t;
 
-    reg [3:0]  cpu_state;   // max: 15 state.
-    reg        fetch_valid;
-    wire       fetch_ready;
+    cpu_state_t cpu_state;
+    logic        fetch_valid;
+    logic       fetch_ready;
 
-    always @(posedge clock or negedge reset_n) begin
+    always_ff @(posedge clock or negedge reset_n) begin
         if(!reset_n) begin
             cpu_state <= IDLE;
             fetch_valid <= 1'b0;
@@ -101,7 +104,7 @@ module PSC_RV32ISP_core #(
             cpu_state <= IDLE;
             fetch_valid <= 1'b0;
         end else begin
-            case(cpu_state)
+            unique case (cpu_state)
                 // IDLE
                 IDLE: begin
                     cpu_state <= CPU_RUN;
@@ -115,11 +118,16 @@ module PSC_RV32ISP_core #(
                 end
                 // CPU Trap.
                 CPU_TRAP: begin
-                    if(execute_ready)
+                    if(execute_task_done)
                         cpu_state <= CPU_RUN;
                 end
                 // CPU Halt.
                 CPU_HALT: begin
+                    fetch_valid <= 1'b0;
+                end
+
+                default: begin
+                    cpu_state   <= IDLE;
                     fetch_valid <= 1'b0;
                 end
             endcase
@@ -129,82 +137,94 @@ module PSC_RV32ISP_core #(
     // =====================================
     // Csr module
     // =====================================
-    // CSR wire
-    wire [31:0] csr_mstatus;  // 使わなければ未接続でもOK
-    wire [31:0] csr_medeleg;
-    wire [31:0] csr_mie;
-    wire [31:0] csr_mip;
-    wire [31:0] csr_mtvec;
-    wire [31:0] csr_mepc;
-    wire [31:0] csr_mcause;
+    // CSR logic
+    logic [31:0] csr_mstatus;  // 使わなければ未接続でもOK
+    logic [31:0] csr_medeleg;
+    logic [31:0] csr_mie;
+    logic [31:0] csr_mip;
+    logic [31:0] csr_mtvec;
+    logic [31:0] csr_mepc;
+    logic [31:0] csr_mcause;
 
-    wire [31:0] csr_sstatus;  
-    wire [31:0] csr_stvec;
-    wire [31:0] csr_sepc;
-    wire [31:0] csr_scause;
-    wire [31:0] csr_stval;
+    logic [31:0] csr_sstatus;  
+    logic [31:0] csr_stvec;
+    logic [31:0] csr_sepc;
+    logic [31:0] csr_scause;
+    logic [31:0] csr_stval;
 
     // Privilege level encoding (RISC-V spec)
-    localparam [1:0] PRIV_U = 2'b00;
-    localparam [1:0] PRIV_S = 2'b01;
-    localparam [1:0] PRIV_M = 2'b11;
+    localparam logic [1:0] PRIV_U = 2'b00;
+    localparam logic [1:0] PRIV_S = 2'b01;
+    localparam logic [1:0] PRIV_M = 2'b11;
 
     // トラップ入口/出口 (Supervisor側) 
-    wire        ecall_u     = is_ecall && (priv_mode == PRIV_U);
-    wire        ecall_s     = is_ecall && (priv_mode == PRIV_S);
-    wire        ecall_m     = is_ecall && (priv_mode == PRIV_M);
+    logic        ecall_u;
+    logic        ecall_s;
+    logic        ecall_m;
+    logic        set_trap;
+    logic [31:0] trap_sepc;
 
-    wire        set_trap    = is_ecall || illegal_instruction || i_pf || d_pf;
+    assign ecall_u   = decoder_ctrl.is_ecall && (priv_mode == PRIV_U);
+    assign ecall_s   = decoder_ctrl.is_ecall && (priv_mode == PRIV_S);
+    assign ecall_m   = decoder_ctrl.is_ecall && (priv_mode == PRIV_M);
+    assign set_trap  = decoder_ctrl.is_ecall ||
+                       decoder_ctrl.raise_illegal_instruction ||
+                       i_pf || d_pf;
+    assign trap_sepc = pc;
 
-    wire [31:0] trap_sepc   = pc;
+    logic [31:0] execute_vaddr;
+    logic [31:0] trap_stval;
+    logic [31:0] trap_scause;
+    logic        set_mtrap;
+    logic [31:0] trap_mepc;
+    logic [31:0] trap_mcause;
 
-    wire [31:0] execute_vaddr;
-    wire [31:0] trap_stval = i_pf ? pc :
-                             d_pf ? execute_vaddr :
-                             32'h0;
+    assign trap_stval = i_pf ? pc :
+                        d_pf ? execute_vaddr :
+                               32'h0;
 
-    wire [31:0] trap_scause =
-                            ecall_u             ? 32'd8  :
-                            ecall_s             ? 32'd9  :
-                            illegal_instruction ? 32'd2  :
-                            i_pf                ? 32'd12 :
-                            d_pf                ? (is_store ? 32'd15 : 32'd13) :
-                                                32'd0;
+    assign trap_scause =
+        ecall_u                                ? 32'd8  :
+        ecall_s                                ? 32'd9  :
+        decoder_ctrl.raise_illegal_instruction ? 32'd2  :
+        i_pf                                   ? 32'd12 :
+        d_pf                                   ?
+            (decoder_ctrl.is_store ? 32'd15 : 32'd13) :
+                                                 32'd0;
 
-    wire        set_mtrap   = ecall_m;      // 最小構成
-    wire [31:0] trap_mepc   = pc;
-    wire [31:0] trap_mcause = ecall_m  ? 32'd11 : 32'd0;
+    assign set_mtrap   = ecall_m;
+    assign trap_mepc   = pc;
+    assign trap_mcause = ecall_m ? 32'd11 : 32'd0;
 
     // ペンディング入力（mip制御）
-    wire        set_msip   = 1'b0, clr_msip = 1'b0;
-    wire        set_mtip   = 1'b0, clr_mtip = 1'b0;
-    wire        set_meip   = 1'b0, clr_meip = 1'b0;
+    logic set_msip, clr_msip;
+    logic set_mtip, clr_mtip;
+    logic set_meip, clr_meip;
 
-    // Execute wire
-    wire [31:0] alu_data;
-    wire        do_sret;
-    wire        do_mret;
-    wire        is_ecall;
-    wire        pc_sel2;
+    assign set_msip = 1'b0;
+    assign clr_msip = 1'b0;
+    assign set_mtip = 1'b0;
+    assign clr_mtip = 1'b0;
+    assign set_meip = 1'b0;
+    assign clr_meip = 1'b0;
+
+    // Execute logic
+    logic [31:0] alu_data;
+    logic        pc_sel2;
 
     // =====================================
     // CSRインスタンス（修正後）
     // =====================================
     // CSR
-    wire        csr_enb;
-    wire        csr_valid;
-    wire [31:0] csr_rdata;
+    logic        csr_enb;
+    logic        csr_valid;
+    logic [31:0] csr_rdata;
 
-    // CSR wire
-    wire        csr_wr;          // CSRRW/CSRRS/CSRRC
-    wire [1:0]  csr_cmd;         // 0:RW, 1:RS, 2:RC
-    wire        csr_use_imm;     // *I 版（zimm使用）
-    wire [11:0] csr_addr;        // CSR address
-    wire [4:0]  csr_zimm;
-    wire [31:0] csr_satp; 
-    wire [1:0]  priv_mode;
+    // CSR logic
+    logic [31:0] csr_satp; 
+    logic [1:0]  priv_mode;
 
-    wire [31:0] csr_reg_data_1;
+    logic [31:0] csr_reg_data_1;
 
     Csr u_csr (
         .clock              (clock),
@@ -213,12 +233,12 @@ module PSC_RV32ISP_core #(
         .csr_valid          (csr_valid),    // 次サイクルでcsrレジスタを反映.
 
         // ==== CSR命令実行側（パイプラインから）====
-        .csr_wr             (csr_wr),
-        .csr_cmd            (csr_cmd),
-        .csr_use_imm        (csr_use_imm),
-        .csr_addr           (csr_addr),
+        .csr_wr             (decoder_ctrl.csr_wr),
+        .csr_cmd            (decoder_ctrl.csr_cmd),
+        .csr_use_imm        (decoder_ctrl.csr_use_imm),
+        .csr_addr           (decoder_ctrl.csr_addr),
+        .csr_zimm           (decoder_ctrl.csr_zimm),
         .csr_rs1_val        (csr_reg_data_1),
-        .csr_zimm           (csr_zimm),
         .csr_rdata          (csr_rdata),
 
         // ==== トラップ入口/出口 (Supervisor側) ====
@@ -226,13 +246,13 @@ module PSC_RV32ISP_core #(
         .trap_sepc          (trap_sepc),
         .trap_scause        (trap_scause),
         .trap_stval         (trap_stval),
-        .do_sret            (do_sret),
+        .do_sret            (decoder_ctrl.is_sret),
 
         // ==== トラップ入口/出口 (Machine側, 将来用/デバッグ用) ====
         .set_mtrap          (set_mtrap),
         .trap_mepc          (trap_mepc),
         .trap_mcause        (trap_mcause),
-        .do_mret            (do_mret),
+        .do_mret            (decoder_ctrl.is_mret),
 
         .set_msip    (set_msip),    .clr_msip (clr_msip),
         .set_mtip    (set_mtip),    .clr_mtip (clr_mtip),
@@ -284,23 +304,26 @@ module PSC_RV32ISP_core #(
     // =====================================
     // Fetch State
     // =====================================
-    // wire
-    wire [31:0] opcode;
-    wire [31:0] fifo_opcode_data;
-    wire        fifo_empty;
-    wire        fifo_full;
-    wire        fifo_flush_sig;
-    wire        fifo_read_ready;
-    wire        execute_ready;
-    wire        fifo_read_state_sig;
-    wire        is_load, is_store;
-    wire        is_sfence_vma;
+    // logic
+    logic [31:0] opcode;
+    logic [31:0] fifo_opcode_data;
+    logic        fifo_empty;
+    logic        fifo_full;
+    logic        fifo_flush_sig;
+    logic        fifo_read_ready;
+    logic        execute_task_done;
+    logic        fifo_read_state_sig;
+    logic        is_sfence_vma;
+
+    assign is_fence_i = decoder_ctrl.is_fence_i;
 
     // MMU fault
-    wire        i_pf;
+    logic        i_pf;
 
     // Program Counter
-    wire [31:0] fetch_pc = pc;
+    logic [31:0] fetch_pc;
+
+    assign fetch_pc = pc;
 
     PSC_RV32ISP_Fetch u_fetch_state(
         // clock, reset
@@ -310,7 +333,7 @@ module PSC_RV32ISP_core #(
         // in,out
         .fetch_valid                (fetch_valid),
         .fetch_ready                (fetch_ready),
-        .execute_ready              (execute_ready),
+        .execute_ready              (execute_task_done),
         // fifo sig.
         .fifo_empty                 (fifo_empty),
         .fifo_full                  (fifo_full),
@@ -321,8 +344,8 @@ module PSC_RV32ISP_core #(
         .pc                         (fetch_pc),
         .csr_satp                   (csr_satp),
         .priv_mode                  (priv_mode),
-        .is_load                    (is_load),
-        .is_store                   (is_store),
+        .is_load                    (decoder_ctrl.is_load),
+        .is_store                   (decoder_ctrl.is_store),
         .is_sfence_vma              (is_sfence_vma),
         .fifo_ready                 (),
         // MMU fault sig.
@@ -347,19 +370,15 @@ module PSC_RV32ISP_core #(
     // =====================================
     // Execute State
     // =====================================
-    // wire
-    wire [31:0] imm;
-    wire [4:0] alucon;
-    wire [2:0] funct3;
-    wire op1sel, op2sel, mem_rw, rf_wen;
-    wire [1:0] pc_sel;
 
     // fifo
-    wire        execute_state_sig;  // not used
+    logic        execute_state_sig;  // not used
 
     // MMU fault
-    wire        d_pf;
-    wire        illegal_instruction;
+    logic        d_pf;
+    logic        illegal_instruction;
+
+    assign illegal_instruction = decoder_ctrl.raise_illegal_instruction;
 
     PSC_RV32ISP_Execute u_execute_state(
         // clock, reset
@@ -369,7 +388,7 @@ module PSC_RV32ISP_core #(
         .cpu_trap                   (cpu_state==CPU_TRAP),
         // in,out
         .execute_valid              (!fifo_empty),
-        .execute_ready              (execute_ready),
+        .execute_ready              (execute_task_done),
         // fifo sig.
         .fifo_read_state_sig        (fifo_read_state_sig),
         .execute_state_sig          (execute_state_sig),
@@ -381,29 +400,17 @@ module PSC_RV32ISP_core #(
         .csr_satp                   (csr_satp),
         .priv_mode                  (priv_mode),
         .alu_data                   (alu_data),
-        .is_load                    (is_load),
-        .is_store                   (is_store),
-        .is_sfence_vma              (is_sfence_vma),
         .pc_sel2                    (pc_sel2),
-        .is_ecall                   (is_ecall),
-        .do_mret                    (do_mret),
-        .do_sret                    (do_sret),
+        // Decoder
+        .decoder_ctrl               (decoder_ctrl),
         // CSR sig.
         .csr_enb                    (csr_enb),
         .csr_valid                  (csr_valid),
         // CSR
-        .csr_wr                     (csr_wr),
-        .csr_cmd                    (csr_cmd),
-        .csr_use_imm                (csr_use_imm),
-        .csr_addr                   (csr_addr),
-        .csr_zimm                   (csr_zimm),
         .csr_rdata                  (csr_rdata),
         .csr_reg_data_1             (csr_reg_data_1),
-        // cache sig.
-        .is_fence_i                 (is_fence_i),
         // MMU fault sig.
         .d_pf                       (d_pf),
-        .illegal_instruction        (illegal_instruction),
         // to memory
         .data_mem_read_valid        (data_mem_read_valid),
         .data_mem_read_ready        (data_mem_read_ready),
@@ -423,21 +430,35 @@ module PSC_RV32ISP_core #(
     // =====================================
     // NEXT PC
     // =====================================
-    wire exception = is_ecall | illegal_instruction | d_pf | i_pf;
-    wire interrupt = 1'b0; // 将来用
+    logic        exception;
+    logic        interrupt;
+    logic        trap;
+    logic        trap_deleg_to_s;
+    logic [31:0] trap_pc;
+    logic [31:0] branch_target_pc;
+    logic [31:0] seq_pc;
+    logic [31:0] sret_pc;
 
-    wire trap = exception | interrupt;
-    wire trap_deleg_to_s = (priv_mode != PRIV_M) && csr_medeleg[trap_scause];
-
-    wire [31:0] trap_pc = trap_deleg_to_s ? csr_stvec : csr_mtvec;
-    wire [31:0] branch_target_pc = {alu_data[31:1], 1'b0};  // JALR/JAL/branch用
-    wire [31:0] seq_pc           = pc + 32'd4;              // 順次実行用
-    wire [31:0] sret_pc          = csr_sepc;                // Csr からの戻り先
+    assign exception = decoder_ctrl.is_ecall |
+                       decoder_ctrl.raise_illegal_instruction |
+                       d_pf | i_pf;
+    assign interrupt        = 1'b0;
+    assign trap             = exception | interrupt;
+    assign trap_deleg_to_s  = (priv_mode != PRIV_M) &&
+                              csr_medeleg[trap_scause];
+    assign trap_pc          = trap_deleg_to_s ? csr_stvec : csr_mtvec;
+    assign branch_target_pc = {alu_data[31:1], 1'b0};
+    assign seq_pc           = pc + 32'd4;
+    assign sret_pc          = csr_sepc;
 
     // trap save pc
-    reg  [31:0] trap_pc_latch;
-    always @(posedge clock) begin
-        if (execute_ready) begin
+    logic  [31:0] trap_pc_latch;
+    always_ff @(posedge clock or negedge reset_n) begin
+        if (!reset_n) begin
+            trap_pc_latch <= 32'd0;
+        end else if (cpu_stop) begin
+            trap_pc_latch <= 32'd0;
+        end else if (execute_task_done) begin
             trap_pc_latch <= 32'd0;
         end else begin
             if (trap) begin
@@ -449,16 +470,16 @@ module PSC_RV32ISP_core #(
         end
     end
 
-    wire [31:0] next_pc;
-    assign next_pc = (do_mret)              ? csr_mepc :      // ★ M-mode return
-                     (do_sret)              ? sret_pc :
-                     (trap)                 ? trap_pc_latch :
-                     (cpu_state==CPU_TRAP)  ? trap_pc_latch : 
-                     (pc_sel2 == 1'b1)      ? branch_target_pc :
-                                              seq_pc;
+    logic [31:0] next_pc;
+    assign next_pc = (decoder_ctrl.is_mret)     ? csr_mepc :      // ★ M-mode return
+                     (decoder_ctrl.is_sret)     ? sret_pc :
+                     (trap)                     ? trap_pc_latch :
+                     (cpu_state==CPU_TRAP)      ? trap_pc_latch : 
+                     (pc_sel2 == 1'b1)          ? branch_target_pc :
+                                                  seq_pc;
 
     // NEXT PC WRITE BACK and CYCLE COUNTER
-    always @(posedge clock or negedge reset_n) begin
+    always_ff @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
             pc      <= 32'b0;
             counter <= 32'b0;
@@ -466,9 +487,9 @@ module PSC_RV32ISP_core #(
             pc      <= 32'b0;
             counter <= 32'b0;
         end else begin
-            if(execute_ready) begin
+            if(execute_task_done) begin
                 pc      <= next_pc;
-                counter <= counter + 1;
+                counter <= counter + 32'd1;
             end
         end
     end

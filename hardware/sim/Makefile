@@ -6,10 +6,10 @@ clean:
 	$(RM) -rf ./cocotb_tb/mmio/__pycache__
 	$(RM) -rf ./cocotb_tb/cpu/__pycache__
 	$(RM) -rf ./cocotb_tb/psc_os/__pycache__
-	$(RM) -rf ./wave/*.vcd
-	$(RM) -rf ./wave/*.fst
 	$(RM) -rf ./wave/*.fst.hier
 	$(RM) sim.vvp results.xml ./dump.fst ./dump.fst.hier
+	$(RM) -rf ./wave/*.vcd
+	$(RM) -rf ./wave/*.fst
 
 log_clean:
 	$(RM) ./log/test*.log

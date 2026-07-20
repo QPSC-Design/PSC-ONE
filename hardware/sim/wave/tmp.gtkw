@@ -1,0 +1,95 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Fri Jul 17 23:44:43 2026
+[*]
+[dumpfile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/PSC_RV32ISP_core.fst"
+[dumpfile_mtime] "Fri Jul 17 23:43:53 2026"
+[dumpfile_size] 330
+[savefile] "/home/haruhiko/Program/PSC_RV32I/PSC-ONE/hardware/sim/wave/tmp.gtkw"
+[timestart] 0
+[size] 2835 1168
+[pos] -1 -1
+*-21.150341 15610000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] PSC_RV32ISP_core.
+[treeopen] PSC_RV32ISP_core.u_execute_state.
+[treeopen] PSC_RV32ISP_core.u_execute_state.u_execute.
+[treeopen] PSC_RV32ISP_core.u_fetch_state.
+[sst_width] 354
+[signals_width] 424
+[sst_expanded] 1
+[sst_vpaned_height] 770
+@28
+PSC_RV32ISP_core.u_fetch_state.u_fetch_fifo.pop
+@22
+PSC_RV32ISP_core.u_execute_state.pc[31:0]
+PSC_RV32ISP_core.next_pc[31:0]
+@28
+PSC_RV32ISP_core.pc_sel2
+PSC_RV32ISP_core.u_execute_state.execute_ready
+@22
+PSC_RV32ISP_core.branch_target_pc[31:0]
+@28
+PSC_RV32ISP_core.u_execute_state.execute_ready
+@22
+PSC_RV32ISP_core.u_execute_state.opcode[31:0]
+@28
+PSC_RV32ISP_core.u_execute_state.mem_rw
+PSC_RV32ISP_core.u_execute_state.fifo_flush_sig
+PSC_RV32ISP_core.u_execute_state.is_load
+PSC_RV32ISP_core.u_execute_state.is_store
+@22
+PSC_RV32ISP_core.u_execute_state.execute_state[3:0]
+@28
+PSC_RV32ISP_core.u_execute_state.norm_decode_enb
+PSC_RV32ISP_core.u_execute_state.u_decorder.decode_done
+PSC_RV32ISP_core.u_execute_state.norm_execute_enb
+PSC_RV32ISP_core.u_execute_state.alu_done
+PSC_RV32ISP_core.u_execute_state.norm_branch_enb
+PSC_RV32ISP_core.u_execute_state.branch_done
+PSC_RV32ISP_core.u_execute_state.memory_store_done
+PSC_RV32ISP_core.u_execute_state.norm_reg_store_enb
+PSC_RV32ISP_core.u_execute_state.register_store_done
+PSC_RV32ISP_core.u_execute_state.data_mem_read_valid
+PSC_RV32ISP_core.u_execute_state.data_mem_read_ready
+PSC_RV32ISP_core.u_execute_state.data_mem_write_valid
+PSC_RV32ISP_core.u_execute_state.data_mem_write_ready
+@22
+PSC_RV32ISP_core.u_execute_state.data_mem_read_address[31:0]
+PSC_RV32ISP_core.u_execute_state.data_mem_write_address[31:0]
+PSC_RV32ISP_core.u_execute_state.data_mem_read_data[31:0]
+PSC_RV32ISP_core.u_execute_state.data_mem_write_data[31:0]
+PSC_RV32ISP_core.u_execute_state.alu_data[31:0]
+@28
+PSC_RV32ISP_core.u_fetch_state.fifo_flush
+@22
+PSC_RV32ISP_core.u_fetch_state.fetch_state[3:0]
+@28
+PSC_RV32ISP_core.u_fetch_state.execute_ready
+@22
+PSC_RV32ISP_core.u_fetch_state.u_mmu_i.state[3:0]
+@28
+PSC_RV32ISP_core.u_fetch_state.program_mem_read_ready
+@29
+PSC_RV32ISP_core.u_fetch_state.u_fetch_fifo.push
+@28
+PSC_RV32ISP_core.u_fetch_state.u_fetch_fifo.pop
+@22
+PSC_RV32ISP_core.u_fetch_state.next_pc[31:0]
+PSC_RV32ISP_core.u_fetch_state.pc[31:0]
+@28
+PSC_RV32ISP_core.u_fetch_state.program_mem_read_valid
+PSC_RV32ISP_core.u_fetch_state.program_mem_read_ready
+PSC_RV32ISP_core.u_fetch_state.execute_ready_reg
+PSC_RV32ISP_core.u_fetch_state.program_mem_read_ready_reg
+@22
+PSC_RV32ISP_core.u_fetch_state.program_mem_read_address[31:0]
+PSC_RV32ISP_core.u_fetch_state.program_mem_read_data[31:0]
+@28
+PSC_RV32ISP_core.u_execute_state.is_div_rem
+PSC_RV32ISP_core.u_execute_state.u_execute.u_divider.start
+PSC_RV32ISP_core.u_execute_state.u_execute.u_divider.done
+@22
+PSC_RV32ISP_core.u_fetch_state.u_fetch_fifo.out_pc_data[31:0]
+PSC_RV32ISP_core.u_fetch_state.u_fetch_fifo.out_data[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

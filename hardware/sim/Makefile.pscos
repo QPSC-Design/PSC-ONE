@@ -14,7 +14,6 @@ SIM          		= verilator
 SDRAM_MODEL  		= ../rtl/SDRAM_model/w9825g6kh_verilator.v
 GW2AR_SDRAM_MODEL 	= ../rtl/SDRAM_model/GW2AR_sdram_verilator.v 
 SDCARD_MODEL 		= ../rtl/SDCARD_model/sdcard_spi_model.v 
-VDFINES_FILE 		= $(CPU_SRC_DIR)/vdefines_file.v
 TOP_COMPILE_ARGS 	= -DTOP_SIM
 
 ifeq ($(SIM_FAST),1)
@@ -36,7 +35,6 @@ SIM          		= icarus
 SDRAM_MODEL    		= ./SDRAM_model/w9825g6kh.v 	# ← Icarus 用 Micron モデルに修正
 GW2AR_SDRAM_MODEL 	= ../rtl/SDRAM_model/GW2AR_sdram.v 
 SDCARD_MODEL		= ../rtl/SDCARD_model/sdcard_spi_model.v 
-VDFINES_FILE 		= $(CPU_SRC_DIR)/vdefines_file.v
 
 EXTRA_ARGS =   # Icarus は基本オプション不要（必要なら -g2012 など）
 TOP_COMPILE_ARGS 	= -DTOP_SIM
@@ -49,7 +47,6 @@ SIM          		= icarus
 SDRAM_MODEL  		= ../rtl/SDRAM_model/w9825g6kh.v  # ← Icarus 用 Micron モデルに修正
 GW2AR_SDRAM_MODEL 	= ../rtl/SDRAM_model/GW2AR_sdram.v 
 SDCARD_MODEL 		= ./SDCARD_model/sdcard_spi_model.v 
-VDFINES_FILE 		= $(CPU_SRC_DIR)/vdefines_file.v
 
 EXTRA_ARGS =   # Icarus は基本オプション不要（必要なら -g2012 など）
 TOP_COMPILE_ARGS 	= -DTOP_SIM
@@ -80,7 +77,6 @@ PSCONE_TOP_FILE = \
 
 # RV32ISP_core
 CPU_CORE_FILES = \
-	$(VDFINES_FILE) \
 	$(CPU_SRC_DIR)/PSC_RV32ISP_core.v \
 	$(CPU_SRC_DIR)/PSC_RV32ISP_Fetch.v \
 	$(CPU_SRC_DIR)/PSC_RV32ISP_Execute.v \

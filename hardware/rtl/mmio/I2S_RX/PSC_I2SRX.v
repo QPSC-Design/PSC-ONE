@@ -45,6 +45,9 @@ module PSC_I2SRX #(
     wire fifo_empty = (fifo_count == 0);
     wire fifo_full  = (fifo_count == FIFO_DEPTH);
 
+    wire [23:0] fifo_R_DATA = fifo_R_mem[fifo_rd_ptr];
+    wire        fifo_R_SIG  = fifo_R_DATA[23];
+
     // ============================================================
     // CPU BUS (MMIO)
     // ============================================================
@@ -86,8 +89,7 @@ module PSC_I2SRX #(
                     I2S_ADDR_RX: begin
                         cpu_rready <= 1'b1;
                         if (!fifo_empty) begin
-                            //cpu_rdata <= {8'h0, fifo_R_mem[fifo_rd_ptr]};
-                            cpu_rdata <= {{8{fifo_R_mem[fifo_rd_ptr][23]}}, fifo_R_mem[fifo_rd_ptr]};
+                            cpu_rdata <= {{8{fifo_R_SIG}}, fifo_R_DATA};
                             fifo_pop  <= 1'b1;
                         end else begin
                             cpu_rdata <= 32'h0000_00C0; // empty marker (好みで)
@@ -274,9 +276,11 @@ module PSC_I2SRX #(
     end
 
     // debug
+    `ifdef COCOTB_SIM
     wire [31:0] fifo_d0 = fifo_R_mem[0];
     wire [31:0] fifo_d1 = fifo_R_mem[1];
     wire [31:0] fifo_d2 = fifo_R_mem[2];
     wire [31:0] fifo_d3 = fifo_R_mem[3];
+    `endif
 
 endmodule
