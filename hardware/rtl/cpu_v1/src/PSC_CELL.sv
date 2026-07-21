@@ -8,6 +8,12 @@ module PSC_CELL #(
     input  logic        clock,
     input  logic        reset_n,
     input  logic        cpu_stop,
+    input  logic [3:0]  cpu_state,
+    input  logic [1:0]  priv_mode,
+
+    // PC, OPCODE
+    output logic [31:0] pc,
+    output logic [31:0] counter,
 
     // Cell state
     output logic        EXECUTE_state,
@@ -22,8 +28,11 @@ module PSC_CELL #(
     output logic        fifo_read_valid,
     output logic        fifo_flush,
 
-    // Decoder
+    // Decoder struct
     input  dec_ctrl_t   decoder_ctrl,
+
+    // Excute
+    input  logic [31:0] alu_data,
 
     // Branch
     input  logic        pc_sel2,
@@ -36,6 +45,7 @@ module PSC_CELL #(
     input  logic [31:0] w_data,
 
     // CSR
+    input csr_state_t   csr_state,
     output logic        csr_enb,
     output logic        csr_valid,
 
@@ -56,41 +66,54 @@ module PSC_CELL #(
     input  logic        branch_done,
     input  logic        store_done,
 
-    output logic        execute_ready
+    // Page Fault
+    input  logic        d_pf,
+    input  logic        i_pf,
+    input  logic [4:0]  trap_scause,
+
+    output logic        execute_task_done
 );
-
-    // ============================================================
-    // State definition
-    // ============================================================
-    typedef enum logic [3:0] {
-        ST_IDLE,
-        ST_FIFO_READ,
-        ST_DECODE,
-        ST_EXECUTE,
-        ST_BRANCH,
-        ST_BRANCH_W,
-        ST_STORE,
-        ST_STORE_W
-    } execute_state_t;
-
-    execute_state_t execute_state;
-    execute_state_t next_state;
-    execute_state_t execute_state_d;
 
     // ============================================================
     // Register file signals
     // ============================================================
-    Register u_regfile (
-        .clock          (clock),
-        .reset_n        (reset_n),
-        .store_enb      (register_store_enb),
-        .rf_wen         (decoder_ctrl.rf_wen),
-        .w_addr         (decoder_ctrl.w_addr),
-        .w_data         (w_data),
-        .r_addr1        (decoder_ctrl.r_addr1),
-        .r_addr2        (decoder_ctrl.r_addr2),
-        .reg_data_1     (reg_data_1),
-        .reg_data_2     (reg_data_2)
+    PSC_Register u_regfile (
+        .clock                  (clock),
+        .reset_n                (reset_n),
+        .store_enb              (register_store_enb),
+        .rf_wen                 (decoder_ctrl.rf_wen),
+        .w_addr                 (decoder_ctrl.w_addr),
+        .w_data                 (w_data),
+        .r_addr1                (decoder_ctrl.r_addr1),
+        .r_addr2                (decoder_ctrl.r_addr2),
+        .reg_data_1             (reg_data_1),
+        .reg_data_2             (reg_data_2)
+    );
+
+    // ============================================================
+    // PROGRAM COUNTER
+    // ============================================================
+    PSC_PC u_PSC_PC (
+        .clock             (clock),
+        .reset_n           (reset_n),
+        .cpu_stop          (cpu_stop),
+
+        .execute_task_done (execute_task_done),
+        .alu_data          (alu_data),
+        .pc_sel2           (pc_sel2),
+        .decoder_ctrl      (decoder_ctrl),
+
+        .cpu_state         (cpu_state),
+        .priv_mode         (priv_mode),
+
+        .d_pf              (d_pf),
+        .i_pf              (i_pf),
+
+        .trap_scause       (trap_scause[4:0]),
+        .csr_state         (csr_state),
+
+        .pc                (pc),
+        .counter           (counter)
     );
 
     // ============================================================
@@ -116,6 +139,24 @@ module PSC_CELL #(
                 branch_rdata <= branch_mem_read_data;
         end
     end
+
+    // ============================================================
+    // State definition
+    // ============================================================
+    typedef enum logic [3:0] {
+        ST_IDLE,
+        ST_FIFO_READ,
+        ST_DECODE,
+        ST_EXECUTE,
+        ST_BRANCH,
+        ST_BRANCH_W,
+        ST_STORE,
+        ST_STORE_W
+    } execute_state_t;
+
+    execute_state_t execute_state;
+    execute_state_t next_state;
+    execute_state_t execute_state_d;
 
     // ============================================================
     // State register
@@ -235,10 +276,10 @@ module PSC_CELL #(
         branch_done;
 
     // Completion pulse
-    assign execute_ready =
+    assign execute_task_done =
         (execute_state == ST_IDLE) &&
         (execute_state_d != ST_IDLE);
 
-    assign csr_valid = execute_ready;
+    assign csr_valid = execute_task_done;
 
 endmodule

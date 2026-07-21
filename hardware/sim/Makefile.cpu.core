@@ -2,16 +2,16 @@
 # Usage
 # ============================================================
 
-#make -f Makefile.cpu simulate_PSC_ONE MODE=icarus
+#make -f Makefile.cpu.core simulate_CPU_CORE CPU_VERSION=legacy
 #or
-#make -f Makefile.cpu simulate_PSC_ONE MODE=verilator
+#make -f Makefile.cpu.core simulate_CPU_CORE CPU_VERSION=v1
 
 # ============================================================
 #  MODE で一括切り替え（verilator / icarus）
 # ============================================================
 # デフォルトはicarus
-#MODE = verilator
-MODE = icarus
+MODE = verilator
+#MODE = icarus
 
 # ============================================================
 #  シミュレーションモードに応じた設定
@@ -85,16 +85,28 @@ CPU_V1_CORE_FILES = \
 	$(CPU_V1_SRC_DIR)/Execute_Mul.sv \
 	$(CPU_V1_SRC_DIR)/Branch.sv \
 	$(CPU_V1_SRC_DIR)/MemoryStore.sv \
-	$(CPU_V1_SRC_DIR)/Register.sv \
+	$(CPU_V1_SRC_DIR)/PSC_Register.sv \
+	$(CPU_V1_SRC_DIR)/PSC_PC.sv \
 	$(CPU_V1_SRC_DIR)/MMU.sv \
 	$(CPU_V1_SRC_DIR)/Csr.v \
 	$(CPU_V1_SRC_DIR)/PSC_RV32ISP_Monitor.v
 
-INPUT_CPU_CORE_SIM_FILE = \
-	$(PSCONE_SIM_TOP_FILE) $(CPU_CORE_FILES)
+# ============================================================
+# CPUコアの切り替え（v1 / legacy）
+# ============================================================
+# デフォルトはV1
+CPU_VERSION ?= v1
 
-INPUT_CPU_V1_CORE_SIM_FILE = \
-	$(PSCONE_SIM_TOP_FILE) $(CPU_V1_CORE_FILES)
+ifeq ($(CPU_VERSION),v1)
+SELECTED_CPU_CORE_FILES = $(CPU_V1_CORE_FILES)
+else ifeq ($(CPU_VERSION),legacy)
+SELECTED_CPU_CORE_FILES = $(CPU_CORE_FILES)
+else
+$(error CPU_VERSION=$(CPU_VERSION) は不正です。v1 または legacy を指定してください)
+endif
+
+INPUT_CPU_CORE_SIM_FILE = \
+	$(PSCONE_SIM_TOP_FILE) $(SELECTED_CPU_CORE_FILES)
 
 COCOTB_CFG       := $(shell which cocotb-config)
 COCOTB_MAKEFILE  := $(shell cocotb-config --makefiles)/Makefile.sim
@@ -108,6 +120,7 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE CPU CORE単体テスト
 # tang 20k 
 RV32ISP_TEST = \
+	sp_test1:RV32ISP_core_test:./mem/sp_test1.mem:0x00005AA5 \
 	nn_test1:RV32ISP_core_test:./mem/nn_test1.mem:0x00000170 \
 	csr_test1:RV32ISP_core_test:./mem/csr_test1.mem:0x00000022 \
 	add_test1:RV32ISP_core_test:./mem/add_test1.mem:0xff00ff0b \
@@ -120,8 +133,6 @@ RV32ISP_TEST = \
 	jump_test1:RV32ISP_core_test:./mem/jump_test1.mem:0x12345678 \
 	lui_test1:RV32ISP_core_test:./mem/lui_test1.mem:0x12345000 \
 	divmod_test1:RV32ISP_core_test:./mem/divmod_test1.mem:0x00000e02 \
-	memcpy_test1:RV32ISP_core_test:./mem/memcpy_test1.mem:0x00002521 \
-	alu_mul_test1:RV32ISP_core_test:./mem/alu_mul_test1.mem:0x00000000 \
 	ecall_test1:RV32ISP_core_test:./mem/ecall_test1.mem:0x00000321 \
 	audipc_test1:RV32ISP_core_test:./mem/audipc_test1.mem:0xFFFFFFF8 \
 	alu_mul_test1:RV32ISP_core_test:./mem/alu_mul_test1.mem:0x00000000 \
@@ -129,50 +140,16 @@ RV32ISP_TEST = \
 	q15_fft_test1:RV32ISP_core_test:./mem/q15_fft_test1.mem:0x0000beef \
 	fft_N8_test1:RV32ISP_core_test:./mem/fft_N8_test1.mem:0x0000beef \
 	sret_test1:RV32ISP_core_test:./mem/sret_test1.mem:0x0000DC12 \
+	alu_mul_test1:RV32ISP_core_test:./mem/alu_mul_test1.mem:0x00000000 \
+	memcpy_test1:RV32ISP_core_test:./mem/memcpy_test1.mem:0x00002521 \
 	mmu_test1:RV32ISP_core_test:./mem/mmu_test1.mem:0x00000033 \
 
 # run test
-.PHONY: simulate_CPU_V1_CORE
-simulate_CPU_V1_CORE:
-	@echo "MODE=$(MODE)"
-	@echo "SIM=$(SIM)"
-	@echo "TOP_COMPILE_ARGS=$(TOP_COMPILE_ARGS)"
-	@echo "COMPILE_ARGS=$(TOP_COMPILE_ARGS) $(VCD_COMPILE_ARGS)"
-	@mkdir -p ./wave
-	@set -e; \
-	for t in $(RV32ISP_TEST); do \
-		name=$$(echo $$t | cut -d: -f1); \
-		cocotb_file=$$(echo $$t | cut -d: -f2); \
-		mem_file=$$(echo $$t | cut -d: -f3); \
-		expected=$$(echo $$t | cut -d: -f4); \
-		echo "========================================"; \
-		echo "[TEST] $$name"; \
-		echo "[MEM ] $$mem_file"; \
-		echo "[EXP ] $$expected"; \
-		echo "========================================"; \
-		$(MAKE) -C ./cpp $$name; \
-		$(MAKE) -C ./cpp clean; \
-		$(MAKE) clean; \
-		tmp=$$(mktemp); \
-		head -n 2048 "$$mem_file" > $$tmp; \
-		cp $$tmp ./mem/test_program.mem; \
-		rm -f $$tmp; \
-		COCOTB_TEST_MODULES=cocotb_tb.cpu.$$cocotb_file \
-		EXPECTED_RESULT=$$expected \
-		TOPLEVEL=$(CPU_TOP) TOPLEVEL_LANG=verilog \
-		SIM=$(SIM) \
-		VERILOG_SOURCES="$(INPUT_CPU_V1_CORE_SIM_FILE)" \
-		COMPILE_ARGS="$(TOP_COMPILE_ARGS) $(VCD_COMPILE_ARGS)" \
-		EXTRA_ARGS="$(EXTRA_ARGS) $(VDEF)" \
-		make --silent -f $(COCOTB_MAKEFILE); \
-	done
-	
-
-# run test
-.PHONY: simulate_CPU_V1_CORE
+.PHONY: simulate_CPU_CORE
 simulate_CPU_CORE:
 	@echo "MODE=$(MODE)"
 	@echo "SIM=$(SIM)"
+	@echo "CPU_VERSION=$(CPU_VERSION)"
 	@echo "TOP_COMPILE_ARGS=$(TOP_COMPILE_ARGS)"
 	@echo "COMPILE_ARGS=$(TOP_COMPILE_ARGS) $(VCD_COMPILE_ARGS)"
 	@mkdir -p ./wave

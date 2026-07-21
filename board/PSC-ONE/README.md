@@ -2,7 +2,7 @@
 
 The current PSC-ONE prototype hardware.  
   
-<img src="/docs/images/PSC-ONE_board.jpg" width="600">
+<img src="../../docs/images/PSC-ONE_board.jpg" width="600">
 
 ## Purpose
 

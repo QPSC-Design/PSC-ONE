@@ -10,24 +10,31 @@ module PSC_RV32ISP_Execute #(
     input  logic        clock,
     input  logic        reset_n,
     input  logic        cpu_stop,
+    input  logic [3:0]  cpu_state,
     input  logic        cpu_trap,
+
     input  logic        execute_valid,
-    output logic        execute_ready,
+    output logic        execute_task_done,
 
     output logic        fifo_read_state_sig,
     output logic        execute_state_sig,
     input  logic        fifo_read_ready,
     output logic        fifo_flush_sig,
 
-    input  logic [31:0] pc,
+    output logic [31:0] pc,
+    output logic [31:0] counter,
+
     input  logic [31:0] opcode,
     input  logic [31:0] csr_satp,
     input  logic [1:0]  priv_mode,
     output logic [31:0] alu_data,
     output logic        pc_sel2,
     output dec_ctrl_t   decoder_ctrl,
+    input  logic        i_pf,
     output logic        d_pf,
+    input  logic [4:0]  trap_scause,
 
+    input  csr_state_t  csr_state,
     output logic        csr_enb,
     output logic        csr_valid,
     input  logic [31:0] csr_rdata,
@@ -86,9 +93,10 @@ module PSC_RV32ISP_Execute #(
     assign cpu_state_done       = store_done;
     assign csr_reg_data_1       = reg_data_1;
 
-    // 今はMMU OFF
-    assign data_mem_read_valid   = branch_data_mem_read_valid;
-    assign data_mem_read_address = branch_data_mem_read_address;
+    // MMU 
+    assign data_mem_read_valid   = d_mmu_mem_valid | branch_data_mem_read_valid;
+    assign data_mem_read_address = d_mmu_mem_valid ?   d_mmu_mem_addr :
+                                                       branch_data_mem_read_address;
     assign data_mem_write_address = store_mem_write_address;
 
     PSC_CELL #(
@@ -97,6 +105,11 @@ module PSC_RV32ISP_Execute #(
         .clock                (clock),
         .reset_n              (reset_n),
         .cpu_stop             (cpu_stop),
+        .cpu_state            (cpu_state),
+        .priv_mode            (priv_mode),
+
+        .pc                   (pc),
+        .counter              (counter),
 
         .EXECUTE_state        (EXECUTE_state),
         .BRANCH_state         (BRANCH_state),
@@ -110,6 +123,7 @@ module PSC_RV32ISP_Execute #(
         .fifo_flush           (fifo_flush_sig),
 
         .decoder_ctrl         (decoder_ctrl),
+        .alu_data             (alu_data),
         .reg_data_1           (reg_data_1),
         .reg_data_2           (reg_data_2),
         .w_data               (w_data),
@@ -117,6 +131,7 @@ module PSC_RV32ISP_Execute #(
         .ld_low2_q            (ld_low2_q),
         .branch_rdata         (branch_rdata),
 
+        .csr_state            (csr_state),
         .csr_enb              (csr_enb),
         .csr_valid            (csr_valid),
 
@@ -132,39 +147,44 @@ module PSC_RV32ISP_Execute #(
         .alu_done             (alu_done),
         .branch_done          (branch_done),
         .store_done           (store_done),
-        .execute_ready        (execute_ready)
+
+        .d_pf                 (d_pf),
+        .i_pf                 (i_pf),
+        .trap_scause          (trap_scause),
+
+        .execute_task_done    (execute_task_done)
     );
 
     // =====================================
     // DECODE
     // =====================================
     Decorder u_Decorder(
-        .clock        (clock),
-        .reset_n      (reset_n),
-        .decode_enb   (decode_enb),
-        .opcode       (opcode),
-        .in_pc        (pc),
-        .current_priv (priv_mode),
-        .decode_done  (decode_done),
-        .decoder_ctrl (decoder_ctrl)
+        .clock               (clock),
+        .reset_n             (reset_n),
+        .decode_enb          (decode_enb),
+        .opcode              (opcode),
+        .in_pc               (pc),
+        .current_priv        (priv_mode),
+        .decode_done         (decode_done),
+        .decoder_ctrl        (decoder_ctrl)
     );
 
     // =====================================
     // EXECUTE
     // =====================================
     Execute u_execute(
-        .clock          (clock),
-        .reset_n        (reset_n),
-        .execute_enb    (execute_enb),
-        .decoder_ctrl   (decoder_ctrl),
-        .in_pc          (pc),
-        .reg_data_addr1 (reg_data_1),
-        .reg_data_addr2 (reg_data_2),
-        .alu_data       (alu_data),
-        .r_data1        (r_data1),
-        .r_data2        (r_data2),
-        .out_pc         (execute_pc),
-        .alu_done       (alu_done)
+        .clock               (clock),
+        .reset_n             (reset_n),
+        .execute_enb         (execute_enb),
+        .decoder_ctrl        (decoder_ctrl),
+        .in_pc               (pc),
+        .reg_data_addr1      (reg_data_1),
+        .reg_data_addr2      (reg_data_2),
+        .alu_data            (alu_data),
+        .r_data1             (r_data1),
+        .r_data2             (r_data2),
+        .out_pc              (execute_pc),
+        .alu_done            (alu_done)
     );
 
     // =====================================
@@ -194,13 +214,14 @@ module PSC_RV32ISP_Execute #(
     // LOAD/STORE
     // =====================================
     MemoryStore #(
-        .UART_MMIO_ADDR    (UART_MMIO_ADDR),
-        .UART_MMIO_FLAG    (UART_MMIO_FLAG),
-        .COUNTER_MMIO_ADDR (COUNTER_MMIO_ADDR)
+        .UART_MMIO_ADDR         (UART_MMIO_ADDR),
+        .UART_MMIO_FLAG         (UART_MMIO_FLAG),
+        .COUNTER_MMIO_ADDR      (COUNTER_MMIO_ADDR)
     ) u_memory_store(
         .clock                  (clock),
         .reset_n                (reset_n),
         .store_enb              (memory_store_enb),
+        .mode_sv32              (d_mode_sv32),
         .decoder_ctrl           (decoder_ctrl),
         .alu_data               (alu_data),
         .mem_val                (decoder_ctrl.funct3),
@@ -228,26 +249,26 @@ module PSC_RV32ISP_Execute #(
     // D-MMU
     // =====================================
     MMU u_mmu_d(
-        .clk            (clock),
-        .reset_n        (reset_n),
-        .MMU_enb        (d_MMU_enb),
-        .vaddr          (vaddr),
-        .satp           (csr_satp),
-        .priv_mode      (priv_mode),
-        .access_r       (decoder_ctrl.is_load),
-        .access_w       (decoder_ctrl.is_store),
-        .access_x       (1'b0),
-        .mem_req_ready  (data_mem_req_ready),
-        .mem_rdata      (data_mem_read_data),
-        .mem_addr       (d_mmu_mem_addr),
-        .mem_valid      (d_mmu_mem_valid),
-        .mem_ready      (data_mem_read_ready),
-        .cpu_state_done (cpu_state_done),
-        .sfence_vma     (fifo_flush_sig && decoder_ctrl.is_sfence_vma),
-        .paddr          (d_paddr),
-        .page_fault     (d_pf),
-        .mode_sv32      (d_mode_sv32),
-        .mmu_done       (d_mmu_done)
+        .clk                    (clock),
+        .reset_n                (reset_n),
+        .MMU_enb                (d_MMU_enb),
+        .vaddr                  (vaddr),
+        .satp                   (csr_satp),
+        .priv_mode              (priv_mode),
+        .access_r               (decoder_ctrl.is_load),
+        .access_w               (decoder_ctrl.is_store),
+        .access_x               (1'b0),
+        .mem_req_ready          (data_mem_req_ready),
+        .mem_rdata              (data_mem_read_data),
+        .mem_addr               (d_mmu_mem_addr),
+        .mem_valid              (d_mmu_mem_valid),
+        .mem_ready              (data_mem_read_ready),
+        .cpu_state_done         (cpu_state_done),
+        .sfence_vma             (fifo_flush_sig && decoder_ctrl.is_sfence_vma),
+        .paddr                  (d_paddr),
+        .page_fault             (d_pf),
+        .mode_sv32              (d_mode_sv32),
+        .mmu_done               (d_mmu_done)
     );
 
 endmodule

@@ -232,7 +232,7 @@ module cache_dma_controller #(
                         req_is_write    <= cpu_rw;
                         req_addr_w      <= cpu_byte_addr;
                         req_wdata       <= cpu_data;
-                        req_word_sel_r <= cpu_word_addr[1:0];
+                        req_word_sel_r  <= cpu_word_addr[1:0];
                         // キャッシュ参照（次拍でBRAM出力）
                         cur_index_r <= cpu_byte_addr[TAGLSB-1:4];
                         cur_tag_r   <= cpu_byte_addr[TAGMSB:TAGLSB];

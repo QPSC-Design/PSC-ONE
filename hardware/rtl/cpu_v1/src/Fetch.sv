@@ -4,6 +4,7 @@ module Fetch (
     input  logic        clock,
     input  logic        reset_n,
     input  logic        fetch_enb,
+    input  logic        mode_sv32,
     input  logic [31:0] fetch_address,
 
     // MMU
@@ -40,24 +41,20 @@ module Fetch (
 
     state_t state;
 
-    // MMU
-    assign vaddr = fetch_address;
-
-    // SDRAM
-    assign program_mem_read_address = paddr;
-
     // FIFO
     assign fifo_read_valid = program_mem_read_ready;
     assign fifo_read_data  = program_mem_read_data;
 
     always_ff @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
-            state                  <= IDLE;
-            mmu_valid              <= 1'b0;
-            program_mem_read_valid <= 1'b0;
-            done                   <= 1'b0;
-            busy                   <= 1'b0;
-            opcode                 <= 32'd0;
+            state                    <= IDLE;
+            vaddr                    <= 32'h0;
+            mmu_valid                <= 1'b0;
+            program_mem_read_valid   <= 1'b0;
+            program_mem_read_address <= 32'h0;
+            done                     <= 1'b0;
+            busy                     <= 1'b0;
+            opcode                   <= 32'd0;
         end else begin
             // Default pulse outputs
             mmu_valid              <= 1'b0;
@@ -66,15 +63,22 @@ module Fetch (
 
             unique case (state)
                 IDLE: begin
-                    if (fetch_enb && program_mem_req_ready) begin
-                        state <= MMU;
+                    if (fetch_enb) begin
+                        vaddr <= fetch_address;
+                        busy  <= 1'b1;
+                        if (mode_sv32)
+                            state <= MMU;
+                        else
+                            state <= FETCH;
                     end
                 end
 
                 MMU: begin
-                    mmu_valid <= 1'b1;
-                    busy      <= 1'b1;
-                    state     <= MMU_WAIT;
+                    if (program_mem_req_ready) begin
+                        mmu_valid <= 1'b1;
+                        program_mem_read_address <= paddr;
+                        state     <= MMU_WAIT;
+                    end
                 end
 
                 MMU_WAIT: begin
@@ -85,8 +89,9 @@ module Fetch (
 
                 FETCH: begin
                     if (program_mem_req_ready) begin
-                        program_mem_read_valid <= 1'b1;
-                        state                  <= FETCH_WAIT;
+                        program_mem_read_address <= vaddr;
+                        program_mem_read_valid   <= 1'b1;
+                        state                    <= FETCH_WAIT;
                     end
                 end
 
@@ -98,7 +103,7 @@ module Fetch (
                 end
 
                 FETCH_DONE: begin
-                    busy   <= 1'b0;
+                    busy  <= 1'b0;
                     done  <= 1'b1;
                     state <= IDLE;
                 end

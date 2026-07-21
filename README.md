@@ -113,8 +113,6 @@ This tightly coupled architecture improves overall efficiency by reducing memory
 
 The following diagram shows the internal architecture of the PSC_RV32ISP_V1 CPU and its connection to the PSC-ONE memory subsystem.
 
-<img src="docs/images/PSC_RV32ISP_V1.jpg" width="800">
-
 PSC_RV32ISP_V1 is a redesigned version of the original PSC_RV32ISP processor.  
 Its execution logic is divided into independent functional modules, including instruction fetch, decode, arithmetic execution, branch processing, memory access, CSR control, and register write-back.
 
@@ -140,6 +138,8 @@ PSC_RV32ISP_V1 retains the main capabilities of the original processor, includin
 - Direct integration with the SynapEngine accelerator
 
 The redesigned architecture emphasizes simplicity, modularity, and extensibility while remaining capable of executing PSC-OS and user applications directly on the FPGA.
+
+<img src="docs/images/PSC_RV32ISP_V1.jpg" width="800">
 
 ---
 

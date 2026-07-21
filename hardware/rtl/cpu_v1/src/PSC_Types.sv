@@ -41,4 +41,23 @@ package PSC_Types;
         logic        raise_illegal_instruction;
     } dec_ctrl_t;
 
+    typedef struct packed {
+        // Mレベル
+        logic [31:0] mstatus;
+        logic [31:0] medeleg;
+        logic [31:0] mie;
+        logic [31:0] mip;
+        logic [31:0] mtvec;
+        logic [31:0] mepc;
+        logic [31:0] mcause;
+
+        // Sレベル
+        logic [31:0] sstatus;
+        logic [31:0] stvec;
+        logic [31:0] sepc;
+        logic [31:0] scause;
+        logic [31:0] stval;
+        logic [31:0] satp;
+    } csr_state_t;
+
 endpackage

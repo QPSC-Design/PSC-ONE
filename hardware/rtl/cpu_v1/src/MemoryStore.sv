@@ -10,6 +10,7 @@ module MemoryStore #(
     input  logic        clock,
     input  logic        reset_n,
     input  logic        store_enb,
+    input  logic        mode_sv32,
     input  logic [31:0] alu_data,
     input  logic [2:0]  mem_val,
     input  logic [31:0] mem_read_data,
@@ -40,7 +41,7 @@ module MemoryStore #(
 
     typedef enum logic [2:0] {
         IDLE, STORE_MMU, STORE_MMU_W, STORE_ACCESS,
-        STORE_WAIT, STORE_DONE_WAIT
+        STORE_WAIT, STORE_DONE
     } state_t;
 
     state_t state;
@@ -78,14 +79,14 @@ module MemoryStore #(
     assign is_mmio_uart_flag = !mem_val[1:0] && (mem_addr == UART_MMIO_FLAG);
 
     assign mem_data = decoder_ctrl.mem_rw ? 32'd0 :
-                      is_mmio_counter      ? counter :
-                      is_mmio_uart_flag    ? 32'd1  : ld_result;
+                      is_mmio_counter     ? counter :
+                      is_mmio_uart_flag   ? 32'd1  : ld_result;
 
     logic [31:0] w_data_w;
     assign w_data_w = (decoder_ctrl.wb_sel == 2'b00) ? alu_data :
-                    (decoder_ctrl.wb_sel == 2'b01) ? mem_data :
-                    (decoder_ctrl.wb_sel == 2'b10) ? in_pc + 32'd4 :
-                                                    csr_rdata;
+                      (decoder_ctrl.wb_sel == 2'b01) ? mem_data :
+                      (decoder_ctrl.wb_sel == 2'b10) ? in_pc + 32'd4 :
+                                                       csr_rdata;
 
     always_ff @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
@@ -107,12 +108,17 @@ module MemoryStore #(
                     if (store_enb) begin
                         w_data <= w_data_w;
                         state <= decoder_ctrl.mem_rw ? STORE_MMU
-                                                    : STORE_DONE_WAIT;
+                                                    : STORE_DONE;
                     end
 
                 STORE_MMU: begin
-                    mmu_valid <= 1'b1;
-                    state     <= STORE_MMU_W;
+                    if (mode_sv32) begin
+                        mmu_valid <= 1'b1;
+                        state     <= STORE_MMU_W;
+                    end else begin
+                        data_mem_write_address <= vaddr;
+                        state <= STORE_ACCESS;
+                    end
                 end
 
                 STORE_MMU_W:
@@ -132,9 +138,9 @@ module MemoryStore #(
 
                 STORE_WAIT:
                     if (data_mem_write_ready)
-                        state <= STORE_DONE_WAIT;
+                        state <= STORE_DONE;
 
-                STORE_DONE_WAIT: begin
+                STORE_DONE: begin
                     store_done <= 1'b1;
                     state      <= IDLE;
                 end

@@ -8,7 +8,7 @@ module PSC_RV32ISP_Fetch #(
     input  logic        cpu_stop,
     input  logic        fetch_valid,
     output logic        fetch_ready,
-    input  logic        execute_ready,
+    input  logic        execute_task_done,
 
     // FIFO
     output logic        fifo_empty,
@@ -45,10 +45,17 @@ module PSC_RV32ISP_Fetch #(
 );
 
     typedef enum logic [2:0] {
-        IDLE, FETCH_PC, FETCH, FETCH_W, FIFO_FLUSH_WAIT
+        IDLE, 
+        FETCH_PC, 
+        FETCH, 
+        FETCH_W, 
+        EXECUTE_W,
+        FIFO_FLUSH_WAIT
     } state_t;
 
     state_t fetch_state, next_state;
+
+    logic [15:0] fetch_wakeup_timer;
 
     logic [31:0] fetch_pc, next_pc;
     logic next_ready;
@@ -60,12 +67,15 @@ module PSC_RV32ISP_Fetch #(
     always_ff @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
             fetch_state <= IDLE;
+            fetch_wakeup_timer <= 16'd0;
             fetch_pc    <= 32'd0;
             fetch_ready <= 1'b0;
         end else if (cpu_stop) begin
             fetch_state <= IDLE;
+            fetch_wakeup_timer <= 16'd0;
             fetch_ready <= 1'b0;
         end else begin
+            fetch_wakeup_timer <= fetch_wakeup_timer + 16'd1;
             fetch_state <= next_state;
             fetch_pc    <= next_pc;
             fetch_ready <= next_ready;
@@ -77,12 +87,17 @@ module PSC_RV32ISP_Fetch #(
         next_pc    = fetch_pc;
         next_ready = 1'b0;
 
+        // fifo_flush
         if (fifo_flush) begin
             next_state = FIFO_FLUSH_WAIT;
+        
+        // 通常state
         end else begin
             case (fetch_state)
+                // ----------------------------------------
                 IDLE:
-                    if (fetch_valid) next_state = FETCH_PC;
+                    if (fetch_valid && (fetch_wakeup_timer > 16'h300)) 
+                        next_state = FETCH_PC;
 
                 FETCH_PC:
                     if (empty) begin
@@ -97,13 +112,20 @@ module PSC_RV32ISP_Fetch #(
                     next_state = FETCH_W;
 
                 FETCH_W:
-                    if (execute_ready) begin
+                    if (fetch_done) begin
                         next_ready = 1'b1;
+                        next_state = EXECUTE_W;
+                    end
+
+                EXECUTE_W:
+                    if (execute_task_done) begin
                         next_state = FETCH_PC;
                     end
 
+                // ----------------------------------------
                 FIFO_FLUSH_WAIT:
-                    if (execute_ready) next_state = IDLE;
+                    if (execute_task_done) 
+                        next_state = IDLE;
 
                 default: begin
                     next_state = IDLE;
@@ -121,11 +143,14 @@ module PSC_RV32ISP_Fetch #(
     logic [31:0] opcode_read_data;
     logic mmu_valid, i_mmu_done;
     logic [31:0] vaddr, i_paddr;
+    logic fetch_enb;
+    assign fetch_enb = (fetch_state == FETCH);
 
     Fetch u_fetch(
         .clock                    (clock),
         .reset_n                  (reset_n),
-        .fetch_enb                (fetch_state == FETCH),
+        .fetch_enb                (fetch_enb),
+        .mode_sv32                (i_mode_sv32),
         .fetch_address            (fetch_pc),
         .mmu_valid                (mmu_valid),
         .mmu_ready                (i_mmu_done),
@@ -148,23 +173,23 @@ module PSC_RV32ISP_Fetch #(
     logic [31:0] out_fetch_pc;
 
     Fetch_Fifo #(
-        .WIDTH (32),
-        .DEPTH (FIFO_DEPTH)
+        .WIDTH                    (32),
+        .DEPTH                    (FIFO_DEPTH)
     ) u_fetch_fifo(
-        .clock         (clock),
-        .reset_n       (reset_n),
-        .in_valid      ((fetch_state == FETCH_W) && opcode_read_valid),
-        .in_data       (opcode_read_data),
-        .in_pc_data    (fetch_pc),
-        .in_ready      (in_ready),
-        .out_req_ready (fifo_ready),
-        .out_valid     (fifo_read_valid),
-        .out_ready     (fifo_read_ready),
-        .out_data      (fifo_opcode_data),
-        .out_pc_data   (out_fetch_pc),
-        .full          (full),
-        .empty         (empty),
-        .flush         (fifo_flush)
+        .clock                    (clock),
+        .reset_n                  (reset_n),
+        .in_valid                 (opcode_read_valid),
+        .in_data                  (opcode_read_data),
+        .in_pc_data               (fetch_pc),
+        .in_ready                 (in_ready),
+        .out_req_ready            (fifo_ready),
+        .out_valid                (fifo_read_valid),
+        .out_ready                (fifo_read_ready),
+        .out_data                 (fifo_opcode_data),
+        .out_pc_data              (out_fetch_pc),
+        .full                     (full),
+        .empty                    (empty),
+        .flush                    (fifo_flush || cpu_stop)
     );
 
 
@@ -173,28 +198,30 @@ module PSC_RV32ISP_Fetch #(
     // =====================================
     // Instruction-side MMU
     logic i_mode_sv32;
+    logic cpu_state_done;
+    assign cpu_state_done = (fetch_state == FETCH_W);
 
     MMU u_mmu_i(
-        .clk            (clock),
-        .reset_n        (reset_n),
-        .MMU_enb        (mmu_valid),
-        .vaddr          (vaddr),
-        .satp           (csr_satp),
-        .priv_mode      (priv_mode),
-        .access_r       (1'b0),
-        .access_w       (1'b0),
-        .access_x       (1'b1),
-        .mem_req_ready  (data_mem_read_req_ready),
-        .mem_rdata      (data_mem_read_data),
-        .mem_addr       (data_mem_read_address),
-        .mem_valid      (data_mem_read_valid),
-        .mem_ready      (data_mem_read_ready),
-        .cpu_state_done (fetch_state == FETCH_W),
-        .sfence_vma     (fifo_flush && is_sfence_vma),
-        .paddr          (i_paddr),
-        .page_fault     (i_pf),
-        .mode_sv32      (i_mode_sv32),
-        .mmu_done       (i_mmu_done)
+        .clk                      (clock),
+        .reset_n                  (reset_n),
+        .MMU_enb                  (mmu_valid),
+        .vaddr                    (vaddr),
+        .satp                     (csr_satp),
+        .priv_mode                (priv_mode),
+        .access_r                 (1'b0),
+        .access_w                 (1'b0),
+        .access_x                 (1'b1),
+        .mem_req_ready            (data_mem_read_req_ready),
+        .mem_rdata                (data_mem_read_data),
+        .mem_addr                 (data_mem_read_address),
+        .mem_valid                (data_mem_read_valid),
+        .mem_ready                (data_mem_read_ready),
+        .cpu_state_done           (cpu_state_done),
+        .sfence_vma               (fifo_flush && is_sfence_vma),
+        .paddr                    (i_paddr),
+        .page_fault               (i_pf),
+        .mode_sv32                (i_mode_sv32),
+        .mmu_done                 (i_mmu_done)
     );
 
 endmodule

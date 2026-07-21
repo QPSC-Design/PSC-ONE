@@ -32,7 +32,7 @@ module PSC_RV32ISP_core #(
     output logic [31:0]      mem_write_data,
     // MMU
     output logic             mmu_data_mem_read_valid,
-    input  logic              mmu_data_mem_read_ready,
+    input  logic             mmu_data_mem_read_ready,
     output logic [31:0]      mmu_data_mem_read_address,
     input  logic [31:0]      mmu_data_mem_read_data,
     input  logic             mmu_data_req_ready,
@@ -138,19 +138,7 @@ module PSC_RV32ISP_core #(
     // Csr module
     // =====================================
     // CSR logic
-    logic [31:0] csr_mstatus;  // 使わなければ未接続でもOK
-    logic [31:0] csr_medeleg;
-    logic [31:0] csr_mie;
-    logic [31:0] csr_mip;
-    logic [31:0] csr_mtvec;
-    logic [31:0] csr_mepc;
-    logic [31:0] csr_mcause;
-
-    logic [31:0] csr_sstatus;  
-    logic [31:0] csr_stvec;
-    logic [31:0] csr_sepc;
-    logic [31:0] csr_scause;
-    logic [31:0] csr_stval;
+    csr_state_t csr_state;
 
     // Privilege level encoding (RISC-V spec)
     localparam logic [1:0] PRIV_U = 2'b00;
@@ -221,7 +209,6 @@ module PSC_RV32ISP_core #(
     logic [31:0] csr_rdata;
 
     // CSR logic
-    logic [31:0] csr_satp; 
     logic [1:0]  priv_mode;
 
     logic [31:0] csr_reg_data_1;
@@ -261,22 +248,22 @@ module PSC_RV32ISP_core #(
         // current privilege mode
         .priv_mode          (priv_mode),
 
-        // Mレベル: デバッグ/将来用
-        .out_mstatus        (csr_mstatus),
-        .out_medeleg        (csr_medeleg),
-        .out_mie            (csr_mie),
-        .out_mip            (csr_mip),
-        .out_mtvec          (csr_mtvec),
-        .out_mepc           (csr_mepc),
-        .out_mcause         (csr_mcause),
+        // M-level CSR
+        .out_mstatus        (csr_state.mstatus),
+        .out_medeleg        (csr_state.medeleg),
+        .out_mie            (csr_state.mie),
+        .out_mip            (csr_state.mip),
+        .out_mtvec          (csr_state.mtvec),
+        .out_mepc           (csr_state.mepc),
+        .out_mcause         (csr_state.mcause),
 
-        // Sレベル: OSで実際に使う
-        .out_sstatus        (csr_sstatus),
-        .out_stvec          (csr_stvec),           // パイプラインが「例外発生！」と判断した瞬間、次にフェッチすべきPCは stvec のベースアドレス。今は不使用でいい
-        .out_sepc           (csr_sepc),            // sret を検出した段階でPCを out_sepc に切り替える。今は不使用でいい
-        .out_scause         (csr_scause),
-        .out_stval          (csr_stval),
-        .out_satp           (csr_satp),
+        // S-level CSR
+        .out_sstatus        (csr_state.sstatus),
+        .out_stvec          (csr_state.stvec),
+        .out_sepc           (csr_state.sepc),
+        .out_scause         (csr_state.scause),
+        .out_stval          (csr_state.stval),
+        .out_satp           (csr_state.satp),
 
         // DATA Cache
         .out_DCACHE_CTRL    (csr_DCACHE_CTRL),
@@ -319,6 +306,7 @@ module PSC_RV32ISP_core #(
 
     // MMU fault
     logic        i_pf;
+    logic        d_pf;
 
     // Program Counter
     logic [31:0] fetch_pc;
@@ -333,7 +321,7 @@ module PSC_RV32ISP_core #(
         // in,out
         .fetch_valid                (fetch_valid),
         .fetch_ready                (fetch_ready),
-        .execute_ready              (execute_task_done),
+        .execute_task_done          (execute_task_done),
         // fifo sig.
         .fifo_empty                 (fifo_empty),
         .fifo_full                  (fifo_full),
@@ -342,7 +330,7 @@ module PSC_RV32ISP_core #(
         .fifo_flush                 (fifo_flush_sig),
         // other sig.
         .pc                         (fetch_pc),
-        .csr_satp                   (csr_satp),
+        .csr_satp                   (csr_state.satp),
         .priv_mode                  (priv_mode),
         .is_load                    (decoder_ctrl.is_load),
         .is_store                   (decoder_ctrl.is_store),
@@ -375,7 +363,6 @@ module PSC_RV32ISP_core #(
     logic        execute_state_sig;  // not used
 
     // MMU fault
-    logic        d_pf;
     logic        illegal_instruction;
 
     assign illegal_instruction = decoder_ctrl.raise_illegal_instruction;
@@ -385,10 +372,11 @@ module PSC_RV32ISP_core #(
         .clock                      (clock),
         .reset_n                    (reset_n),
         .cpu_stop                   (cpu_stop),
+        .cpu_state                  (cpu_state),
         .cpu_trap                   (cpu_state==CPU_TRAP),
         // in,out
         .execute_valid              (!fifo_empty),
-        .execute_ready              (execute_task_done),
+        .execute_task_done          (execute_task_done),
         // fifo sig.
         .fifo_read_state_sig        (fifo_read_state_sig),
         .execute_state_sig          (execute_state_sig),
@@ -396,13 +384,18 @@ module PSC_RV32ISP_core #(
         .fifo_flush_sig             (fifo_flush_sig),
         // other sig.
         .pc                         (pc),
+        .counter                    (counter),
+
         .opcode                     (fifo_opcode_data),
-        .csr_satp                   (csr_satp),
+        .csr_satp                   (csr_state.satp),
         .priv_mode                  (priv_mode),
         .alu_data                   (alu_data),
         .pc_sel2                    (pc_sel2),
         // Decoder
         .decoder_ctrl               (decoder_ctrl),
+
+        // CSR struct
+        .csr_state                  (csr_state),
         // CSR sig.
         .csr_enb                    (csr_enb),
         .csr_valid                  (csr_valid),
@@ -410,7 +403,9 @@ module PSC_RV32ISP_core #(
         .csr_rdata                  (csr_rdata),
         .csr_reg_data_1             (csr_reg_data_1),
         // MMU fault sig.
+        .i_pf                       (i_pf),
         .d_pf                       (d_pf),
+        .trap_scause                (trap_scause[4:0]),
         // to memory
         .data_mem_read_valid        (data_mem_read_valid),
         .data_mem_read_ready        (data_mem_read_ready),
@@ -426,72 +421,5 @@ module PSC_RV32ISP_core #(
         .vaddr                      (execute_vaddr),
         .uart_out                   (uart_out)
     );
-
-    // =====================================
-    // NEXT PC
-    // =====================================
-    logic        exception;
-    logic        interrupt;
-    logic        trap;
-    logic        trap_deleg_to_s;
-    logic [31:0] trap_pc;
-    logic [31:0] branch_target_pc;
-    logic [31:0] seq_pc;
-    logic [31:0] sret_pc;
-
-    assign exception = decoder_ctrl.is_ecall |
-                       decoder_ctrl.raise_illegal_instruction |
-                       d_pf | i_pf;
-    assign interrupt        = 1'b0;
-    assign trap             = exception | interrupt;
-    assign trap_deleg_to_s  = (priv_mode != PRIV_M) &&
-                              csr_medeleg[trap_scause];
-    assign trap_pc          = trap_deleg_to_s ? csr_stvec : csr_mtvec;
-    assign branch_target_pc = {alu_data[31:1], 1'b0};
-    assign seq_pc           = pc + 32'd4;
-    assign sret_pc          = csr_sepc;
-
-    // trap save pc
-    logic  [31:0] trap_pc_latch;
-    always_ff @(posedge clock or negedge reset_n) begin
-        if (!reset_n) begin
-            trap_pc_latch <= 32'd0;
-        end else if (cpu_stop) begin
-            trap_pc_latch <= 32'd0;
-        end else if (execute_task_done) begin
-            trap_pc_latch <= 32'd0;
-        end else begin
-            if (trap) begin
-                if (trap_deleg_to_s)
-                    trap_pc_latch <= csr_stvec;
-                else
-                    trap_pc_latch <= csr_mtvec;
-            end
-        end
-    end
-
-    logic [31:0] next_pc;
-    assign next_pc = (decoder_ctrl.is_mret)     ? csr_mepc :      // ★ M-mode return
-                     (decoder_ctrl.is_sret)     ? sret_pc :
-                     (trap)                     ? trap_pc_latch :
-                     (cpu_state==CPU_TRAP)      ? trap_pc_latch : 
-                     (pc_sel2 == 1'b1)          ? branch_target_pc :
-                                                  seq_pc;
-
-    // NEXT PC WRITE BACK and CYCLE COUNTER
-    always_ff @(posedge clock or negedge reset_n) begin
-        if (!reset_n) begin
-            pc      <= 32'b0;
-            counter <= 32'b0;
-        end else if(cpu_stop) begin
-            pc      <= 32'b0;
-            counter <= 32'b0;
-        end else begin
-            if(execute_task_done) begin
-                pc      <= next_pc;
-                counter <= counter + 32'd1;
-            end
-        end
-    end
 
 endmodule

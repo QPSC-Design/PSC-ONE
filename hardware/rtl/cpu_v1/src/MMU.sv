@@ -57,8 +57,8 @@ module MMU (
 
     // satp フィールド（SV32）
     assign      mode_sv32 = satp[31];       // MODE: 0=bare, 1=Sv32
-    logic [21:0] root_ppn;
 
+    logic [21:0] root_ppn;
     assign root_ppn = satp[21:0];
 
     // ---- ステート ----
