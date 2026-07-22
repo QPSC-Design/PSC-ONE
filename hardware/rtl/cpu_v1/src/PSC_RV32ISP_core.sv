@@ -20,7 +20,7 @@ module PSC_RV32ISP_core #(
     input  logic             program_mem_req_ready,
     // Data
     output logic             data_mem_read_valid,
-    input  logic              data_mem_read_ready,
+    input  logic             data_mem_read_ready,
     output logic [31:0]      data_mem_read_address,
     input  logic [31:0]      data_mem_read_data,
     input  logic             data_mem_req_ready,
@@ -298,6 +298,7 @@ module PSC_RV32ISP_core #(
     logic        fifo_full;
     logic        fifo_flush_sig;
     logic        fifo_read_ready;
+    logic        execute_task_busy;
     logic        execute_task_done;
     logic        fifo_read_state_sig;
     logic        is_sfence_vma;
@@ -321,6 +322,7 @@ module PSC_RV32ISP_core #(
         // in,out
         .fetch_valid                (fetch_valid),
         .fetch_ready                (fetch_ready),
+        .execute_task_busy          (execute_task_busy),
         .execute_task_done          (execute_task_done),
         // fifo sig.
         .fifo_empty                 (fifo_empty),
@@ -376,6 +378,7 @@ module PSC_RV32ISP_core #(
         .cpu_trap                   (cpu_state==CPU_TRAP),
         // in,out
         .execute_valid              (!fifo_empty),
+        .execute_task_busy          (execute_task_busy),
         .execute_task_done          (execute_task_done),
         // fifo sig.
         .fifo_read_state_sig        (fifo_read_state_sig),

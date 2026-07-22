@@ -288,7 +288,7 @@ extern "C" void run()
     /*
      * Software reference
      */
-    TIMER_MMIOADDR_W = 0x000100FFu;
+    TIMER_MMIOADDR_W = 0x00010FFFu;
 
     matmul8x8_sw(
         A_mat,
@@ -302,12 +302,12 @@ extern "C" void run()
      * Software実行時間
      */
     PIO32 = 0x0000A001u;
-    PIO32 = 0xFFu - timer_data;
+    PIO32 = 0xFFFu - timer_data;
 
     /*
      * SynapEngine
      */
-    TIMER_MMIOADDR_W = 0x000100FFu;
+    TIMER_MMIOADDR_W = 0x00010FFFu;
 
     run_sa_8x8();
 
@@ -317,7 +317,7 @@ extern "C" void run()
      * SA実行時間
      */
     PIO32 = 0x0000A002u;
-    PIO32 = 0xFFu - timer_data;
+    PIO32 = 0xFFFu - timer_data;
 
     /*
      * SA結果を読み出す

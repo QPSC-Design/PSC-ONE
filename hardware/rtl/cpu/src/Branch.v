@@ -83,7 +83,7 @@ module Branch(
                 IDLE: begin
                     // メモリREADあり
                     if (branch_enb) begin
-                        if (is_load_store)
+                        if (is_load_store)      // casheバグ対応の名残
                             state <= BRANCH;
                         else
                             state <= BRANCH_DONE;

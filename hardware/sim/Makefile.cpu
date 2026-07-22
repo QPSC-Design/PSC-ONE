@@ -2,9 +2,9 @@
 # Usage
 # ============================================================
 
-#make -f Makefile.cpu simulate_PSC_ONE CPU_VERSION=v1 TEST_PROGRAM_LIST=basic
+#make -f Makefile.cpu simulate_PSC_ONE_TESTS CPU_VERSION=v1 TEST_PROGRAM_LIST=basic
 #or
-#make -f Makefile.cpu simulate_PSC_ONE CPU_VERSION=v1 TEST_PROGRAM_LIST=basic
+#make -f Makefile.cpu simulate_PSC_ONE_TESTS CPU_VERSION=v1 TEST_PROGRAM_LIST=basic
 
 # ============================================================
 #  MODE で一括切り替え（verilator / icarus）
@@ -97,6 +97,7 @@ CPU_V1_CORE_FILES = \
 	$(CPU_V1_SRC_DIR)/PSC_RV32ISP_Execute.sv \
 	$(CPU_V1_SRC_DIR)/Fetch_Fifo.sv \
 	$(CPU_V1_SRC_DIR)/PSC_CELL.sv \
+	$(CPU_V1_SRC_DIR)/PSC_CELL_STATE.sv \
 	$(CPU_V1_SRC_DIR)/Fetch.sv \
 	$(CPU_V1_SRC_DIR)/Decorder.sv \
 	$(CPU_V1_SRC_DIR)/Execute.sv \
@@ -218,7 +219,7 @@ SIM_BUILD        ?= sim_build
 # PSC-ONE テスト
 
 PSCONE_SINGLE_TEST = \
-	sp_test1:RV32ISP_chip_test:./mem/sp_test1.mem:0x00005AA5 \
+	sa_matrix_test1:RV32ISP_chip_test:./mem/sa_matrix_test1.mem:0x0000BEEF \
 
 # ============================================================
 # 複数テスト定義
@@ -301,7 +302,7 @@ PSCONE_LONG_TESTS = \
 	i2s_test1:RV32ISP_chip_test:./mem/i2s_test1.mem:0x0abc0123 \
 
 # ============================================================
-# テストプログラムの切り替え（basic / long / single)
+# テストプログラムの切り替え（basic / long / single）
 # ============================================================
 # デフォルトはbasic
 TEST_PROGRAM_LIST ?= basic

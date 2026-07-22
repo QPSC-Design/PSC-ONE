@@ -1,5 +1,9 @@
 package PSC_Types;
 
+    // ============================================================
+    // CSR wire
+    // ============================================================
+
     typedef struct packed {
         logic [4:0]  r_addr1;
         logic [4:0]  r_addr2;
@@ -38,8 +42,13 @@ package PSC_Types;
         logic        is_R_type;
         logic        is_op_imm;
 
+        logic        pipeline_type;
         logic        raise_illegal_instruction;
     } dec_ctrl_t;
+
+    // ============================================================
+    // CSR wire
+    // ============================================================
 
     typedef struct packed {
         // Mレベル
@@ -59,5 +68,40 @@ package PSC_Types;
         logic [31:0] stval;
         logic [31:0] satp;
     } csr_state_t;
+
+    // ============================================================
+    // Instruction state
+    // ============================================================
+
+    typedef struct packed {
+        // Instruction information
+        logic        valid;
+        logic [31:0] pc;
+        logic [31:0] opcode;
+
+        // Decoder result
+        dec_ctrl_t   decoder_ctrl;
+
+        // Register operands
+        logic [31:0] reg_data_1;
+        logic [31:0] reg_data_2;
+
+        // Execute result
+        logic [31:0] alu_data;
+        logic [1:0]  alu_data_low2;
+
+        // Branch / memory result
+        logic        pc_sel2;
+        logic [1:0]  ld_low2;
+        logic [31:0] branch_rdata;
+
+        // Write-back data
+        logic [31:0] w_data;
+
+        // Exception information
+        logic        d_pf;
+        logic        i_pf;
+        logic [4:0]  trap_scause;
+    } instruction_state_t;
 
 endpackage

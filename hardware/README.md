@@ -65,8 +65,6 @@ The CPU is designed to execute PSC-OS and user applications directly on the FPGA
 
 The following diagram shows the internal architecture of the PSC_RV32ISP_V1 CPU and its connection to the PSC-ONE memory subsystem.
 
-<img src="../docs/images/PSC_RV32ISP_V1.jpg" width="800">
-
 Unlike a conventional fixed-stage pipeline, PSC_RV32ISP_V1 executes each instruction as a sequence of controlled tasks. The CPU controller activates the required functional modules in order and waits for each module to report completion before advancing to the next task.
 
 The current execution sequence is:
@@ -78,6 +76,8 @@ The current execution sequence is:
 5. Store, CSR, and write-back processing
 
 Each functional module uses enable and completion signals, allowing variable-latency operations such as memory access, cache misses, MMU translation, multiplication, and division to stall only the active instruction task.
+
+<img src="../docs/images/PSC_RV32ISP_V1.jpg" width="800">
 
 The task-driven design provides:
 

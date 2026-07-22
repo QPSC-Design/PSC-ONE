@@ -105,6 +105,22 @@ This tightly coupled architecture improves overall efficiency by reducing memory
 
 <img src="docs/images/PSC_RV32ISP.jpg" width="800">
 
+Current CPU features include:
+
+* RV32I base integer instruction set
+* Zicsr CSR instructions
+* Zifencei instruction support
+* Integer multiplication support
+* Integer division and remainder support
+* Machine, Supervisor, and User privilege modes
+* Exception and interrupt handling
+* ECALL and SRET support
+* Sv32 virtual memory
+* Instruction and data caches
+* Load-use and register-dependency handling
+* Optional pipelined execution
+* Custom hardware-accelerator integration
+
 ---
 
 # CPU (PSC_RV32ISP_V1)
@@ -125,21 +141,19 @@ This reduces the number of individual control signals and makes the CPU easier t
 The CPU currently operates as a multi-cycle state-machine processor.  
 However, the separation of execution modules provides a foundation for future pipelined execution, multiple instruction slots, and multithreaded operation.
 
-PSC_RV32ISP_V1 retains the main capabilities of the original processor, including:
-
-- RV32I base integer instruction set
-- Integer multiplication, division, and remainder operations
-- Zicsr and Zifencei instruction support
-- Machine, Supervisor, and User privilege modes
-- Exception and interrupt handling
-- Sv32 virtual-memory address translation
-- Instruction and data caches
-- Memory-mapped peripheral access
-- Direct integration with the SynapEngine accelerator
-
-The redesigned architecture emphasizes simplicity, modularity, and extensibility while remaining capable of executing PSC-OS and user applications directly on the FPGA.
-
 <img src="docs/images/PSC_RV32ISP_V1.jpg" width="800">
+
+The task-driven design provides:
+
+* Clear separation between functional modules
+* Explicit control of instruction execution order
+* Support for variable-latency execution units
+* Simple cache and MMU wait-state handling
+* Unified handling of branches, loads, stores, CSR operations, and exceptions
+* A foundation for multiple execution slots and limited parallel execution
+* Easier extension with custom PSC-ONE hardware accelerators
+
+PSC_RV32ISP_V1 currently uses a state-controlled execution model. Future versions may hold multiple instruction tasks simultaneously and permit independent tasks to overlap when there are no register, memory, or control dependencies.
 
 ---
 

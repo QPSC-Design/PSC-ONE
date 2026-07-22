@@ -1,5 +1,7 @@
 // NISHIHARU
 
+//`define fifo_pipeline_off
+
 module PSC_RV32ISP_Fetch #(
     parameter int FIFO_DEPTH = 4
 )(
@@ -8,6 +10,7 @@ module PSC_RV32ISP_Fetch #(
     input  logic        cpu_stop,
     input  logic        fetch_valid,
     output logic        fetch_ready,
+    input  logic        execute_task_busy,
     input  logic        execute_task_done,
 
     // FIFO
@@ -44,13 +47,14 @@ module PSC_RV32ISP_Fetch #(
     output logic [31:0] fifo_opcode_data
 );
 
-    typedef enum logic [2:0] {
+    typedef enum logic [3:0] {
         IDLE, 
         FETCH_PC, 
         FETCH, 
         FETCH_W, 
         EXECUTE_W,
-        FIFO_FLUSH_WAIT
+        FIFO_FLUSH_WAIT,
+        FIFO_FLUSH_WAIT_PC
     } state_t;
 
     state_t fetch_state, next_state;
@@ -58,6 +62,7 @@ module PSC_RV32ISP_Fetch #(
     logic [15:0] fetch_wakeup_timer;
 
     logic [31:0] fetch_pc, next_pc;
+    logic fetch_state_fifo_flush;
     logic next_ready;
     logic full, empty;
 
@@ -75,7 +80,8 @@ module PSC_RV32ISP_Fetch #(
             fetch_wakeup_timer <= 16'd0;
             fetch_ready <= 1'b0;
         end else begin
-            fetch_wakeup_timer <= fetch_wakeup_timer + 16'd1;
+            if (fetch_wakeup_timer < 16'h400)
+                fetch_wakeup_timer <= fetch_wakeup_timer + 16'd1;
             fetch_state <= next_state;
             fetch_pc    <= next_pc;
             fetch_ready <= next_ready;
@@ -86,6 +92,7 @@ module PSC_RV32ISP_Fetch #(
         next_state = fetch_state;
         next_pc    = fetch_pc;
         next_ready = 1'b0;
+        fetch_state_fifo_flush = 1'b0;
 
         // fifo_flush
         if (fifo_flush) begin
@@ -93,6 +100,7 @@ module PSC_RV32ISP_Fetch #(
         
         // 通常state
         end else begin
+
             case (fetch_state)
                 // ----------------------------------------
                 IDLE:
@@ -100,11 +108,10 @@ module PSC_RV32ISP_Fetch #(
                         next_state = FETCH_PC;
 
                 FETCH_PC:
-                    if (empty) begin
+                    if (!full) begin
+                        `ifdef fifo_pipeline_off
                         next_pc    = pc;
-                        next_state = FETCH;
-                    end else if (!full) begin
-                        next_pc    = fetch_pc + 32'd4;
+                        `endif
                         next_state = FETCH;
                     end
 
@@ -117,15 +124,29 @@ module PSC_RV32ISP_Fetch #(
                         next_state = EXECUTE_W;
                     end
 
-                EXECUTE_W:
-                    if (execute_task_done) begin
+                EXECUTE_W: begin
+                    `ifdef fifo_pipeline_off
+                    if (execute_task_done) begin        // fifo pileline off mode
                         next_state = FETCH_PC;
                     end
+                    `else
+                    next_pc    = fetch_pc + 32'd4;      // fetch_pc + 4 
+                    next_state = FETCH_PC;
+                    `endif
+                end
 
                 // ----------------------------------------
-                FIFO_FLUSH_WAIT:
-                    if (execute_task_done) 
-                        next_state = IDLE;
+                FIFO_FLUSH_WAIT: begin
+                    fetch_state_fifo_flush = 1'b1;
+                    if (!fetch_busy && !execute_task_busy) begin
+                        next_state = FIFO_FLUSH_WAIT_PC;
+                    end
+                end
+
+                FIFO_FLUSH_WAIT_PC: begin
+                    next_pc    = pc;
+                    next_state = IDLE;
+                end
 
                 default: begin
                     next_state = IDLE;
@@ -189,7 +210,7 @@ module PSC_RV32ISP_Fetch #(
         .out_pc_data              (out_fetch_pc),
         .full                     (full),
         .empty                    (empty),
-        .flush                    (fifo_flush || cpu_stop)
+        .flush                    (fifo_flush || fetch_state_fifo_flush || cpu_stop)
     );
 
 

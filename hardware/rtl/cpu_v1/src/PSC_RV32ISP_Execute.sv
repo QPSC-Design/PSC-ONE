@@ -14,6 +14,7 @@ module PSC_RV32ISP_Execute #(
     input  logic        cpu_trap,
 
     input  logic        execute_valid,
+    output logic        execute_task_busy,
     output logic        execute_task_done,
 
     output logic        fifo_read_state_sig,
@@ -99,9 +100,7 @@ module PSC_RV32ISP_Execute #(
                                                        branch_data_mem_read_address;
     assign data_mem_write_address = store_mem_write_address;
 
-    PSC_CELL #(
-        .CELL_NUM (1)
-    ) u_PSC_CELL(
+    PSC_CELL u_PSC_CELL(
         .clock                (clock),
         .reset_n              (reset_n),
         .cpu_stop             (cpu_stop),
@@ -110,6 +109,7 @@ module PSC_RV32ISP_Execute #(
 
         .pc                   (pc),
         .counter              (counter),
+        .opcode               (opcode),
 
         .EXECUTE_state        (EXECUTE_state),
         .BRANCH_state         (BRANCH_state),
@@ -152,6 +152,7 @@ module PSC_RV32ISP_Execute #(
         .i_pf                 (i_pf),
         .trap_scause          (trap_scause),
 
+        .execute_task_busy    (execute_task_busy),
         .execute_task_done    (execute_task_done)
     );
 
