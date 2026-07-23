@@ -125,15 +125,6 @@ module PSC_CELL (
     );
 
     // ============================================================
-    // Pipeline configuration
-    // ============================================================
-    logic pipeline_type;
-
-    assign pipeline_type = 1'b0;
-    // 将来パイプラインを有効化する場合
-    // assign pipeline_type = decoder_ctrl.is_R_type | decoder_ctrl.is_op_imm;
-
-    // ============================================================
     // Saved datapath values
     // ============================================================
     always_ff @(posedge clock or negedge reset_n) begin

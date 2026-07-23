@@ -89,7 +89,10 @@ module PSC_CELL_STATE (
 
             ST_EXECUTE: begin
                 if (alu_done)
-                    next_state = ST_BRANCH;
+                    if (decoder_ctrl.pipeline_type)
+                        next_state = ST_STORE;
+                    else
+                        next_state = ST_BRANCH;
             end
 
             ST_BRANCH: begin
@@ -124,7 +127,8 @@ module PSC_CELL_STATE (
     assign FIFO_READ_state  = (execute_state == ST_FIFO_READ);
     assign DECODE_state     = (execute_state == ST_DECODE);
     assign EXECUTE_state    = (execute_state == ST_EXECUTE);
-    assign BRANCH_state     = (execute_state == ST_BRANCH);
+    assign BRANCH_state     = (execute_state == ST_BRANCH) || ((execute_state == ST_EXECUTE) && 
+                                decoder_ctrl.pipeline_type);
     assign BRANCH_W_state   = (execute_state == ST_BRANCH_W);
     assign STORE_state      = (execute_state == ST_STORE);
     assign STORE_W_state    = (execute_state == ST_STORE_W);

@@ -282,18 +282,18 @@ module Decorder (
 
     // パイプライン対象外となるM拡張命令
     wire is_mul_div_w =
-        is_mul    |
-        is_mulh   |
-        is_mulhsu |
-        is_mulhu  |
+        //is_mul    |
+        //is_mulh   |
+        //is_mulhsu |
+        //is_mulhu  |
         is_div    |
         is_divu   |
         is_rem    |
         is_remu;
 
-    // 通常のR-typeだけパイプライン対象
+    // 通常のR-typeとI-Typeだけパイプライン対象
     wire pipeline_type_w =
-        is_R_type_w &&
+        (is_R_type_w || is_op_imm_w) &&
         !is_mul_div_w;
 
     // =============================================================================

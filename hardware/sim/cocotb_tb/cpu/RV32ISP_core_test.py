@@ -15,9 +15,9 @@ CLK_PERIOD_NS = int(os.getenv("CLK_PERIOD_NS", "10"))  # 100 MHz
 RUN_CYCLES = int(os.getenv("RUN_CYCLES", "2000000"))
 PROGRAM_FILE = os.getenv("PROGRAM_FILE", "./mem/test_program.mem")
 
-PROGRAM_READ_CYCLE  = 3
-DATA_READ_CYCLE     = 5
-DATA_WRITE_CYCLE    = 5
+PROGRAM_READ_CYCLE  = 50
+DATA_READ_CYCLE     = 50
+DATA_WRITE_CYCLE    = 15
 
 # ------------------------------------------------
 # wait
