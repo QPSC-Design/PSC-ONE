@@ -14,7 +14,7 @@ module PSC_PC #(
     input  logic        pc_sel2,
     input  dec_ctrl_t   decoder_ctrl,
     // CPU state
-    input  logic [3:0]  cpu_state,
+    input  logic        cpu_trap,
     input  logic [1:0]  priv_mode,
     // Page fault
     input  logic        d_pf,
@@ -109,7 +109,7 @@ module PSC_PC #(
         decoder_ctrl.is_mret ? csr_state.mepc :
         decoder_ctrl.is_sret ? csr_state.sepc :
         trap                 ? trap_pc_latch :
-        (cpu_state == CPU_TRAP)
+        cpu_trap
                              ? trap_pc_latch :
         pc_sel2              ? branch_target_pc :
                                seq_pc;

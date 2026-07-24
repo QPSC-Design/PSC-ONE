@@ -271,8 +271,32 @@ module Decorder (
     wire [4:0]  csr_zimm_w     = opcode[19:15];
 
     // ロード/ストア判定
-    wire        is_load_w  = (op == 7'b0000011); // IFORMAT_LOAD : LB/LH/LW/LBU/LHU
-    wire        is_store_w = (op == 7'b0100011); // SFORMAT      : SB/SH/SW
+    wire is_load_w  = (op == IFORMAT_LOAD); // IFORMAT_LOAD : LB/LH/LW/LBU/LHU
+    wire is_store_w = (op == SFORMAT);       // SFORMAT      : SB/SH/SW
+
+    // ============================================================
+    // ソースレジスタ使用判定
+    // ============================================================
+
+    // rs1を実際に使用する命令
+    wire use_rs1_w =
+            (op == RFORMAT)       || // R-type、M拡張
+            (op == IFORMAT_ALU)   || // ADDIなど
+            (op == IFORMAT_LOAD)  || // LOADアドレス
+            (op == SFORMAT)       || // STOREアドレス
+            (op == SBFORMAT)      || // BRANCH比較
+            (op == IFORMAT_JALR)  || // JALRアドレス
+            is_csrrw              || // CSRレジスタ形式
+            is_csrrs              ||
+            is_csrrc              ||
+            is_sfence_vma_w;
+
+    // rs2を実際に使用する命令
+    wire use_rs2_w =
+            (op == RFORMAT)      || // R-type、M拡張
+            (op == SFORMAT)      || // STOREデータ
+            (op == SBFORMAT)     || // BRANCH比較
+            is_sfence_vma_w;
 
     // パイプライン処理 R-type判定
     wire is_R_type_w = (op == RFORMAT);
@@ -327,6 +351,8 @@ module Decorder (
         decoder_ctrl_next.is_ecall                 = is_ecall_w;
         decoder_ctrl_next.is_load                  = is_load_w;
         decoder_ctrl_next.is_store                 = is_store_w;
+        decoder_ctrl_next.use_rs1                  = use_rs1_w;
+        decoder_ctrl_next.use_rs2                  = use_rs2_w;
         decoder_ctrl_next.is_R_type                = is_R_type_w;
         decoder_ctrl_next.is_op_imm                = is_op_imm_w;
         decoder_ctrl_next.pipeline_type            = pipeline_type_w;

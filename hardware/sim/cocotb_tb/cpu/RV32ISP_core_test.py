@@ -15,9 +15,9 @@ CLK_PERIOD_NS = int(os.getenv("CLK_PERIOD_NS", "10"))  # 100 MHz
 RUN_CYCLES = int(os.getenv("RUN_CYCLES", "2000000"))
 PROGRAM_FILE = os.getenv("PROGRAM_FILE", "./mem/test_program.mem")
 
-PROGRAM_READ_CYCLE  = 50
-DATA_READ_CYCLE     = 50
-DATA_WRITE_CYCLE    = 15
+PROGRAM_READ_CYCLE  = 45
+DATA_READ_CYCLE     = 220
+DATA_WRITE_CYCLE    = 250
 
 # ------------------------------------------------
 # wait
@@ -302,9 +302,6 @@ def initialize_dut_inputs(dut):
     dut.csr_SA_STATUS.value = 0
     dut.csr_CPU_MON_CYCLE.value = 0
 
-import random
-
-
 # ------------------------------------------------
 # Program memory model
 # ------------------------------------------------
@@ -417,12 +414,13 @@ async def data_memory_read_model(
 ):
     """
     data_mem_read_validを受信してから、
-    read_delay_cyclesクロック後にread_readyとread_dataを返す。
+    1〜read_delay_cyclesクロック後に
+    data_mem_read_readyとdata_mem_read_dataを返す。
 
     read_delay_cycles:
-        0 : validを検出したクロック直後に応答
-        1 : 1クロック後に応答
-        2 : 2クロック後に応答
+        0以下 : valid検出時に即時応答
+        1     : 1クロック後に応答
+        N     : 1〜Nクロック後にランダム応答
     """
     pending = False
     pending_address = 0
@@ -495,12 +493,15 @@ async def data_memory_read_model(
                 dut.data_mem_read_data.value = read_data
                 dut.data_mem_read_ready.value = 1
             else:
+                # 1〜read_delay_cyclesの範囲で、
+                # 要求ごとにランダムな応答遅延を選択
+                selected_delay = random.randint(
+                    1,
+                    read_delay_cycles,
+                )
+
                 pending = True
-
-                # 受付クロックを除き、
-                # 指定クロック後にreadyを返す
-                delay_count = read_delay_cycles - 1
-
+                delay_count = selected_delay - 1
 
 # ------------------------------------------------
 # Data memory write model
@@ -512,13 +513,13 @@ async def data_memory_write_model(
 ):
     """
     data_mem_write_validを受信してから、
-    write_delay_cyclesクロック後にメモリを書き換え、
+    1〜write_delay_cyclesクロック後にメモリを書き換え、
     data_mem_write_readyを1クロック通知する。
 
     write_delay_cycles:
-        0 : validを検出したクロック直後に書き込み・応答
-        1 : 1クロック後に書き込み・応答
-        2 : 2クロック後に書き込み・応答
+        0以下 : valid検出時に即時書き込み・応答
+        1     : 1クロック後に書き込み・応答
+        N     : 1〜Nクロック後にランダム応答
     """
     pending = False
     pending_address = 0
@@ -601,11 +602,15 @@ async def data_memory_write_model(
 
                 dut.data_mem_write_ready.value = 1
             else:
-                pending = True
+                # 1〜write_delay_cyclesの範囲で、
+                # 要求ごとにランダムな応答遅延を選択
+                selected_delay = random.randint(
+                    1,
+                    write_delay_cycles,
+                )
 
-                # 受付クロックを除き、
-                # 指定クロック後にreadyを返す
-                delay_count = write_delay_cycles - 1
+                pending = True
+                delay_count = selected_delay - 1
 
 # ------------------------------------------------
 # MMU memory model

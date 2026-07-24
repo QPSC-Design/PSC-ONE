@@ -234,6 +234,30 @@ with the PSC-ONE SoC platform.
 
 ---
 
+## 8×8 Matrix Multiplication Performance
+
+The following results compare the execution time of an 8×8 matrix multiplication across different PSC-RV32ISP configurations and the systolic array accelerator.
+
+### Execution Time Comparison
+
+| Configuration                                  | Execution Time | Performance vs. V1 |
+| ---------------------------------------------- | -------------: | -----------------: |
+| PSC_RV32ISP                                    |         591 µs |       ~1.80× faster |
+| PSC_RV32ISP_V1                                 |        1066 µs |           Baseline |
+| Systolic Array                                 |          44 µs |       ~24.2× faster |
+| PSC_RV32ISP_V1 (Fetch FIFO enabled)            |         742 µs |       ~1.44× faster |
+| PSC_RV32ISP_V1 (R/I-Type pipeline enabled)     |         651 µs |       ~1.64× faster |
+
+### Results
+
+The systolic array completed the 8×8 matrix multiplication in **44 µs**, approximately **24.2× faster** than the baseline PSC_RV32ISP_V1 processor.
+
+Enabling the Fetch FIFO reduced the PSC_RV32ISP_V1 execution time from **1066 µs to 742 µs**. Enabling the R/I-Type pipeline further reduced it to **651 µs**, approaching the performance of the original PSC_RV32ISP processor at **591 µs**.
+
+These results demonstrate that both instruction-fetch optimization and R/I-Type pipelining significantly improve CPU performance. However, the dedicated systolic array still provides a much larger performance advantage for matrix multiplication workloads.
+
+---
+
 ## Systolic Array and PicoRV32 Resource Scale Comparison
 
 ### Resource Comparison

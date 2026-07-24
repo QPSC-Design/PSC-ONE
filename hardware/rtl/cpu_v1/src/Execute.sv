@@ -5,7 +5,6 @@ import PSC_Types::*;
 module Execute(
     input  logic        clock,
     input  logic        reset_n,
-    input  logic [31:0] in_pc,
     input  logic        execute_enb,
     input  logic [31:0] reg_data_addr1,
     input  logic [31:0] reg_data_addr2,
@@ -29,7 +28,7 @@ module Execute(
     logic mul_start, mul_busy, mul_done;
     logic [31:0] div_quotient, div_remainder, mul_out;
 
-    assign s_data1 = decoder_ctrl.op1sel ? in_pc            : reg_data_addr1;
+    assign s_data1 = decoder_ctrl.op1sel ? decoder_ctrl.out_pc : reg_data_addr1;
     assign s_data2 = decoder_ctrl.op2sel ? decoder_ctrl.imm : reg_data_addr2;
 
     assign div_signed = (decoder_ctrl.alucon == 5'b1_1100) ||
@@ -111,7 +110,7 @@ module Execute(
                     if (execute_enb) begin
                         r_data1 <= reg_data_addr1;
                         r_data2 <= reg_data_addr2;
-                        out_pc  <= in_pc;
+                        out_pc  <= decoder_ctrl.out_pc;
                     end
                 end
 

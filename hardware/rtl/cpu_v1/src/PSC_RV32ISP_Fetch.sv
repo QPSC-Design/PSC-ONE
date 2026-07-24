@@ -3,7 +3,7 @@
 //`define fifo_pipeline_off
 
 module PSC_RV32ISP_Fetch #(
-    parameter int FIFO_DEPTH = 4
+    parameter int FIFO_DEPTH = 16
 )(
     input  logic        clock,
     input  logic        reset_n,
@@ -44,7 +44,8 @@ module PSC_RV32ISP_Fetch #(
     input  logic        data_mem_read_req_ready,
 
     output logic [31:0] opcode,
-    output logic [31:0] fifo_opcode_data
+    output logic [31:0] fifo_opcode_data,
+    output logic [31:0] out_fetch_pc
 );
 
     typedef enum logic [3:0] {
@@ -191,7 +192,6 @@ module PSC_RV32ISP_Fetch #(
 
     // FIFO
     logic in_ready;
-    logic [31:0] out_fetch_pc;
 
     Fetch_Fifo #(
         .WIDTH                    (32),
@@ -210,7 +210,11 @@ module PSC_RV32ISP_Fetch #(
         .out_pc_data              (out_fetch_pc),
         .full                     (full),
         .empty                    (empty),
-        .flush                    (fifo_flush || fetch_state_fifo_flush || cpu_stop)
+        .flush                    (
+            fifo_flush || 
+            fetch_state_fifo_flush || 
+            cpu_stop
+        )
     );
 
 

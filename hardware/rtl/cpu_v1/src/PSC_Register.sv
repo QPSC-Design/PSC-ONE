@@ -23,26 +23,30 @@ module PSC_Register #(
 
     always_ff @(posedge clock or negedge reset_n) begin
         if (!reset_n) begin
-            for (i = 0; i < 32; i++) begin
-                registers[i] <= 32'd0;
-            end
-
             reg_data_1 <= 32'd0;
             reg_data_2 <= 32'd0;
+            for (i = 0; i < 32; i++)
+                registers[i] <= 32'd0;
+                
         end else begin
-            if (store_enb) begin
-                if (rf_wen && (w_addr != 5'd0)) begin
-                    registers[w_addr] <= w_data;
-                end
-            end else begin
-                reg_data_1 <= (r_addr1 == 5'd0)
-                            ? 32'd0
-                            : registers[r_addr1];
+            // WB
+            if (store_enb && rf_wen && (w_addr != 5'd0))
+                registers[w_addr] <= w_data;
 
-                reg_data_2 <= (r_addr2 == 5'd0)
-                            ? 32'd0
-                            : registers[r_addr2];
-            end
+            // ID＋WB→ID forwarding
+            reg_data_1 <=
+                (r_addr1 == 5'd0) ? 32'd0 :
+                (store_enb && rf_wen &&
+                (w_addr != 5'd0) &&
+                (w_addr == r_addr1)) ? w_data :
+                registers[r_addr1];
+
+            reg_data_2 <=
+                (r_addr2 == 5'd0) ? 32'd0 :
+                (store_enb && rf_wen &&
+                (w_addr != 5'd0) &&
+                (w_addr == r_addr2)) ? w_data :
+                registers[r_addr2];
         end
     end
 

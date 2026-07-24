@@ -2,7 +2,7 @@
 
 module Fetch_Fifo #(
     parameter int WIDTH     = 32,
-    parameter int DEPTH     = 4,
+    parameter int DEPTH     = 8,
     parameter int ADDR_BITS = $clog2(DEPTH)
 )(
     input  logic             clock,

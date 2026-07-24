@@ -39,6 +39,9 @@ package PSC_Types;
         logic        is_load;
         logic        is_store;
 
+        logic        use_rs1;
+        logic        use_rs2;
+
         logic        is_R_type;
         logic        is_op_imm;
 

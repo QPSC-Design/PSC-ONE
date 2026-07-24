@@ -294,6 +294,7 @@ module PSC_RV32ISP_core #(
     // logic
     logic [31:0] opcode;
     logic [31:0] fifo_opcode_data;
+    logic [31:0] fifo_fetch_pc;
     logic        fifo_empty;
     logic        fifo_full;
     logic        fifo_flush_sig;
@@ -354,7 +355,8 @@ module PSC_RV32ISP_core #(
         .data_mem_read_req_ready    (mmu_data_req_ready),
         // opcode
         .opcode                     (opcode),   // 未使用.
-        .fifo_opcode_data           (fifo_opcode_data)
+        .fifo_opcode_data           (fifo_opcode_data),
+        .out_fetch_pc               (fifo_fetch_pc)
     );
 
     // =====================================
@@ -390,6 +392,7 @@ module PSC_RV32ISP_core #(
         .counter                    (counter),
 
         .opcode                     (fifo_opcode_data),
+        .pc_now                     (fifo_fetch_pc),
         .csr_satp                   (csr_state.satp),
         .priv_mode                  (priv_mode),
         .alu_data                   (alu_data),

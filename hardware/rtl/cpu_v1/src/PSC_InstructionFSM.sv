@@ -2,18 +2,20 @@
 
 import PSC_Types::*;
 
-module PSC_CELL_STATE (
+module PSC_InstructionFSM (
     input  logic        clock,
     input  logic        reset_n,
     input  logic        cpu_stop,
 
     // Decoder struct
     input  dec_ctrl_t   decoder_ctrl,
+    output dec_ctrl_t   decoder_ctrl_now,
 
     input  instruction_state_t inst_state,
 
     // FIFO / completion
     input  logic        fifo_empty,
+    input  logic        fifo_read_ready,    // not used
     input  logic        decode_done,
     input  logic        alu_done,
     input  logic        branch_done,
@@ -23,6 +25,7 @@ module PSC_CELL_STATE (
     output logic        IDLE_state,
     output logic        FIFO_READ_state,
     output logic        DECODE_state,
+    output logic        REGISTER_READ_state,
     output logic        EXECUTE_state,
     output logic        BRANCH_state,
     output logic        BRANCH_W_state,
@@ -30,14 +33,15 @@ module PSC_CELL_STATE (
     output logic        STORE_W_state,
 
     // Completion pulse
-    output logic        execute_task_busy,
-    output logic        execute_task_done
+    output logic        fsm_task_busy,
+    output logic        fsm_task_done
 );
 
     typedef enum logic [3:0] {
         ST_IDLE,
         ST_FIFO_READ,
         ST_DECODE,
+        ST_REGISTER_READ,
         ST_EXECUTE,
         ST_BRANCH,
         ST_BRANCH_W,
@@ -47,6 +51,7 @@ module PSC_CELL_STATE (
 
     execute_state_t execute_state;
     execute_state_t next_state;
+
     execute_state_t execute_state_d;
 
     // ============================================================
@@ -56,12 +61,16 @@ module PSC_CELL_STATE (
         if (!reset_n) begin
             execute_state   <= ST_IDLE;
             execute_state_d <= ST_IDLE;
+            decoder_ctrl_now <= '0;
         end else if (cpu_stop) begin
             execute_state   <= ST_IDLE;
             execute_state_d <= ST_IDLE;
+            decoder_ctrl_now <= '0;
         end else begin
             execute_state   <= next_state;
             execute_state_d <= execute_state;
+            if (decode_done)
+                decoder_ctrl_now   <= decoder_ctrl;
         end
     end
 
@@ -84,12 +93,16 @@ module PSC_CELL_STATE (
 
             ST_DECODE: begin
                 if (decode_done)
-                    next_state = ST_EXECUTE;
+                    next_state = ST_REGISTER_READ;
+            end
+
+            ST_REGISTER_READ: begin
+                next_state = ST_EXECUTE;
             end
 
             ST_EXECUTE: begin
                 if (alu_done)
-                    if (decoder_ctrl.pipeline_type)
+                    if (decoder_ctrl_now.pipeline_type)
                         next_state = ST_STORE;
                     else
                         next_state = ST_BRANCH;
@@ -126,16 +139,18 @@ module PSC_CELL_STATE (
     assign IDLE_state       = (execute_state == ST_IDLE);
     assign FIFO_READ_state  = (execute_state == ST_FIFO_READ);
     assign DECODE_state     = (execute_state == ST_DECODE);
+    assign REGISTER_READ_state = (execute_state == ST_REGISTER_READ);
     assign EXECUTE_state    = (execute_state == ST_EXECUTE);
-    assign BRANCH_state     = (execute_state == ST_BRANCH) || ((execute_state == ST_EXECUTE) && 
-                                decoder_ctrl.pipeline_type);
+    assign BRANCH_state     = (execute_state == ST_BRANCH) || 
+                              ((execute_state == ST_EXECUTE) && decoder_ctrl_now.pipeline_type);
     assign BRANCH_W_state   = (execute_state == ST_BRANCH_W);
     assign STORE_state      = (execute_state == ST_STORE);
     assign STORE_W_state    = (execute_state == ST_STORE_W);
 
-    assign execute_task_busy = (execute_state != ST_IDLE);
+    assign fsm_task_busy = 
+                (execute_state != ST_IDLE);
 
-    assign execute_task_done =
-        IDLE_state && (execute_state_d != ST_IDLE);
+    assign fsm_task_done =
+                IDLE_state && (execute_state_d != ST_IDLE);
 
 endmodule
